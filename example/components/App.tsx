@@ -1,19 +1,27 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { useBottomSheet } from '../..';
-import Sheet from './Sheet';
+import { BottomSheet } from '../..';
+import SheetContent from './SheetContent';
 
 const App = () => {
-  const bottomSheet = useBottomSheet();
-
-  function showBottomSheet() {
-    bottomSheet.open(<Sheet />);
-  }
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
   return (
-    <Wrapper>
-      <button onClick={showBottomSheet}>Show bottom sheet</button>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <button onClick={() => setSheetOpen(true)}>Show bottom sheet</button>
+      </Wrapper>
+
+      <BottomSheet
+        isOpen={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        snapPoints={[600, 400, 100, 0]}
+        initialSnap={1}
+        rootId="root"
+      >
+        <SheetContent close={() => setSheetOpen(false)} />
+      </BottomSheet>
+    </>
   );
 };
 

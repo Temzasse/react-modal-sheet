@@ -11,30 +11,40 @@ import {
 } from 'framer-motion';
 
 import {
-  usePrevious,
   applyRootStyles,
   cleanupRootStyles,
   getClosest,
+  usePrevious,
 } from './utils';
+
+interface Props {
+  isOpen: boolean;
+  rootId?: string;
+  snapPoints?: number[];
+  initialSnap?: number; // index of snap points array
+  onClose: () => any;
+}
 
 const SPRING_CONFIG = { stiffness: 300, damping: 30, mass: 0.2 };
 const TOP_OFFSET = 32;
+const DRAG_TARGET_HEIGHT = 40;
 
-export const BottomSheet = ({
+const BottomSheet: React.FC<Props> = ({
+  children,
+  isOpen,
+  onClose,
+  snapPoints,
+  initialSnap,
   rootId,
-  snapPoints, // = [600, 400, 100, 0],
-}: {
-  rootId?: string;
-  snapPoints?: number[];
 }) => {
-  const { isOpen, el } = useBottomSheetState();
-  const dispatch = useBottomSheetDispatch();
   const prevOpen = usePrevious(isOpen);
   const sheetRef = React.useRef<any>(null);
   const sheetDragY = useMotionValue(window.innerHeight);
   const sheetSpringY = useSpring(sheetDragY, SPRING_CONFIG);
   const dragY = useMotionValue(0);
   const [isDragging, setDragging] = React.useState(false);
+  const initialY =
+    snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0;
 
   const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
     // Make sure user cannot drag beyond the top of the sheet
@@ -48,42 +58,39 @@ export const BottomSheet = ({
     setDragging(true);
   }, []);
 
-  const handleDragEnd = React.useCallback(
-    (_, { velocity }: PanInfo) => {
-      if (velocity.y > 500) {
-        // User flicked the sheet down
-        dispatch({ type: 'close' });
-      } else {
-        const sheetEl = sheetRef.current as HTMLDivElement;
-        const contentHeight = sheetEl.getBoundingClientRect().height;
-        const snapTo = snapPoints
-          ? getClosest(
-              snapPoints.map(p => Math.abs(p - contentHeight)),
-              sheetDragY.get()
-            )
-          : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
-          ? contentHeight
-          : 0;
+  const handleDragEnd = React.useCallback((_, { velocity }: PanInfo) => {
+    if (velocity.y > 500) {
+      // User flicked the sheet down
+      onClose();
+    } else {
+      const sheetEl = sheetRef.current as HTMLDivElement;
+      const contentHeight = sheetEl.getBoundingClientRect().height;
+      const snapTo = snapPoints
+        ? getClosest(
+            snapPoints.map(p => Math.abs(p - contentHeight)),
+            sheetDragY.get()
+          )
+        : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
+        ? contentHeight
+        : 0;
 
-        // Update the spring value so that the sheet is animated to the snap point
-        sheetSpringY.set(snapTo);
+      // Update the spring value so that the sheet is animated to the snap point
+      sheetSpringY.set(snapTo);
 
-        if (snapTo >= contentHeight) dispatch({ type: 'close' });
-        setDragging(false);
-      }
-    },
-    [dispatch]
-  );
-
-  React.useEffect(() => {
-    if (prevOpen && !isOpen) dispatch({ type: 'close' });
-  }, [dispatch, isOpen, prevOpen]);
-
-  React.useEffect(() => {
-    if (rootId) {
-      isOpen ? applyRootStyles(rootId) : cleanupRootStyles(rootId);
+      if (snapTo >= contentHeight) onClose();
+      setDragging(false);
     }
-  }, [isOpen]);
+  }, []);
+
+  React.useEffect(() => {
+    if (!rootId) return;
+
+    if (!prevOpen && isOpen) {
+      applyRootStyles(rootId);
+    } else if (!isOpen && prevOpen) {
+      cleanupRootStyles(rootId);
+    }
+  }, [isOpen, prevOpen]);
 
   return (
     <Wrapper isOpen={isOpen}>
@@ -94,12 +101,10 @@ export const BottomSheet = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => dispatch({ type: 'close' })}
+            onClick={onClose}
           />
         )}
-      </AnimatePresence>
 
-      <AnimatePresence>
         {/**
          * We need to switch between the regular motion and spring value
          * in order to have the sheet animate properly between snap points
@@ -110,7 +115,7 @@ export const BottomSheet = ({
             ref={sheetRef}
             style={{ y: isDragging ? sheetDragY : sheetSpringY }}
             initial={{ y: window.innerHeight }}
-            animate={{ y: 0, transition: { type: 'tween' } }}
+            animate={{ y: initialY, transition: { type: 'tween' } }}
             exit={{ y: window.innerHeight }}
             h={snapPoints ? snapPoints[0] : null}
           >
@@ -125,12 +130,36 @@ export const BottomSheet = ({
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             />
-            <SheetContent>{el}</SheetContent>
+            <SheetContent>{children}</SheetContent>
           </Sheet>
         )}
       </AnimatePresence>
     </Wrapper>
   );
+};
+
+export const BottomSheetPortal: React.FC<Props> = ({ children, ...rest }) => {
+  const portalRef = React.useRef<any>(null);
+  const [portalCreated, setPortalCreated] = React.useState(false);
+
+  React.useEffect(() => {
+    let el = document.getElementById('#bottom-sheet-portal');
+
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'bottom-sheet-portal';
+      document.body.appendChild(el);
+    }
+
+    portalRef.current = el;
+    setPortalCreated(true);
+  }, []);
+
+  if (!portalCreated) return null;
+
+  const bottomSheet = <BottomSheet {...rest}>{children}</BottomSheet>;
+
+  return ReactDOM.createPortal(bottomSheet, portalRef.current);
 };
 
 const Wrapper = styled.div<{ isOpen: boolean }>`
@@ -170,7 +199,7 @@ const Sheet = styled(motion.div)<{ h: number | null }>`
 
 const SheetContent = styled.div`
   position: absolute;
-  top: 32px;
+  top: ${DRAG_TARGET_HEIGHT}px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -179,7 +208,7 @@ const SheetContent = styled.div`
 `;
 
 const SheetDragTarget = styled.div`
-  height: 32px;
+  height: ${DRAG_TARGET_HEIGHT}px;
   width: 100%;
   position: relative;
 
@@ -197,107 +226,9 @@ const SheetDragTarget = styled.div`
 `;
 
 const SheetDragHandler = styled(motion.div)`
-  height: 32px;
+  height: ${DRAG_TARGET_HEIGHT}px;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
 `;
-
-interface State {
-  isOpen: boolean;
-  el: null | React.ReactNode;
-}
-
-type Action = { type: 'open'; payload: React.ReactNode } | { type: 'close' };
-type Dispatch = (action: Action) => void;
-
-const StateContext = React.createContext<State | undefined>(undefined);
-const DispatchContext = React.createContext<Dispatch | undefined>(undefined);
-
-function bottomSheetReducer(state: State, action: Action) {
-  switch (action.type) {
-    case 'open': {
-      return { ...state, isOpen: true, el: action.payload };
-    }
-    case 'close': {
-      return { ...state, isOpen: false, el: null };
-    }
-    default: {
-      throw new Error(`Unhandled action type: ${action}`);
-    }
-  }
-}
-
-export function BottomSheetProvider({
-  children,
-  rootId,
-}: {
-  children: React.ReactNode;
-  rootId?: string;
-}) {
-  const [state, dispatch] = React.useReducer(bottomSheetReducer, {
-    isOpen: false,
-    el: null,
-  });
-
-  return (
-    <StateContext.Provider value={state}>
-      <DispatchContext.Provider value={dispatch}>
-        {children}
-        <BottomSheetPortal rootId={rootId} />
-      </DispatchContext.Provider>
-    </StateContext.Provider>
-  );
-}
-
-function BottomSheetPortal(props: { rootId?: string }) {
-  const portalRef = React.useRef<any>(null);
-
-  React.useEffect(() => {
-    let el = document.getElementById('#bottom-sheet-portal');
-
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'bottom-sheet-portal';
-      document.body.appendChild(el);
-    }
-
-    portalRef.current = el;
-  }, []);
-
-  if (!portalRef.current) return null;
-
-  const bottomSheet = <BottomSheet {...props} />;
-  return ReactDOM.createPortal(bottomSheet, portalRef.current);
-}
-
-export function useBottomSheetDispatch() {
-  const dispatch = React.useContext(DispatchContext);
-  if (dispatch === undefined) {
-    throw new Error('useBottomSheet must be used within a BottomSheetProvider');
-  }
-  return dispatch;
-}
-
-export function useBottomSheetState() {
-  const state = React.useContext(StateContext);
-  if (state === undefined) {
-    throw new Error('useBottomSheet must be used within a BottomSheetProvider');
-  }
-  return state;
-}
-
-export function useBottomSheet() {
-  const dispatch = useBottomSheetDispatch();
-
-  return React.useMemo(
-    () => ({
-      open: (payload: React.ReactNode) => dispatch({ type: 'open', payload }),
-      close: () => dispatch({ type: 'close' }),
-    }),
-    [dispatch]
-  );
-}
-
-export default BottomSheet;
