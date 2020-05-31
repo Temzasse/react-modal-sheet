@@ -1,11 +1,32 @@
 body {
   margin: 0;
+  font-size: 16px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
+}
+
+button,
+input,
+textarea {
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+button {
+  padding: 6px 16px;
+  background-color: aliceblue;
+  color: mediumslateblue;
+  border: none;
+  font-weight: 500;
+  border-radius: 999px;
+  text-align: center;
+  margin: 8px 0px;
 }
 
 * {

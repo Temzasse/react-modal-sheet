@@ -23,144 +23,159 @@ interface Props {
   snapPoints?: number[];
   initialSnap?: number; // index of snap points array
   onClose: () => any;
+  children: React.ReactNode;
 }
 
 const SPRING_CONFIG = { stiffness: 300, damping: 30, mass: 0.2 };
 const TOP_OFFSET = 32;
 const DRAG_TARGET_HEIGHT = 40;
 
-const BottomSheet: React.FC<Props> = ({
-  children,
-  isOpen,
-  onClose,
-  snapPoints,
-  initialSnap,
-  rootId,
-}) => {
-  const prevOpen = usePrevious(isOpen);
-  const sheetRef = React.useRef<any>(null);
-  const sheetDragY = useMotionValue(window.innerHeight);
-  const sheetSpringY = useSpring(sheetDragY, SPRING_CONFIG);
-  const dragY = useMotionValue(0);
-  const [isDragging, setDragging] = React.useState(false);
-  const initialY =
-    snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0;
+const BottomSheet = React.forwardRef<any, Props>(
+  ({ children, isOpen, onClose, snapPoints, initialSnap, rootId }, ref) => {
+    const prevOpen = usePrevious(isOpen);
+    const sheetRef = React.useRef<any>(null);
+    const sheetDragY = useMotionValue(window.innerHeight);
+    const sheetSpringY = useSpring(sheetDragY, SPRING_CONFIG);
+    const dragY = useMotionValue(0);
+    const [isDragging, setDragging] = React.useState(false);
+    const initialY =
+      snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0;
 
-  const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
-    // Make sure user cannot drag beyond the top of the sheet
-    sheetDragY.set(Math.max(sheetDragY.get() + delta.y, 0));
-  }, []);
+    const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
+      // Make sure user cannot drag beyond the top of the sheet
+      sheetDragY.set(Math.max(sheetDragY.get() + delta.y, 0));
+    }, []);
 
-  const handleDragStart = React.useCallback(() => {
-    // Sync the drag value with the spring value so that dragging starts
-    // at the correct y position
-    sheetDragY.set(sheetSpringY.get());
-    setDragging(true);
-  }, []);
+    const handleDragStart = React.useCallback(() => {
+      // Sync the drag value with the spring value so that dragging starts
+      // at the correct y position
+      sheetDragY.set(sheetSpringY.get());
+      setDragging(true);
+    }, []);
 
-  const handleDragEnd = React.useCallback((_, { velocity }: PanInfo) => {
-    if (velocity.y > 500) {
-      // User flicked the sheet down
-      onClose();
-    } else {
-      const sheetEl = sheetRef.current as HTMLDivElement;
-      const contentHeight = sheetEl.getBoundingClientRect().height;
-      const snapTo = snapPoints
-        ? getClosest(
-            snapPoints.map(p => Math.abs(p - contentHeight)),
-            sheetDragY.get()
-          )
-        : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
-        ? contentHeight
-        : 0;
+    const handleDragEnd = React.useCallback((_, { velocity }: PanInfo) => {
+      if (velocity.y > 500) {
+        // User flicked the sheet down
+        onClose();
+      } else {
+        const sheetEl = sheetRef.current as HTMLDivElement;
+        const contentHeight = sheetEl.getBoundingClientRect().height;
+        const snapTo = snapPoints
+          ? getClosest(
+              snapPoints.map(p => contentHeight - p),
+              sheetDragY.get()
+            )
+          : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
+          ? contentHeight
+          : 0;
 
-      // Update the spring value so that the sheet is animated to the snap point
-      sheetSpringY.set(snapTo);
+        // Update the spring value so that the sheet is animated to the snap point
+        sheetSpringY.set(snapTo);
 
-      if (snapTo >= contentHeight) onClose();
-      setDragging(false);
-    }
-  }, []);
+        if (snapTo >= contentHeight) onClose();
+        setDragging(false);
+      }
+    }, []);
 
-  React.useEffect(() => {
-    if (!rootId) return;
+    React.useEffect(() => {
+      if (!rootId) return;
 
-    if (!prevOpen && isOpen) {
-      applyRootStyles(rootId);
-    } else if (!isOpen && prevOpen) {
-      cleanupRootStyles(rootId);
-    }
-  }, [isOpen, prevOpen]);
+      if (!prevOpen && isOpen) {
+        applyRootStyles(rootId);
+      } else if (!isOpen && prevOpen) {
+        cleanupRootStyles(rootId);
+      }
+    }, [isOpen, prevOpen]);
 
-  return (
-    <Wrapper isOpen={isOpen}>
-      <AnimatePresence>
-        {isOpen && (
-          <Backdrop
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-        )}
+    React.useImperativeHandle(ref, () => ({
+      snapTo: (snapIndex: number) => {
+        if (snapPoints && snapPoints[snapIndex] !== undefined) {
+          const sheetEl = sheetRef.current as HTMLDivElement;
+          const contentHeight = sheetEl.getBoundingClientRect().height;
+          const snapTo = contentHeight - snapPoints[snapIndex];
 
-        {/**
-         * We need to switch between the regular motion and spring value
-         * in order to have the sheet animate properly between snap points
-         */}
-        {isOpen && (
-          <Sheet
-            key="sheet"
-            ref={sheetRef}
-            style={{ y: isDragging ? sheetDragY : sheetSpringY }}
-            initial={{ y: window.innerHeight }}
-            animate={{ y: initialY, transition: { type: 'tween' } }}
-            exit={{ y: window.innerHeight }}
-            h={snapPoints ? snapPoints[0] : null}
-          >
-            <SheetDragTarget />
-            <SheetDragHandler
-              style={{ y: dragY }}
-              drag="y"
-              dragElastic={0}
-              dragConstraints={{ top: 0, bottom: 0 }}
-              dragMomentum={false}
-              onDrag={handleDrag}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
+          sheetSpringY.set(snapTo);
+          if (snapTo >= contentHeight) onClose();
+        }
+      },
+    }));
+
+    return (
+      <Wrapper isOpen={isOpen}>
+        <AnimatePresence>
+          {isOpen && (
+            <Backdrop
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
             />
-            <SheetContent>{children}</SheetContent>
-          </Sheet>
-        )}
-      </AnimatePresence>
-    </Wrapper>
-  );
-};
+          )}
 
-export const BottomSheetPortal: React.FC<Props> = ({ children, ...rest }) => {
-  const portalRef = React.useRef<any>(null);
-  const [portalCreated, setPortalCreated] = React.useState(false);
+          {/**
+           * We need to switch between the regular motion and spring value
+           * in order to have the sheet animate properly between snap points
+           */}
+          {isOpen && (
+            <Sheet
+              key="sheet"
+              ref={sheetRef}
+              style={{ y: isDragging ? sheetDragY : sheetSpringY }}
+              initial={{ y: window.innerHeight }}
+              animate={{ y: initialY, transition: { type: 'tween' } }}
+              exit={{ y: window.innerHeight }}
+              h={snapPoints ? snapPoints[0] : null}
+            >
+              <SheetDragTarget />
+              <SheetDragHandler
+                style={{ y: dragY }}
+                drag="y"
+                dragElastic={0}
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragMomentum={false}
+                onDrag={handleDrag}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              />
+              <SheetContent>{children}</SheetContent>
+            </Sheet>
+          )}
+        </AnimatePresence>
+      </Wrapper>
+    );
+  }
+);
 
-  React.useEffect(() => {
-    let el = document.getElementById('#bottom-sheet-portal');
+export const BottomSheetPortal = React.forwardRef<any, Props>(
+  ({ children, ...rest }, ref) => {
+    const portalRef = React.useRef<any>(null);
+    const [portalCreated, setPortalCreated] = React.useState(false);
 
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'bottom-sheet-portal';
-      document.body.appendChild(el);
-    }
+    React.useEffect(() => {
+      let el = document.getElementById('#bottom-sheet-portal');
 
-    portalRef.current = el;
-    setPortalCreated(true);
-  }, []);
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'bottom-sheet-portal';
+        document.body.appendChild(el);
+      }
 
-  if (!portalCreated) return null;
+      portalRef.current = el;
+      setPortalCreated(true);
+    }, []);
 
-  const bottomSheet = <BottomSheet {...rest}>{children}</BottomSheet>;
+    if (!portalCreated) return null;
 
-  return ReactDOM.createPortal(bottomSheet, portalRef.current);
-};
+    const bottomSheet = (
+      <BottomSheet ref={ref} {...rest}>
+        {children}
+      </BottomSheet>
+    );
+
+    return ReactDOM.createPortal(bottomSheet, portalRef.current);
+  }
+);
 
 const Wrapper = styled.div<{ isOpen: boolean }>`
   z-index: 9999999;

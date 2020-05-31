@@ -5,21 +5,29 @@ import SheetContent from './SheetContent';
 
 const App = () => {
   const [sheetOpen, setSheetOpen] = React.useState(false);
+  const bottomSheetRef = React.useRef<any>();
+
+  const open = () => setSheetOpen(true);
+  const close = () => setSheetOpen(false);
+  const snapTo = (snapPoint: number) => {
+    bottomSheetRef && bottomSheetRef.current.snapTo(snapPoint);
+  };
 
   return (
     <>
       <Wrapper>
-        <button onClick={() => setSheetOpen(true)}>Show bottom sheet</button>
+        <button onClick={open}>Show bottom sheet</button>
       </Wrapper>
 
       <BottomSheet
+        ref={bottomSheetRef}
         isOpen={sheetOpen}
-        onClose={() => setSheetOpen(false)}
+        onClose={close}
         snapPoints={[600, 400, 100, 0]}
         initialSnap={1}
         rootId="root"
       >
-        <SheetContent close={() => setSheetOpen(false)} />
+        <SheetContent snapTo={snapTo} close={close} />
       </BottomSheet>
     </>
   );
