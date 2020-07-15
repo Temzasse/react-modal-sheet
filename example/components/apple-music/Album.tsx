@@ -94,7 +94,7 @@ const Content = styled.div<{ bg: string }>`
   flex-direction: column;
   padding-left: 16px;
   padding-right: 16px;
-  padding-top: env(safe-area-inset-top);
+  padding-top: max(16px, env(safe-area-inset-top));
   padding-bottom: 56px;
   background-color: ${p => p.bg};
   transition: all 200ms ease-in-out;

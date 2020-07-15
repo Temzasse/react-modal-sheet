@@ -45,15 +45,15 @@ const PlayerBottomSheet = styled(BottomSheet)`
   max-width: 680px;
 
   .bottom-sheet-container {
-    background-color: #222;
+    background-color: #222 !important;
   }
 
   .bottom-sheet-backdrop {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.3) !important;
   }
 
-  .bottom-sheet-header::before {
-    background-color: #666;
+  .bottom-sheet-drag-indicator {
+    background-color: #666 !important;
   }
 `;
 

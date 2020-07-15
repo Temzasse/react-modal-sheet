@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import styled, { css } from 'styled-components';
+import * as CSS from 'csstype';
 
 import {
   motion,
-  useMotionValue,
   useSpring,
+  useMotionValue,
+  useTransform,
   AnimatePresence,
   PanInfo,
 } from 'framer-motion';
@@ -19,15 +20,13 @@ import {
 
 type Props = {
   isOpen: boolean;
-  rootId?: string;
-  snapPoints?: number[];
-  initialSnap?: number; // index of snap points array
   onClose: () => any;
   children: React.ReactNode;
   header?: React.ReactNode;
+  rootId?: string;
+  snapPoints?: number[];
+  initialSnap?: number; // index of snap points array
 };
-
-const SPRING_CONFIG = { stiffness: 300, damping: 30, mass: 0.2 };
 
 const BottomSheet = React.forwardRef<any, Props>(
   (
@@ -43,16 +42,28 @@ const BottomSheet = React.forwardRef<any, Props>(
     },
     ref
   ) => {
-    const prevOpen = usePrevious(isOpen);
-    const sheetRef = React.useRef<any>(null);
-    const sheetDragY = useMotionValue(window.innerHeight);
-    const sheetSpringY = useSpring(sheetDragY, SPRING_CONFIG);
-    const dragY = useMotionValue(0);
     const [isDragging, setDragging] = React.useState(false);
-    const initialY =
-      snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0;
+    const sheetRef = React.useRef<any>(null);
+    const prevOpen = usePrevious(isOpen);
+    const sheetDragY = useMotionValue(window.innerHeight);
+    const sheetSpringY = useSpring(sheetDragY, { stiffness: 300, damping: 30, mass: 0.2 }); // prettier-ignore
+    const dragY = useMotionValue(0);
+    const rot = useMotionValue(0);
+    const i1Transform = useTransform(rot, r => `translateX(2px) rotate(${r}deg)`); // prettier-ignore
+    const i2Transform = useTransform(rot, r => `translateX(-2px) rotate(${-1 * r}deg)`); // prettier-ignore
+
+    const initialY = snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0; // prettier-ignore
+    const sheetY = isDragging ? sheetDragY : sheetSpringY;
+    const h = snapPoints ? snapPoints[0] : null;
+    const maxHeight = 'calc(100% - env(safe-area-inset-top) - 32px)';
+    const sheetHeight = h ? `min(${h}px, ${maxHeight})` : maxHeight;
 
     const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
+      // Update drag indicator rotation based on drag velocity
+      const velocity = sheetDragY.getVelocity();
+      if (velocity > 0) rot.set(10);
+      if (velocity < 0) rot.set(-10);
+
       // Make sure user cannot drag beyond the top of the sheet
       sheetDragY.set(Math.max(sheetDragY.get() + delta.y, 0));
     }, []);
@@ -86,6 +97,8 @@ const BottomSheet = React.forwardRef<any, Props>(
         if (snapTo >= contentHeight) onClose();
         setDragging(false);
       }
+
+      rot.set(0);
     }, []);
 
     React.useEffect(() => {
@@ -112,11 +125,15 @@ const BottomSheet = React.forwardRef<any, Props>(
     }));
 
     return (
-      <Wrapper isOpen={isOpen} {...rest}>
+      <div
+        {...rest}
+        style={{ ...styles.wrapper, pointerEvents: isOpen ? 'auto' : 'none' }}
+      >
         <AnimatePresence>
           {isOpen && (
-            <Backdrop
+            <motion.div
               key="backdrop"
+              style={styles.backdrop}
               className="bottom-sheet-backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -130,18 +147,17 @@ const BottomSheet = React.forwardRef<any, Props>(
            * in order to have the sheet animate properly between snap points
            */}
           {isOpen && (
-            <Sheet
+            <motion.div
               key="sheet"
               className="bottom-sheet-container"
               ref={sheetRef}
-              style={{ y: isDragging ? sheetDragY : sheetSpringY }}
+              style={{ ...styles.sheet, height: sheetHeight, y: sheetY }}
               initial={{ y: window.innerHeight }}
               animate={{ y: initialY, transition: { type: 'tween' } }}
               exit={{ y: window.innerHeight }}
-              h={snapPoints ? snapPoints[0] : null}
             >
-              <SheetDragHandler
-                style={{ y: dragY }}
+              <motion.div
+                style={{ ...styles.draggable, y: dragY }}
                 drag="y"
                 dragElastic={0}
                 dragConstraints={{ top: 0, bottom: 0 }}
@@ -150,16 +166,27 @@ const BottomSheet = React.forwardRef<any, Props>(
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
               >
-                {header || <SheetHeader className="bottom-sheet-header" />}
-              </SheetDragHandler>
+                {header || (
+                  <div style={styles.header} className="bottom-sheet-header">
+                    <motion.span
+                      className="bottom-sheet-drag-indicator"
+                      style={{ ...styles.indicator, transform: i1Transform }}
+                    />
+                    <motion.span
+                      className="bottom-sheet-drag-indicator"
+                      style={{ ...styles.indicator, transform: i2Transform }}
+                    />
+                  </div>
+                )}
+              </motion.div>
 
-              <SheetContent className="bottom-sheet-content">
+              <div style={styles.content} className="bottom-sheet-content">
                 {children}
-              </SheetContent>
-            </Sheet>
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
-      </Wrapper>
+      </div>
     );
   }
 );
@@ -194,76 +221,55 @@ export const BottomSheetPortal = React.forwardRef<any, Props>(
   }
 );
 
-const fit = css`
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-`;
+const fit: CSS.Properties = {
+  position: 'fixed',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+};
 
-const Wrapper = styled.div<{ isOpen: boolean }>`
-  ${fit}
-  z-index: 9999999;
-  overflow: hidden;
-  pointer-events: ${p => (p.isOpen ? 'auto' : 'none')};
-`;
-
-const Backdrop = styled(motion.div)`
-  ${fit}
-  background-color: rgba(51, 51, 51, 0.5);
-`;
-
-const maxHeight = `calc(100% - env(safe-area-inset-top) - 32px)`;
-
-const Sheet = styled(motion.div)<{ h: number | null }>`
-  position: absolute;
-  bottom: 0;
-  background-color: #fff;
-  border-top-right-radius: 8px;
-  border-top-left-radius: 8px;
-  box-shadow: 0px -2px 16px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: ${p => (p.h ? `min(${p.h}px, ${maxHeight})` : maxHeight)};
-
-  &::after {
-    content: '';
-    z-index: 1;
-    position: absolute;
-    bottom: calc(-1px * env(safe-area-inset-bottom));
-    left: 0;
-    right: 0;
-    height: env(safe-area-inset-bottom);
-    background-color: inherit;
-  }
-`;
-
-const SheetContent = styled.div`
-  flex: 1;
-  overflow: auto;
-  position: relative;
-`;
-
-const SheetHeader = styled.div`
-  height: 40px;
-  width: 100%;
-  position: relative;
-
-  &::before {
-    content: '';
-    width: 40px;
-    height: 5px;
-    border-radius: 99px;
-    background-color: #ddd;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-`;
-
-const SheetDragHandler = styled(motion.div)`
-  width: 100%;
-`;
+const styles: { [key: string]: CSS.Properties } = {
+  wrapper: {
+    ...fit,
+    zIndex: 9999999,
+    overflow: 'hidden',
+  },
+  backdrop: {
+    ...fit,
+    backgroundColor: 'rgba(51, 51, 51, 0.5)',
+  },
+  sheet: {
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: '#fff',
+    borderTopRightRadius: '8px',
+    borderTopLeftRadius: '8px',
+    boxShadow: '0px -2px 16px rgba(0, 0, 0, 0.3)',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
+  header: {
+    height: '40px',
+    width: '100%',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  indicator: {
+    width: '18px',
+    height: '4px',
+    borderRadius: '99px',
+    backgroundColor: '#ddd',
+  },
+  content: {
+    flex: 1,
+    overflow: 'auto',
+    position: 'relative',
+  },
+  draggable: {
+    width: '100%',
+  },
+};

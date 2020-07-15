@@ -18,9 +18,8 @@
     "prepare": "tsdx build"
   },
   "peerDependencies": {
-    "react": ">=16",
-    "styled-components": ">=4",
-    "framer-motion": "1.x || 2.x"
+    "framer-motion": "1.x || 2.x",
+    "react": ">=16"
   },
   "husky": {
     "hooks": {
@@ -40,6 +39,7 @@
     "@types/react": "16.9.35",
     "@types/react-dom": "16.9.8",
     "@types/styled-components": "5.1.0",
+    "csstype": "2.6.11",
     "framer-motion": "1.11.0",
     "husky": "4.2.5",
     "react": "16.13.1",
