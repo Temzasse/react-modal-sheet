@@ -8,7 +8,9 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "react-app-polyfill": "^1.0.0"
+    "framer-motion": "1.11.1",
+    "react-app-polyfill": "^1.0.0",
+    "react-icons": "3.10.0"
   },
   "alias": {
     "react": "../node_modules/react",

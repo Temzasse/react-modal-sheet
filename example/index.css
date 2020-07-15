@@ -7,6 +7,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
+  background-color: #000;
 }
 
 button,
@@ -19,14 +20,10 @@ textarea {
 }
 
 button {
-  padding: 6px 16px;
-  background-color: aliceblue;
-  color: mediumslateblue;
-  border: none;
-  font-weight: 500;
-  border-radius: 999px;
-  text-align: center;
-  margin: 8px 0px;
+ border: none;
+ background: none;
+ margin: 0;
+ padding: 0; 
 }
 
 * {
