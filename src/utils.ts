@@ -43,12 +43,16 @@ export function applyRootStyles(rootId: string) {
 
   scrollLock.enable();
 
-  $body.style.backgroundColor = '#000';
-  root.style.overflow = 'hidden';
-  root.style.willChange = 'transform';
-  root.style.transition = 'transform 200ms linear';
-  root.style.transform = 'translateY(env(safe-area-inset-top)) scale(0.95)';
-  root.style.borderRadius = '8px';
+  if (root) {
+    const h = window.innerHeight;
+    const scale = (h - 32) / h;
+    $body.style.backgroundColor = '#000';
+    root.style.overflow = 'hidden';
+    root.style.willChange = 'transform';
+    root.style.transition = 'transform 200ms linear';
+    root.style.transform = `translateY(env(safe-area-inset-top)) scale(${scale})`;
+    root.style.borderRadius = '8px';
+  }
 }
 
 export function cleanupRootStyles(rootId: string) {
@@ -62,11 +66,14 @@ export function cleanupRootStyles(rootId: string) {
     root.removeEventListener('transitionend', onTransitionEnd);
   }
 
-  // Start animating back
-  root.style.removeProperty('border-radius');
-  root.style.removeProperty('transform');
+  if (root) {
+    // Start animating back
+    root.style.removeProperty('border-radius');
+    root.style.removeProperty('transform');
 
-  // Remove temp properties after animation is finished
-  root.addEventListener('transitionend', onTransitionEnd);
+    // Remove temp properties after animation is finished
+    root.addEventListener('transitionend', onTransitionEnd);
+  }
+
   scrollLock.disable();
 }
