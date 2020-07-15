@@ -20,7 +20,7 @@
   "peerDependencies": {
     "react": ">=16",
     "styled-components": ">=4",
-    "framer-motion": "1.x"
+    "framer-motion": "1.x || 2.x"
   },
   "husky": {
     "hooks": {
