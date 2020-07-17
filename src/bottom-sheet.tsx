@@ -45,15 +45,20 @@ const BottomSheet = React.forwardRef<any, Props>(
     const [isDragging, setDragging] = React.useState(false);
     const sheetRef = React.useRef<any>(null);
     const prevOpen = usePrevious(isOpen);
+
+    // Drag motion values
     const sheetDragY = useMotionValue(window.innerHeight);
     const sheetSpringY = useSpring(sheetDragY, { stiffness: 300, damping: 30, mass: 0.2 }); // prettier-ignore
     const dragY = useMotionValue(0);
+    const sheetY = isDragging ? sheetDragY : sheetSpringY;
+
+    // Drag indicator rotation
     const rot = useMotionValue(0);
     const i1Transform = useTransform(rot, r => `translateX(2px) rotate(${r}deg)`); // prettier-ignore
     const i2Transform = useTransform(rot, r => `translateX(-2px) rotate(${-1 * r}deg)`); // prettier-ignore
 
+    // Sheet position and height values
     const initialY = snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0; // prettier-ignore
-    const sheetY = isDragging ? sheetDragY : sheetSpringY;
     const h = snapPoints ? snapPoints[0] : null;
     const maxHeight = 'calc(100% - env(safe-area-inset-top) - 32px)';
     const sheetHeight = h ? `min(${h}px, ${maxHeight})` : maxHeight;
@@ -69,8 +74,7 @@ const BottomSheet = React.forwardRef<any, Props>(
     }, []);
 
     const handleDragStart = React.useCallback(() => {
-      // Sync the drag value with the spring value so that dragging starts
-      // at the correct y position
+      // Sync the drag value with the spring value so that dragging start at the correct y position
       sheetDragY.set(sheetSpringY.get());
       setDragging(true);
     }, []);
@@ -80,6 +84,7 @@ const BottomSheet = React.forwardRef<any, Props>(
         // User flicked the sheet down
         onClose();
       } else {
+        // TODO: memoize content height calculation
         const sheetEl = sheetRef.current as HTMLDivElement;
         const contentHeight = sheetEl.getBoundingClientRect().height;
         const snapTo = snapPoints
@@ -98,9 +103,11 @@ const BottomSheet = React.forwardRef<any, Props>(
         setDragging(false);
       }
 
+      // Reset indicator rotation after dragging
       rot.set(0);
     }, []);
 
+    // Automatically apply the iOS modal effect to the body when sheet opens/closes
     React.useEffect(() => {
       if (!rootId) return;
 
@@ -114,6 +121,7 @@ const BottomSheet = React.forwardRef<any, Props>(
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
         if (snapPoints && snapPoints[snapIndex] !== undefined) {
+          // TODO: get memoized value
           const sheetEl = sheetRef.current as HTMLDivElement;
           const contentHeight = sheetEl.getBoundingClientRect().height;
           const snapTo = contentHeight - snapPoints[snapIndex];
@@ -133,8 +141,8 @@ const BottomSheet = React.forwardRef<any, Props>(
           {isOpen && (
             <motion.div
               key="backdrop"
-              style={styles.backdrop}
               className="bottom-sheet-backdrop"
+              style={styles.backdrop}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -167,7 +175,7 @@ const BottomSheet = React.forwardRef<any, Props>(
                 onDragEnd={handleDragEnd}
               >
                 {header || (
-                  <div style={styles.header} className="bottom-sheet-header">
+                  <div className="bottom-sheet-header" style={styles.header}>
                     <motion.span
                       className="bottom-sheet-drag-indicator"
                       style={{ ...styles.indicator, transform: i1Transform }}
@@ -180,7 +188,7 @@ const BottomSheet = React.forwardRef<any, Props>(
                 )}
               </motion.div>
 
-              <div style={styles.content} className="bottom-sheet-content">
+              <div className="bottom-sheet-content" style={styles.content}>
                 {children}
               </div>
             </motion.div>
@@ -196,6 +204,7 @@ export const BottomSheetPortal = React.forwardRef<any, Props>(
     const portalRef = React.useRef<any>(null);
     const [portalCreated, setPortalCreated] = React.useState(false);
 
+    // Automatically create portal root if it doesn't exist yet
     React.useEffect(() => {
       let el = document.getElementById('#bottom-sheet-portal');
 
@@ -211,15 +220,16 @@ export const BottomSheetPortal = React.forwardRef<any, Props>(
 
     if (!portalCreated) return null;
 
-    const bottomSheet = (
+    return ReactDOM.createPortal(
       <BottomSheet ref={ref} {...rest}>
         {children}
-      </BottomSheet>
+      </BottomSheet>,
+      portalRef.current
     );
-
-    return ReactDOM.createPortal(bottomSheet, portalRef.current);
   }
 );
+
+// Styles --------------------------------------------------------------------
 
 const fit: CSS.Properties = {
   position: 'fixed',
