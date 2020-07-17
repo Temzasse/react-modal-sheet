@@ -238,6 +238,7 @@ const styles: { [key: string]: CSS.Properties } = {
   backdrop: {
     ...fit,
     backgroundColor: 'rgba(51, 51, 51, 0.5)',
+    touchAction: 'none', // Disable iOS body scrolling
   },
   sheet: {
     position: 'absolute',
@@ -268,6 +269,7 @@ const styles: { [key: string]: CSS.Properties } = {
     flex: 1,
     overflow: 'auto',
     position: 'relative',
+    touchAction: 'none', // Disable iOS body scrolling
   },
   draggable: {
     width: '100%',

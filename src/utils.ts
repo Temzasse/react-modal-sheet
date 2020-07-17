@@ -18,30 +18,8 @@ export const getClosest = (nums: number[], goal: number) => {
 
 const $body = document.querySelector('body') as HTMLBodyElement;
 
-// Source: https://markus.oberlehner.net/blog/simple-solution-to-prevent-body-scrolling-on-ios/
-let scrollPosition = 0;
-
-const scrollLock = {
-  enable() {
-    scrollPosition = window.pageYOffset;
-    $body.style.overflow = 'hidden';
-    $body.style.position = 'fixed';
-    $body.style.top = `-${scrollPosition}px`;
-    $body.style.width = '100%';
-  },
-  disable() {
-    $body.style.removeProperty('overflow');
-    $body.style.removeProperty('position');
-    $body.style.removeProperty('top');
-    $body.style.removeProperty('width');
-    window.scrollTo(0, scrollPosition);
-  },
-};
-
 export function applyRootStyles(rootId: string) {
   const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
-
-  scrollLock.enable();
 
   if (root) {
     const h = window.innerHeight;
@@ -74,6 +52,4 @@ export function cleanupRootStyles(rootId: string) {
     // Remove temp properties after animation is finished
     root.addEventListener('transitionend', onTransitionEnd);
   }
-
-  scrollLock.disable();
 }

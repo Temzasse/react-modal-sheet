@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from './Uikit';
 import Simple from './Simple';
+import Scrollable from './Scrollable';
 import AppleMusic from './apple-music';
 
 const App = () => {
@@ -17,6 +18,9 @@ const App = () => {
           <Button onClick={() => setVisibleExample('simple')}>
             Show simple example
           </Button>
+          <Button onClick={() => setVisibleExample('scrollable')}>
+            Show scrollable example
+          </Button>
           <Button onClick={() => setVisibleExample('apple')}>
             Show Apple Music example
           </Button>
@@ -24,6 +28,7 @@ const App = () => {
       )}
 
       {visibleExample === 'simple' && <Simple />}
+      {visibleExample === 'scrollable' && <Scrollable />}
       {visibleExample === 'apple' && <AppleMusic />}
     </Wrapper>
   );
