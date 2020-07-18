@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "homepage": "https://temzasse.github.io/react-modal-sheet",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html"
+    "build": "rm -rf dist && parcel build index.html --public-url /react-modal-sheet/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "framer-motion": "1.11.1",
+    "framer-motion": "2.1.0",
     "react-app-polyfill": "^1.0.0",
     "react-icons": "3.10.0",
     "styled-components": "5.1.1"
@@ -21,6 +24,7 @@
   "devDependencies": {
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.8.4",
+    "gh-pages": "3.1.0",
     "parcel": "^1.12.3",
     "typescript": "^3.4.5"
   }

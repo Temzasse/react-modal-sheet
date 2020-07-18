@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { album } from './data';
-import { Sheet } from '../../..';
+import { Sheet } from '../../../src';
 import Album from './Album';
 import Player from './Player';
 
