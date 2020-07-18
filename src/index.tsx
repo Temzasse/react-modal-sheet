@@ -1,1 +1,2 @@
-export { SheetPortal as Sheet } from './sheet';
+import { SheetPortal } from './sheet';
+export default SheetPortal;

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import Sheet from '../../src';
 import { Button } from './Uikit';
-import { Sheet } from '../../src';
 
 const Scrollable = () => {
   const [isOpen, setOpen] = React.useState(false);

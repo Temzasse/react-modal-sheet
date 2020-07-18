@@ -26,6 +26,7 @@ type Props = {
   rootId?: string;
   snapPoints?: number[];
   initialSnap?: number; // index of snap points array
+  springConfig?: Parameters<typeof useSpring>[1];
 };
 
 const Sheet = React.forwardRef<any, Props>(
@@ -36,8 +37,9 @@ const Sheet = React.forwardRef<any, Props>(
       isOpen,
       onClose,
       snapPoints,
-      initialSnap,
+      initialSnap = 0,
       rootId,
+      springConfig = { stiffness: 300, damping: 30, mass: 0.2 },
       ...rest
     },
     ref
@@ -48,7 +50,7 @@ const Sheet = React.forwardRef<any, Props>(
 
     // Drag motion values
     const sheetDragY = useMotionValue(window.innerHeight);
-    const sheetSpringY = useSpring(sheetDragY, { stiffness: 300, damping: 30, mass: 0.2 }); // prettier-ignore
+    const sheetSpringY = useSpring(sheetDragY, springConfig);
     const dragY = useMotionValue(0);
     const sheetY = isDragging ? sheetDragY : sheetSpringY;
 
@@ -58,7 +60,7 @@ const Sheet = React.forwardRef<any, Props>(
     const i2Transform = useTransform(rot, r => `translateX(-2px) rotate(${-1 * r}deg)`); // prettier-ignore
 
     // Sheet position and height values
-    const initialY = snapPoints && initialSnap ? snapPoints[0] - snapPoints[initialSnap] : 0; // prettier-ignore
+    const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
     const h = snapPoints ? snapPoints[0] : null;
     const maxHeight = 'calc(100% - env(safe-area-inset-top) - 32px)';
     const sheetHeight = h ? `min(${h}px, ${maxHeight})` : maxHeight;
