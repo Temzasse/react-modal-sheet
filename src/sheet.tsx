@@ -234,6 +234,12 @@ export const SheetPortal = React.forwardRef<any, Props>(
   }
 );
 
+// Exposed types -------------------------------------------------------------
+
+export type SheetRef = {
+  snapTo: (index: number) => void;
+};
+
 // Styles --------------------------------------------------------------------
 
 const fit: CSS.Properties = {

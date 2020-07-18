@@ -1,14 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Sheet from '../../src';
+import Sheet, { SheetRef } from '../../src';
 import { Button } from './Uikit';
 
 const Simple = () => {
   const [isOpen, setOpen] = React.useState(false);
-  const ref = React.useRef<any>();
+  const ref = React.useRef<SheetRef>();
 
-  const snapTo = (point: number) => ref && ref.current.snapTo(point);
+  const snapTo = (point: number) => ref.current && ref.current.snapTo(point);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
