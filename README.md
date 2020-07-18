@@ -1,167 +1,216 @@
-# TSDX React User Guide
+<div align="center" >
+  <br/>
+  <br/>
+  <h1>🪐 React Modal Sheet</h1>
+  &middot;
+  <i>Buttery smooth bottom sheet component for your React app</i>
+  &middot;
+  <br/>
+  <br/>
+  <img alt="npm version" src="https://img.shields.io/npm/v/react-modal-sheet?style=for-the-badge">
+  <img alt="npm license" src="https://img.shields.io/npm/l/react-modal-sheet?style=for-the-badge">
+  <br/>
+  <br/>
+</div>
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+## Installation
 
-> This TSDX setup is meant for developing React components (not apps!) that can be published to NPM. If you’re looking to build an app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
-
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
-
-## Commands
-
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
-
-The recommended workflow is to run TSDX in one terminal:
-
-```bash
-npm start # or yarn start
+```sh
+npm install react-modal-sheet
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+or if you use `yarn`:
 
-Then run the example inside another:
-
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+```sh
+yarn add react-modal-sheet
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, [we use Parcel's aliasing](https://github.com/palmerhq/tsdx/pull/88/files).
+### Peer dependencies
 
-To do a one-off build, use `npm run build` or `yarn build`.
+The gestures and animations are handled by the excellent [Framer Motion](https://github.com/framer/motion) library so before you can start using this library you need to install `framer-motion`:
 
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is [set up for you](https://github.com/palmerhq/tsdx/pull/45/files) with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`. This runs the test watcher (Jest) in an interactive mode. By default, runs tests related to files changed since the last commit.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```shell
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+```sh
+npm install framer-motion
 ```
 
-#### React Testing Library
+In the future there might be alternative versions of this library that support eg. `react-spring` or other popular animation libraries.
 
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
+## Usage
 
-### Rollup
+```jsx
+import React from 'react';
+import Sheet from 'react-modal-sheet';
 
-TSDX uses [Rollup v1.x](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+function Example() {
+  const [isOpen, setOpen] = React.useState(false);
 
-### TypeScript
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open sheet</button>
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### Travis
-
-_to be completed_
-
-### Circle
-
-_to be completed_
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+      <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
+        {/* Sheet content goes here */}
+      </Sheet>
+    </>
+  );
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+## Props
 
-## Module Formats
+| Name           | Required | Default          | Description                                                                                       |
+| -------------- | -------- | ---------------- | ------------------------------------------------------------------------------------------------- |
+| `children`     | yes      |                  | React component as the children of the `Sheet`.                                                   |
+| `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                          |
+| `onClose`      | yes      |                  | Callback function that is called when the sheet is closed by the user.                            |
+| `header`       | no       |                  | React component that should be the header of the sheet (drag target).                             |
+| `snapPoints`   | no       |                  | Eg. `[600, 400, 0]` - the distance from the bottom of the screen in px. (TODO: support % values)  |
+| `initialSnap`  | no       | 0                | Initial snap point when sheet is opened (index from `snapPoints`).                                |
+| `rootId`       | no       |                  | The id of the div where the app is mounted, eg. "root". Enables iOS modal effect.                 |
+| `springConfig` | no       | `DEFAULT_SPRING` | Overrides the config for the [spring animation](https://www.framer.com/api/motion/types/#spring). |
 
-CJS, ESModules, and UMD module formats are supported.
+**`DEFAULT_SPRING`**
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Using the Playground
-
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+```js
+{
+  stiffness: 300,
+  damping: 30,
+  mass: 0.2,
+}
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**!
+## Methods
 
-## Deploying the Playground
+### `snapTo(index)`
 
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
+Imperative method that can be accessed via a ref for snapping to a snap point in given index.
 
-```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
+```tsx
+import React from 'react';
+import Sheet, { SheetRef } from 'react-modal-sheet';
+
+function Example() {
+  const [isOpen, setOpen] = React.useState(false);
+  const ref = React.useRef<SheetRef>();
+  const snapTo = (i: number) => ref.current && ref.current.snapTo(i);
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open sheet</button>
+
+      {/* Opens to 400 since initial index is 1 */}
+      <Sheet
+        isOpen={isOpen}
+        onClose={() => setOpen(false)}
+        snapPoints={[600, 400, 100, 0]}
+        initialSnap={1}
+      >
+        <div>
+          <button onClick={() => snapTo(0)}>Snap to index 0</button>
+          <button onClick={() => snapTo(1)}>Snap to index 1</button>
+          <button onClick={() => snapTo(2)}>Snap to index 2</button>
+          <button onClick={() => snapTo(3)}>Snap to index 3</button>
+        </div>
+      </Sheet>
+    </>
+  );
+}
 ```
 
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
+## Advanced usage
 
-```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
+### iOS Modal View effect
+
+By default when the sheet is opened it will render a translucent backdrop behind the sheet to create some separation between the sheet and the content behind it. In addition to the backdrop it's possible to apply a scaling effect to the main app element to highlight the modality of the presented content. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
+
+TODO: add GIF.
+
+To enable this effect you can provide the id of the root element where your application is mounted:
+
+```jsx
+function Example() {
+  return <Sheet rootId="root">{/* Sheet content goes here */}</Sheet>;
+}
 ```
 
-## Named Exports
+> ⚠️ **Limitations**: Since the effect is applied to the root element it will not work as desired if the HTML body element is scrolled down at all. One way to avoid this is to use something like `height: 100vh;` and `overflow: auto;` on the root element to make it fill the whole screen and be scrollable instead of the body element.
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+## Customization
 
-## Including Styles
+The default styles for the `Sheet` component somewhat follows the styles of the previously mentioned iOS Modal View. However, if these default styles are not to your liking it's easy to make changes to them: you can provide a custom header that is used as the drag target for the sheet or you can overide any style with CSS via the exposed class names.
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
+### Custom header
 
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
+Adding a custom header is a simple as providing a React component to the `header` prop:
 
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
+```jsx
+function Example() {
+  return (
+    <Sheet header={<CustomHeader />}>{/* Sheet content goes here */}</Sheet>
+  );
+}
 ```
 
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+### Custom styles
+
+You can add your own styles or override the default sheet styles via the exposed class names. Note that you might need to use `!important` for style overrides since the inner styles are applied as inline styles which have higher specificity.
+
+#### Vanilla CSS
+
+```css
+.react-modal-sheet-backdrop {
+  /* custom styles */
+}
+.react-modal-sheet-container {
+  /* custom styles */
+}
+.react-modal-sheet-header {
+  /* custom styles */
+}
+.react-modal-sheet-drag-indicator {
+  /* custom styles */
+}
+.react-modal-sheet-content {
+  /* custom styles */
+}
+```
+
+#### CSS-in-JS
+
+```jsx
+import React from 'react';
+import styled from 'styled-components';
+import Sheet from 'react-modal-sheeet';
+
+const CustomSheet = styled(Sheet)`
+  .react-modal-sheet-backdrop {
+    /* custom styles */
+  }
+  .react-modal-sheet-container {
+    /* custom styles */
+  }
+  .react-modal-sheet-header {
+    /* custom styles */
+  }
+  .react-modal-sheet-drag-indicator {
+    /* custom styles */
+  }
+  .react-modal-sheet-content {
+    /* custom styles */
+  }
+`;
+
+function Example() {
+  const [isOpen, setOpen] = React.useState(false);
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open sheet</button>
+
+      <CustomSheet isOpen={isOpen} onClose={() => setOpen(false)}>
+        {/* Sheet content goes here */}
+      </CustomSheet>
+    </>
+  );
+}
+```
