@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { album } from './data';
-import { BottomSheet } from '../../../dist';
+import { Sheet } from '../../..';
 import Album from './Album';
 import Player from './Player';
 
@@ -23,13 +23,9 @@ const IOSMusicPlayer = () => {
         onSongClick={setCurrentSong}
       />
 
-      <PlayerBottomSheet
-        isOpen={isPlayerOpen}
-        onClose={closePlayer}
-        rootId="root"
-      >
+      <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
         <Player album={album} song={currentSong} />
-      </PlayerBottomSheet>
+      </PlayerSheet>
     </Wrapper>
   );
 };
@@ -40,19 +36,19 @@ const Wrapper = styled.div`
   max-width: 680px;
 `;
 
-const PlayerBottomSheet = styled(BottomSheet)`
+const PlayerSheet = styled(Sheet)`
   margin: 0 auto;
   max-width: 680px;
 
-  .bottom-sheet-container {
+  .react-modal-sheet-container {
     background-color: #222 !important;
   }
 
-  .bottom-sheet-backdrop {
+  .react-modal-sheet-backdrop {
     background-color: rgba(0, 0, 0, 0.3) !important;
   }
 
-  .bottom-sheet-drag-indicator {
+  .react-modal-sheet-drag-indicator {
     background-color: #666 !important;
   }
 `;

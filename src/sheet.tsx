@@ -28,7 +28,7 @@ type Props = {
   initialSnap?: number; // index of snap points array
 };
 
-const BottomSheet = React.forwardRef<any, Props>(
+const Sheet = React.forwardRef<any, Props>(
   (
     {
       header,
@@ -141,7 +141,7 @@ const BottomSheet = React.forwardRef<any, Props>(
           {isOpen && (
             <motion.div
               key="backdrop"
-              className="bottom-sheet-backdrop"
+              className="react-modal-sheet-backdrop"
               style={styles.backdrop}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -157,7 +157,7 @@ const BottomSheet = React.forwardRef<any, Props>(
           {isOpen && (
             <motion.div
               key="sheet"
-              className="bottom-sheet-container"
+              className="react-modal-sheet-container"
               ref={sheetRef}
               style={{ ...styles.sheet, height: sheetHeight, y: sheetY }}
               initial={{ y: window.innerHeight }}
@@ -175,20 +175,23 @@ const BottomSheet = React.forwardRef<any, Props>(
                 onDragEnd={handleDragEnd}
               >
                 {header || (
-                  <div className="bottom-sheet-header" style={styles.header}>
+                  <div
+                    className="react-modal-sheet-header"
+                    style={styles.header}
+                  >
                     <motion.span
-                      className="bottom-sheet-drag-indicator"
+                      className="react-modal-sheet-drag-indicator"
                       style={{ ...styles.indicator, transform: i1Transform }}
                     />
                     <motion.span
-                      className="bottom-sheet-drag-indicator"
+                      className="react-modal-sheet-drag-indicator"
                       style={{ ...styles.indicator, transform: i2Transform }}
                     />
                   </div>
                 )}
               </motion.div>
 
-              <div className="bottom-sheet-content" style={styles.content}>
+              <div className="react-modal-sheet-content" style={styles.content}>
                 {children}
               </div>
             </motion.div>
@@ -199,18 +202,18 @@ const BottomSheet = React.forwardRef<any, Props>(
   }
 );
 
-export const BottomSheetPortal = React.forwardRef<any, Props>(
+export const SheetPortal = React.forwardRef<any, Props>(
   ({ children, ...rest }, ref) => {
     const portalRef = React.useRef<any>(null);
     const [portalCreated, setPortalCreated] = React.useState(false);
 
     // Automatically create portal root if it doesn't exist yet
     React.useEffect(() => {
-      let el = document.getElementById('#bottom-sheet-portal');
+      let el = document.getElementById('#react-modal-sheet-portal');
 
       if (!el) {
         el = document.createElement('div');
-        el.id = 'bottom-sheet-portal';
+        el.id = 'react-modal-sheet-portal';
         document.body.appendChild(el);
       }
 
@@ -221,9 +224,9 @@ export const BottomSheetPortal = React.forwardRef<any, Props>(
     if (!portalCreated) return null;
 
     return ReactDOM.createPortal(
-      <BottomSheet ref={ref} {...rest}>
+      <Sheet ref={ref} {...rest}>
         {children}
-      </BottomSheet>,
+      </Sheet>,
       portalRef.current
     );
   }

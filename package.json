@@ -32,9 +32,9 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "styled-bottom-sheet",
+  "name": "react-modal-sheet",
   "author": "Teemu Taskula",
-  "module": "dist/styled-bottom-sheet.esm.js",
+  "module": "dist/react-modal-sheet.esm.js",
   "devDependencies": {
     "@types/react": "16.9.35",
     "@types/react-dom": "16.9.8",

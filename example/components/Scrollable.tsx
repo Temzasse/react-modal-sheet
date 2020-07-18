@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from './Uikit';
-import { BottomSheet } from '../..';
+import { Sheet } from '../..';
 
 const Scrollable = () => {
   const [isOpen, setOpen] = React.useState(false);
@@ -14,7 +14,7 @@ const Scrollable = () => {
     <>
       <Button onClick={open}>Scrollable Bottom Sheet</Button>
 
-      <BottomSheet isOpen={isOpen} onClose={close}>
+      <Sheet isOpen={isOpen} onClose={close}>
         <SheetContent>
           {Array.from({ length: 50 })
             .fill(1)
@@ -22,7 +22,7 @@ const Scrollable = () => {
               <Box key={i}>{i}</Box>
             ))}
         </SheetContent>
-      </BottomSheet>
+      </Sheet>
     </>
   );
 };

@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from './Uikit';
-import { BottomSheet } from '../..';
+import { Sheet } from '../..';
 
 const Simple = () => {
   const [isOpen, setOpen] = React.useState(false);
@@ -16,7 +16,7 @@ const Simple = () => {
     <>
       <Button onClick={open}>Simple Bottom Sheet</Button>
 
-      <BottomSheet
+      <Sheet
         ref={ref}
         isOpen={isOpen}
         onClose={close}
@@ -24,7 +24,7 @@ const Simple = () => {
         initialSnap={1}
       >
         <SheetContent snapTo={snapTo} close={close} />
-      </BottomSheet>
+      </Sheet>
     </>
   );
 };
