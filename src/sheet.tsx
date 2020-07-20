@@ -62,7 +62,7 @@ const Sheet = React.forwardRef<any, Props>(
     // Sheet position and height values
     const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
     const h = snapPoints ? snapPoints[0] : null;
-    const maxHeight = 'calc(100% - env(safe-area-inset-top) - 32px)';
+    const maxHeight = 'calc(100% - env(safe-area-inset-top) - 34px)';
     const sheetHeight = h ? `min(${h}px, ${maxHeight})` : maxHeight;
 
     const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
@@ -86,7 +86,6 @@ const Sheet = React.forwardRef<any, Props>(
         // User flicked the sheet down
         onClose();
       } else {
-        // TODO: memoize content height calculation
         const sheetEl = sheetRef.current as HTMLDivElement;
         const contentHeight = sheetEl.getBoundingClientRect().height;
         const snapTo = snapPoints
@@ -112,7 +111,6 @@ const Sheet = React.forwardRef<any, Props>(
     // Automatically apply the iOS modal effect to the body when sheet opens/closes
     React.useEffect(() => {
       if (!rootId) return;
-
       if (!prevOpen && isOpen) {
         applyRootStyles(rootId);
       } else if (!isOpen && prevOpen) {
@@ -120,10 +118,16 @@ const Sheet = React.forwardRef<any, Props>(
       }
     }, [isOpen, prevOpen]);
 
+    // Make sure to cleanup modal styles on unmount
+    React.useEffect(() => {
+      return () => {
+        if (rootId && isOpen) cleanupRootStyles(rootId);
+      };
+    }, [isOpen]);
+
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
         if (snapPoints && snapPoints[snapIndex] !== undefined) {
-          // TODO: get memoized value
           const sheetEl = sheetRef.current as HTMLDivElement;
           const contentHeight = sheetEl.getBoundingClientRect().height;
           const snapTo = contentHeight - snapPoints[snapIndex];
@@ -211,7 +215,7 @@ export const SheetPortal = React.forwardRef<any, Props>(
 
     // Automatically create portal root if it doesn't exist yet
     React.useEffect(() => {
-      let el = document.getElementById('#react-modal-sheet-portal');
+      let el = document.getElementById('react-modal-sheet-portal');
 
       if (!el) {
         el = document.createElement('div');

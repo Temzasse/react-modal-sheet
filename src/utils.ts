@@ -23,14 +23,16 @@ export function applyRootStyles(rootId: string) {
   const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
 
   if (root) {
+    const p = 24;
     const h = window.innerHeight;
-    const scale = (h - 32) / h;
+    const s = (h - p) / h;
     $body.style.backgroundColor = '#000';
     root.style.overflow = 'hidden';
     root.style.willChange = 'transform';
     root.style.transition = 'transform 200ms linear';
-    root.style.transform = `translateY(env(safe-area-inset-top)) scale(${scale})`;
-    root.style.borderRadius = '8px';
+    root.style.transform = `translateY(calc(env(safe-area-inset-top) + ${p / 2}px)) scale(${s})`; // prettier-ignore
+    root.style.borderTopRightRadius = '10px';
+    root.style.borderTopLeftRadius = '10px';
 
     // Add highlighed overlay to emphasize the modality effect
     const highlight = document.createElement('div');
@@ -62,9 +64,10 @@ export function cleanupRootStyles(rootId: string) {
     root.removeChild(highlight);
   }
 
-  if (root) {
+  if (root && highlight) {
     // Start animating back
-    root.style.removeProperty('border-radius');
+    root.style.removeProperty('border-top-right-radius');
+    root.style.removeProperty('border-top-left-radius');
     root.style.removeProperty('transform');
     highlight.style.opacity = '0';
 
