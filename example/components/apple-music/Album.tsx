@@ -21,7 +21,7 @@ const Album = ({
 }) => {
   return (
     <Wrapper>
-      <Content bg={isPlayerOpen ? '#222' : '#111'}>
+      <Content>
         <Header>
           <ImageWrapper>
             <Image src={album.image} />
@@ -86,7 +86,7 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
-const Content = styled.div<{ bg: string }>`
+const Content = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;
@@ -96,7 +96,7 @@ const Content = styled.div<{ bg: string }>`
   padding-right: 16px;
   padding-top: max(16px, env(safe-area-inset-top));
   padding-bottom: 56px;
-  background-color: ${p => p.bg};
+  background-color: #111;
   transition: all 200ms ease-in-out;
 `;
 

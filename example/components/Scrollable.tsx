@@ -14,7 +14,7 @@ const Scrollable = () => {
     <>
       <Button onClick={open}>Scrollable Bottom Sheet</Button>
 
-      <Sheet isOpen={isOpen} onClose={close}>
+      <Sheet isOpen={isOpen} onClose={close} rootId="root">
         <SheetContent>
           {Array.from({ length: 50 })
             .fill(1)
