@@ -52,7 +52,7 @@ export function applyRootStyles(rootId: string) {
 }
 
 export function cleanupRootStyles(rootId: string) {
-  const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
+  const root = document.getElementById(rootId) as HTMLDivElement;
   const highlight = document.getElementById(highlightId) as HTMLDivElement;
 
   function onTransitionEnd() {
@@ -61,7 +61,7 @@ export function cleanupRootStyles(rootId: string) {
     root.style.removeProperty('transition');
     $body.style.removeProperty('background-color');
     root.removeEventListener('transitionend', onTransitionEnd);
-    root.removeChild(highlight);
+    highlight.parentNode?.removeChild(highlight);
   }
 
   if (root && highlight) {
