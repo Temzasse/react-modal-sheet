@@ -1,47 +1,49 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Routes, Route, Link } from 'react-router-dom';
 
-import { Button } from './Uikit';
 import Simple from './Simple';
 import Scrollable from './Scrollable';
 import AppleMusic from './apple-music';
+import SlackMessage from './slack-message';
 
 const App = () => {
-  const [visibleExample, setVisibleExample] = React.useState<string | null>(
-    null
-  );
-
   return (
-    <Wrapper bg={visibleExample === 'apple' ? '#000' : '#fff'}>
-      {visibleExample === null && (
-        <>
-          <Button onClick={() => setVisibleExample('simple')}>
-            Show simple example
-          </Button>
-          <Button onClick={() => setVisibleExample('scrollable')}>
-            Show scrollable example
-          </Button>
-          <Button onClick={() => setVisibleExample('apple')}>
-            Show Apple Music example
-          </Button>
-        </>
-      )}
-
-      {visibleExample === 'simple' && <Simple />}
-      {visibleExample === 'scrollable' && <Scrollable />}
-      {visibleExample === 'apple' && <AppleMusic />}
+    <Wrapper>
+      <Routes>
+        <Route path="/" element={<ExampleSelector />} />
+        <Route path="snap-points/*" element={<Simple />} />
+        <Route path="scrollable/*" element={<Scrollable />} />
+        <Route path="apple-music/*" element={<AppleMusic />} />
+        <Route path="slack-message/*" element={<SlackMessage />} />
+      </Routes>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div<{ bg: string }>`
+const ExampleSelector = () => {
+  return (
+    <ExampleLinks>
+      <Link to="snap-points">Snap points</Link>
+      <Link to="scrollable">Scrollable</Link>
+      <Link to="apple-music">Apple Music</Link>
+      <Link to="slack-message">Slack Message</Link>
+    </ExampleLinks>
+  );
+};
+
+const ExampleLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   min-height: -webkit-fill-available;
-  background-color: ${p => p.bg};
 
   & > button {
     margin: 16px 0px;

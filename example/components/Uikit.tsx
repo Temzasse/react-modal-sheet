@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 export const Button = styled.button`
   padding: 6px 16px;
@@ -9,4 +9,11 @@ export const Button = styled.button`
   border-radius: 999px;
   text-align: center;
   margin: 8px 0px;
+`;
+
+export const DarkMode = createGlobalStyle`
+  body {
+    background-color: #000;
+    color: #fff;
+  }
 `;

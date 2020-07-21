@@ -97,7 +97,6 @@ const Content = styled.div`
   padding-top: max(16px, env(safe-area-inset-top));
   padding-bottom: 56px;
   background-color: #111;
-  transition: all 200ms ease-in-out;
 `;
 
 const Header = styled.div`

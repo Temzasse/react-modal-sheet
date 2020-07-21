@@ -11,9 +11,13 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@react-aria/focus": "3.0.2",
     "framer-motion": "2.1.0",
+    "history": "5.0.0",
     "react-app-polyfill": "^1.0.0",
     "react-icons": "3.10.0",
+    "react-router": "6.0.0-beta.0",
+    "react-router-dom": "6.0.0-beta.0",
     "styled-components": "5.1.1"
   },
   "alias": {
