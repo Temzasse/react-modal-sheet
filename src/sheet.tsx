@@ -18,16 +18,23 @@ import {
   usePrevious,
 } from './utils';
 
+type EventCallbacks = {
+  onOpenStart?: () => void;
+  onOpenEnd?: () => void;
+  onCloseStart?: () => void;
+  onCloseEnd?: () => void;
+};
+
 type Props = {
   isOpen: boolean;
-  onClose: () => any;
   children: React.ReactNode;
+  onClose: () => void;
   header?: React.ReactNode;
   rootId?: string;
   snapPoints?: number[];
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
-};
+} & EventCallbacks;
 
 const Sheet = React.forwardRef<any, Props>(
   (
@@ -36,6 +43,10 @@ const Sheet = React.forwardRef<any, Props>(
       children,
       isOpen,
       onClose,
+      onOpenStart,
+      onOpenEnd,
+      onCloseStart,
+      onCloseEnd,
       snapPoints,
       initialSnap = 0,
       rootId,
@@ -46,7 +57,6 @@ const Sheet = React.forwardRef<any, Props>(
   ) => {
     const [isDragging, setDragging] = React.useState(false);
     const sheetRef = React.useRef<any>(null);
-    const prevOpen = usePrevious(isOpen);
 
     // Drag motion values
     const sheetDragY = useMotionValue(window.innerHeight);
@@ -108,23 +118,6 @@ const Sheet = React.forwardRef<any, Props>(
       rot.set(0);
     }, []);
 
-    // Automatically apply the iOS modal effect to the body when sheet opens/closes
-    React.useEffect(() => {
-      if (!rootId) return;
-      if (!prevOpen && isOpen) {
-        applyRootStyles(rootId);
-      } else if (!isOpen && prevOpen) {
-        cleanupRootStyles(rootId);
-      }
-    }, [isOpen, prevOpen]);
-
-    // Make sure to cleanup modal styles on unmount
-    React.useEffect(() => {
-      return () => {
-        if (rootId && isOpen) cleanupRootStyles(rootId);
-      };
-    }, [isOpen]);
-
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
         if (snapPoints && snapPoints[snapIndex] !== undefined) {
@@ -137,6 +130,15 @@ const Sheet = React.forwardRef<any, Props>(
         }
       },
     }));
+
+    const { handleAnimationComplete } = useEventCallbacks(isOpen, {
+      onOpenStart,
+      onOpenEnd,
+      onCloseStart,
+      onCloseEnd,
+    });
+
+    useModalEffect(isOpen, rootId);
 
     return (
       <div
@@ -169,6 +171,7 @@ const Sheet = React.forwardRef<any, Props>(
               initial={{ y: window.innerHeight }}
               animate={{ y: initialY, transition: { type: 'tween' } }}
               exit={{ y: window.innerHeight }}
+              onAnimationComplete={handleAnimationComplete}
             >
               <motion.div
                 style={{ ...styles.draggable, y: dragY }}
@@ -207,6 +210,62 @@ const Sheet = React.forwardRef<any, Props>(
     );
   }
 );
+
+const useModalEffect = (isOpen: boolean, rootId?: string) => {
+  const prevOpen = usePrevious(isOpen);
+
+  // Automatically apply the iOS modal effect to the body when sheet opens/closes
+  React.useEffect(() => {
+    if (!rootId) return;
+    if (!prevOpen && isOpen) {
+      applyRootStyles(rootId);
+    } else if (!isOpen && prevOpen) {
+      cleanupRootStyles(rootId);
+    }
+  }, [isOpen, prevOpen]);
+
+  // Make sure to cleanup modal styles on unmount
+  React.useEffect(() => {
+    return () => {
+      if (rootId && isOpen) cleanupRootStyles(rootId);
+    };
+  }, [isOpen]);
+};
+
+const useEventCallbacks = (isOpen: boolean, callbacks: EventCallbacks) => {
+  const prevOpen = usePrevious(isOpen);
+  const didOpen = React.useRef(false);
+  const callbacksRef = React.useRef(callbacks);
+
+  // Because of AnimatePrecence we don't have access to latest isOpen value
+  // so we need to read and write to a ref to determine if we are
+  // opening or closing the sheet
+  const handleAnimationComplete = React.useCallback(() => {
+    if (!didOpen.current) {
+      callbacksRef.current.onOpenEnd?.();
+      didOpen.current = true;
+    } else {
+      callbacksRef.current.onCloseEnd?.();
+      didOpen.current = false;
+    }
+  }, [isOpen, prevOpen]);
+
+  // Keep the callback fns up-to-date so that they can be accessed inside
+  // the effect without including them to the dependencies array
+  React.useEffect(() => {
+    callbacksRef.current = callbacks;
+  }, [callbacks]);
+
+  React.useEffect(() => {
+    if (!prevOpen && isOpen) {
+      callbacksRef.current.onOpenStart?.();
+    } else if (!isOpen && prevOpen) {
+      callbacksRef.current.onCloseStart?.();
+    }
+  }, [isOpen, prevOpen]);
+
+  return { handleAnimationComplete };
+};
 
 export const SheetPortal = React.forwardRef<any, Props>(
   ({ children, ...rest }, ref) => {
