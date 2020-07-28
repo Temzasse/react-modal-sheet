@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Routes, Route, Link } from 'react-router-dom';
 
+import { Screen, DarkMode } from './common';
 import Simple from './Simple';
 import Scrollable from './Scrollable';
 import AppleMusic from './apple-music';
@@ -9,15 +10,50 @@ import SlackMessage from './slack-message';
 
 const App = () => {
   return (
-    <Wrapper>
-      <Routes>
-        <Route path="/" element={<ExampleSelector />} />
-        <Route path="snap-points/*" element={<Simple />} />
-        <Route path="scrollable/*" element={<Scrollable />} />
-        <Route path="apple-music/*" element={<AppleMusic />} />
-        <Route path="slack-message/*" element={<SlackMessage />} />
-      </Routes>
-    </Wrapper>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Screen bg="light">
+            <ExampleSelector />
+          </Screen>
+        }
+      />
+      <Route
+        path="snap-points/*"
+        element={
+          <Screen bg="light">
+            <Simple />
+          </Screen>
+        }
+      />
+      <Route
+        path="scrollable/*"
+        element={
+          <Screen bg="light">
+            <Scrollable />
+          </Screen>
+        }
+      />
+      <Route
+        path="apple-music/*"
+        element={
+          <Screen bg="light">
+            <AppleMusic />
+            <DarkMode />
+          </Screen>
+        }
+      />
+      <Route
+        path="slack-message/*"
+        element={
+          <Screen bg="light">
+            <SlackMessage />
+            <DarkMode />
+          </Screen>
+        }
+      />
+    </Routes>
   );
 };
 
@@ -35,19 +71,6 @@ const ExampleSelector = () => {
 const ExampleLinks = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-
-  & > button {
-    margin: 16px 0px;
-  }
 `;
 
 export default App;

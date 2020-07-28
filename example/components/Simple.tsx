@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import Sheet, { SheetRef } from '../../src';
-import { Button } from './Uikit';
+import { Button } from './common';
 
 const Simple = () => {
   const [isOpen, setOpen] = React.useState(false);

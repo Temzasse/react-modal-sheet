@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
 
 import Sheet from '../../../src';
-import { DarkMode } from '../Uikit';
 import NewMessageHeader from './NewMessageHeader';
 import NewMessageContent from './NewMessageContent';
 
@@ -16,33 +15,29 @@ const SlackMessage = () => {
   const focusInput = () => inputRef.current?.focus();
 
   return (
-    <>
-      <Wrapper>
-        <Topbar>
-          <Logo />
-          <WorkspaceTitle>Workspace</WorkspaceTitle>
-          <SearchIcon size={20} />
-        </Topbar>
+    <Wrapper>
+      <Topbar>
+        <Logo />
+        <WorkspaceTitle>Workspace</WorkspaceTitle>
+        <SearchIcon size={20} />
+      </Topbar>
 
-        <Content>
-          <Fab onClick={open}>
-            <MessageIcon size={20} color="#fff" />
-          </Fab>
-        </Content>
+      <Content>
+        <Fab onClick={open}>
+          <MessageIcon size={20} color="#fff" />
+        </Fab>
+      </Content>
 
-        <MessageSheet
-          isOpen={isOpen}
-          onClose={close}
-          rootId="root"
-          header={<NewMessageHeader close={close} />}
-          onOpenEnd={focusInput}
-        >
-          <NewMessageContent inputRef={inputRef} />
-        </MessageSheet>
-      </Wrapper>
-
-      <DarkMode />
-    </>
+      <MessageSheet
+        isOpen={isOpen}
+        onClose={close}
+        rootId="root"
+        header={<NewMessageHeader close={close} />}
+        onOpenEnd={focusInput}
+      >
+        <NewMessageContent inputRef={inputRef} />
+      </MessageSheet>
+    </Wrapper>
   );
 };
 

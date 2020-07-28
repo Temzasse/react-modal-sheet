@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import Sheet from '../../src';
-import { Button } from './Uikit';
+import { Button } from './common';
 
 const Scrollable = () => {
   const [isOpen, setOpen] = React.useState(false);

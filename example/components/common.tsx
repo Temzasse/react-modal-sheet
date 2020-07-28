@@ -11,6 +11,20 @@ export const Button = styled.button`
   margin: 8px 0px;
 `;
 
+export const Screen = styled.div<{ bg: 'light' | 'dark' }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  background-color: ${p => (p.bg === 'dark' ? '#000' : '#fff')};
+
+  & > button {
+    margin: 16px 0px;
+  }
+`;
+
 export const DarkMode = createGlobalStyle`
   body {
     background-color: #000;

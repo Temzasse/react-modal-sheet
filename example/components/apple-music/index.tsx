@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import Sheet from '../../../src';
-import { DarkMode } from '../Uikit';
 import { album } from './data';
 import Album from './Album';
 import Player from './Player';
@@ -15,23 +14,19 @@ const IOSMusicPlayer = () => {
   const closePlayer = () => setPlayerOpen(false);
 
   return (
-    <>
-      <Wrapper>
-        <Album
-          album={album}
-          currentSong={currentSong}
-          isPlayerOpen={isPlayerOpen}
-          onMiniPlayerClick={openPlayer}
-          onSongClick={setCurrentSong}
-        />
+    <Wrapper>
+      <Album
+        album={album}
+        currentSong={currentSong}
+        isPlayerOpen={isPlayerOpen}
+        onMiniPlayerClick={openPlayer}
+        onSongClick={setCurrentSong}
+      />
 
-        <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
-          <Player album={album} song={currentSong} />
-        </PlayerSheet>
-      </Wrapper>
-
-      <DarkMode />
-    </>
+      <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
+        <Player album={album} song={currentSong} />
+      </PlayerSheet>
+    </Wrapper>
   );
 };
 
