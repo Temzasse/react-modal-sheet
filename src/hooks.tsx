@@ -13,14 +13,14 @@ export const useModalEffect = (isOpen: boolean, rootId?: string) => {
     } else if (rootId && !isOpen && prevOpen) {
       cleanupRootStyles(rootId);
     }
-  }, [isOpen, prevOpen]);
+  }, [isOpen, prevOpen]); // eslint-disable-line
 
   // Make sure to cleanup modal styles on unmount
   React.useEffect(() => {
     return () => {
       if (rootId && isOpen) cleanupRootStyles(rootId);
     };
-  }, [isOpen]);
+  }, [isOpen]); // eslint-disable-line
 };
 
 export const useEventCallbacks = (
@@ -41,7 +41,7 @@ export const useEventCallbacks = (
       callbacks.current.onCloseEnd?.();
       didOpen.current = false;
     }
-  }, [isOpen, prevOpen]);
+  }, [isOpen, prevOpen]); // eslint-disable-line
 
   React.useEffect(() => {
     if (!prevOpen && isOpen) {
@@ -49,7 +49,7 @@ export const useEventCallbacks = (
     } else if (!isOpen && prevOpen) {
       callbacks.current.onCloseStart?.();
     }
-  }, [isOpen, prevOpen]);
+  }, [isOpen, prevOpen]); // eslint-disable-line
 
   return { handleAnimationComplete };
 };

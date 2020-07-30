@@ -49,40 +49,43 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
       // Make sure user cannot drag beyond the top of the sheet
       sheetDragY.set(Math.max(sheetDragY.get() + delta.y, 0));
-    }, []);
+    }, []); // eslint-disable-line
 
     const handleDragStart = React.useCallback(() => {
       // Sync the drag value with the spring value so that dragging start at the correct y position
       sheetDragY.set(sheetSpringY.get());
       setDragging(true);
-    }, []);
+    }, []); // eslint-disable-line
 
-    const handleDragEnd = React.useCallback((_, { velocity }: PanInfo) => {
-      if (velocity.y > 500) {
-        // User flicked the sheet down
-        onClose();
-      } else {
-        const sheetEl = sheetRef.current as HTMLDivElement;
-        const contentHeight = sheetEl.getBoundingClientRect().height;
-        const snapTo = snapPoints
-          ? getClosest(
-              snapPoints.map(p => contentHeight - p),
-              sheetDragY.get()
-            )
-          : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
-          ? contentHeight
-          : 0;
+    const handleDragEnd = React.useCallback(
+      (_, { velocity }: PanInfo) => {
+        if (velocity.y > 500) {
+          // User flicked the sheet down
+          onClose();
+        } else {
+          const sheetEl = sheetRef.current as HTMLDivElement;
+          const contentHeight = sheetEl.getBoundingClientRect().height;
+          const snapTo = snapPoints
+            ? getClosest(
+                snapPoints.map(p => contentHeight - p),
+                sheetDragY.get()
+              )
+            : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
+            ? contentHeight
+            : 0;
 
-        // Update the spring value so that the sheet is animated to the snap point
-        sheetSpringY.set(snapTo);
+          // Update the spring value so that the sheet is animated to the snap point
+          sheetSpringY.set(snapTo);
 
-        if (snapTo >= contentHeight) onClose();
-        setDragging(false);
-      }
+          if (snapTo >= contentHeight) onClose();
+          setDragging(false);
+        }
 
-      // Reset indicator rotation after dragging
-      indicatorRotation.set(0);
-    }, []);
+        // Reset indicator rotation after dragging
+        indicatorRotation.set(0);
+      },
+      [onClose] // eslint-disable-line
+    );
 
     // Keep the callback fns up-to-date so that they can be accessed inside
     // the effect without including them to the dependencies array
