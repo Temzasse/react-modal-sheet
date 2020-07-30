@@ -36,6 +36,7 @@ export function applyRootStyles(rootId: string) {
 
     // Add highlighed overlay to emphasize the modality effect
     const highlight = document.createElement('div');
+    highlight.setAttribute('aria-hidden', 'true');
     highlight.id = highlightId;
     highlight.style.position = 'absolute';
     highlight.style.top = '0px';
