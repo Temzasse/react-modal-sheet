@@ -33,8 +33,6 @@ The gestures and animations are handled by the excellent [Framer Motion](https:/
 npm install framer-motion
 ```
 
-In the future there might be alternative versions of this library that support eg. `react-spring` or other popular animation libraries.
-
 ## Usage
 
 ```jsx
@@ -49,21 +47,31 @@ function Example() {
       <button onClick={() => setOpen(true)}>Open sheet</button>
 
       <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
-        {/* Sheet content goes here */}
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>{/* Your sheet content goes here */}</Sheet.Content>
+        </Sheet.Container>
+
+        <Sheet.Backdrop />
       </Sheet>
     </>
   );
 }
 ```
 
+The `Sheet` component follows the [Compound Component pattern](https://kentcdodds.com/blog/compound-components-with-react-hooks) in order to provide a flexible yet powerful API for creating highly customizable bottom sheet components.
+
+Since the final bottom sheet is composed from smaller building blocks (`Container`, `Content`, `Header`, and `Backdrop`) you are in total control over the rendering output. So for example, if you don't want to have any backdrop in your sheet then you can just skip rendering it instead of passing some prop like `renderBackdrop={false}` to the main sheet component. Cool huh? 😎
+
+Also, by constructing the sheet from smaller pieces makes it easier to apply any necessary accessibility related properties to the right components without requiring the main sheet component to be aware of them. You can read more about accessibility in the [Accessibility](#Accessibility) section.
+
 ## Props
 
 | Name           | Required | Default          | Description                                                                                       |
 | -------------- | -------- | ---------------- | ------------------------------------------------------------------------------------------------- |
-| `children`     | yes      |                  | React component as the children of the `Sheet`.                                                   |
+| `children`     | yes      |                  | Use `Sheet.Container|Content|Header|Backdrop` to compose your bottom sheet.                       |
 | `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                          |
 | `onClose`      | yes      |                  | Callback function that is called when the sheet is closed by the user.                            |
-| `header`       | no       |                  | React component that should be the header of the sheet (drag target).                             |
 | `snapPoints`   | no       |                  | Eg. `[600, 400, 0]` - the distance from the bottom of the screen in px. (TODO: support % values)  |
 | `initialSnap`  | no       | 0                | Initial snap point when sheet is opened (index from `snapPoints`).                                |
 | `rootId`       | no       |                  | The id of the div where the app is mounted, eg. "root". Enables iOS modal effect.                 |
@@ -92,7 +100,7 @@ import Sheet, { SheetRef } from 'react-modal-sheet';
 function Example() {
   const [isOpen, setOpen] = React.useState(false);
   const ref = React.useRef<SheetRef>();
-  const snapTo = (i: number) => ref.current && ref.current.snapTo(i);
+  const snapTo = (i: number) => ref.current?.snapTo(i);
 
   return (
     <>
@@ -105,17 +113,37 @@ function Example() {
         snapPoints={[600, 400, 100, 0]}
         initialSnap={1}
       >
-        <div>
-          <button onClick={() => snapTo(0)}>Snap to index 0</button>
-          <button onClick={() => snapTo(1)}>Snap to index 1</button>
-          <button onClick={() => snapTo(2)}>Snap to index 2</button>
-          <button onClick={() => snapTo(3)}>Snap to index 3</button>
-        </div>
+        <Sheet.Container>
+          <Sheet.Content>
+            <button onClick={() => snapTo(0)}>Snap to index 0</button>
+            <button onClick={() => snapTo(1)}>Snap to index 1</button>
+            <button onClick={() => snapTo(2)}>Snap to index 2</button>
+            <button onClick={() => snapTo(3)}>Snap to index 3</button>
+          </Sheet.Content>
+        </Sheet.Container>
       </Sheet>
     </>
   );
 }
 ```
+
+## Compound Components
+
+### `Sheet.Container`
+
+TODO
+
+### `Sheet.Content`
+
+TODO
+
+### `Sheet.Header`
+
+TODO
+
+### `Sheet.Backdrop`
+
+TODO
 
 ## Advanced usage
 
@@ -129,7 +157,7 @@ To enable this effect you can provide the id of the root element where your appl
 
 ```jsx
 function Example() {
-  return <Sheet rootId="root">{/* Sheet content goes here */}</Sheet>;
+  return <Sheet rootId="root">{/* Compose sheet here */}</Sheet>;
 }
 ```
 
@@ -141,12 +169,22 @@ The default styles for the `Sheet` component somewhat follows the styles of the 
 
 ### Custom header
 
-Adding a custom header is a simple as providing a React component to the `header` prop:
+Adding a custom header is as simple as providing your own header as the child component to `Sheet.Header`:
 
 ```jsx
 function Example() {
   return (
-    <Sheet header={<CustomHeader />}>{/* Sheet content goes here */}</Sheet>
+    <Sheet>
+      <Sheet.Container>
+        <Sheet.Header>
+          <YourCustomSheetHeader>
+        </Sheet.Header>
+
+        <Sheet.Content>{/*...*/}</Sheet.Content>
+      </Sheet.Container>
+
+      <Sheet.Backdrop />
+    </Sheet>
   );
 }
 ```
@@ -208,9 +246,92 @@ function Example() {
       <button onClick={() => setOpen(true)}>Open sheet</button>
 
       <CustomSheet isOpen={isOpen} onClose={() => setOpen(false)}>
-        {/* Sheet content goes here */}
+        <CustomSheet.Container>
+          <CustomSheet.Header />
+          <CustomSheet.Content>{/*...*/}</CustomSheet.Content>
+        </CustomSheet.Container>
+
+        <CustomSheet.Backdrop />
       </CustomSheet>
     </>
   );
 }
+```
+
+## Accessibility
+
+By default react-modal-sheet doesn't include any built-in accessibility properties in order to not make any assumptions and support a wide range of use cases. Also by not including 3rd party libraries for features like focus trapping or screen reader support allows you to utilize any accessibility libraries your project already uses, eg. [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html), which helps to reduce JS bloat by not including similar libraries multiple times in your app bundle.
+
+The example below utilizes React Aria to achieve an accessible modal like bottom sheet that can be closed via a button in a custom sheet header (built by following the [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation). If you want to see a working real world implementation you can take a look at the [Slack example](example/components/index.tsx) and try out the related [demo](https://temzasse.github.io/react-modal-sheet/#/slack-message) (optimized for mobile).
+
+```jsx
+import React from 'react';
+import Sheet from 'react-modal-sheet';
+import { useOverlayTriggerState } from '@react-stately/overlays';
+import { useOverlay, useModal, OverlayProvider } from '@react-aria/overlays';
+import { FocusScope } from '@react-aria/focus';
+import { useButton } from '@react-aria/button';
+import { useDialog } from '@react-aria/dialog';
+
+const A11yExample = () => {
+  const sheetState = useOverlayTriggerState({});
+  const openButtonRef = React.useRef(null);
+  const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
+
+  return (
+    <div>
+      <button {...openButton.buttonProps} ref={openButtonRef}>
+        Open sheet
+      </button>
+
+      <Sheet isOpen={sheetState.isOpen} onClose={sheetState.close}>
+        <OverlayProvider>
+          <FocusScope contain autoFocus restoreFocus>
+            <SheetComp sheetState={sheetState} />
+          </FocusScope>
+        </OverlayProvider>
+      </Sheet>
+    </div>
+  );
+};
+
+const SheetComp = ({ sheetState }) => {
+  const containerRef = React.useRef(null);
+  const dialog = useDialog({}, containerRef);
+  const overlay = useOverlay(
+    { onClose: sheetState.close, isOpen: true, isDismissable: true },
+    containerRef
+  );
+
+  const closeButtonRef = React.useRef(null);
+  const closeButton = useButton(
+    { onPress: sheetState.close, 'aria-label': 'Close sheet' },
+    closeButtonRef
+  );
+
+  useModal();
+
+  // In real world usage this would be a separate React component
+  const customHeader = (
+    <div>
+      <span {...dialog.titleProps}>Some title for sheet</span>
+      <button {...closeButton.buttonProps}>🅧</button>
+    </div>
+  );
+
+  return (
+    <>
+      <Sheet.Container
+        {...overlay.overlayProps}
+        {...dialog.dialogProps}
+        ref={containerRef}
+      >
+        <Sheet.Header>{customHeader}</Sheet.Header>
+        <Sheet.Content>{/*...*/}</Sheet.Content>
+      </Sheet.Container>
+
+      <Sheet.Backdrop />
+    </>
+  );
+};
 ```

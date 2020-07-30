@@ -42,7 +42,9 @@ const SlackMessage = () => {
         rootId="root"
       >
         <OverlayProvider>
-          <MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
+          <FocusScope contain autoFocus={false} restoreFocus>
+            <MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
+          </FocusScope>
         </OverlayProvider>
       </MessageSheet>
     </Wrapper>
@@ -62,12 +64,10 @@ const MessageSheetComp = ({
 
   useModal();
 
+  // HACK: some props from React Aria need to be cast to `any`
+  // since they conflict with the Framer Motion props
   return (
-    <FocusScope contain autoFocus={false} restoreFocus>
-      {/**
-       * HACK: some props from React Aria need to be cast to `any`
-       * since they conflict with the Framer Motion props
-       */}
+    <>
       <MessageSheet.Container
         {...overlay.overlayProps}
         {...(dialog.dialogProps as any)}
@@ -86,7 +86,7 @@ const MessageSheetComp = ({
       </MessageSheet.Container>
 
       <MessageSheet.Backdrop />
-    </FocusScope>
+    </>
   );
 };
 
