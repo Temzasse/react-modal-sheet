@@ -1,15 +1,3 @@
-import * as React from 'react';
-
-export const usePrevious = <T>(state: T): T | undefined => {
-  const ref = React.useRef<T>();
-
-  React.useEffect(() => {
-    ref.current = state;
-  });
-
-  return ref.current;
-};
-
 export const getClosest = (nums: number[], goal: number) => {
   return nums.reduce((prev, curr) => {
     return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
