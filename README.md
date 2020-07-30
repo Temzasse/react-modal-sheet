@@ -262,7 +262,7 @@ function Example() {
 
 By default react-modal-sheet doesn't include any built-in accessibility properties in order to not make any assumptions and support a wide range of use cases. Also by not including 3rd party libraries for features like focus trapping or screen reader support allows you to utilize any accessibility libraries your project already uses, eg. [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html), which helps to reduce JS bloat by not including similar libraries multiple times in your app bundle.
 
-The example below utilizes React Aria to achieve an accessible modal like bottom sheet that can be closed via a button in a custom sheet header (built by following the [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation). If you want to see a working real world implementation you can take a look at the [Slack example](example/components/index.tsx) and try out the related [demo](https://temzasse.github.io/react-modal-sheet/#/slack-message) (optimized for mobile).
+The example below utilizes React Aria to achieve an accessible modal like bottom sheet that can be closed via a button in a custom sheet header (built by following the [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation). If you want to see a working real world implementation you can take a look at the [Slack example](example/components/slack-message/index.tsx) and try out the related [demo](https://temzasse.github.io/react-modal-sheet/#/slack-message) (optimized for mobile).
 
 ```jsx
 import React from 'react';
