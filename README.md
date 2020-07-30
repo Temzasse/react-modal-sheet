@@ -177,7 +177,7 @@ function Example() {
     <Sheet>
       <Sheet.Container>
         <Sheet.Header>
-          <YourCustomSheetHeader>
+          <YourCustomSheetHeader />
         </Sheet.Header>
 
         <Sheet.Content>{/*...*/}</Sheet.Content>
