@@ -24,7 +24,15 @@ const IOSMusicPlayer = () => {
       />
 
       <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
-        <Player album={album} song={currentSong} />
+        <PlayerSheet.Container>
+          <PlayerSheet.Header />
+
+          <PlayerSheet.Content>
+            <Player album={album} song={currentSong} />
+          </PlayerSheet.Content>
+        </PlayerSheet.Container>
+
+        <PlayerSheet.Backdrop />
       </PlayerSheet>
     </Wrapper>
   );

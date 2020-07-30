@@ -1,14 +1,25 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FiX as CloseIcon } from 'react-icons/fi';
+import { useButton } from '@react-aria/button';
 
-const NewMessageHeader = ({ close }: { close: () => void }) => {
+const NewMessageHeader = ({
+  sheetState,
+  titleProps,
+}: {
+  sheetState: any;
+  titleProps: any;
+}) => {
+  const ref = React.useRef<HTMLButtonElement>(null);
+  const closeButton = useButton({ onPress: sheetState.close, 'aria-label': 'Close bottom sheet' }, ref); // prettier-ignore
+
   return (
     <Wrapper>
-      <CloseWrapper onClick={close}>
+      <CloseWrapper {...closeButton.buttonProps} ref={ref}>
         <CloseIcon size={24} color="#fff" />
       </CloseWrapper>
-      <Title>New Message</Title>
+
+      <Title {...titleProps}>New Message</Title>
     </Wrapper>
   );
 };

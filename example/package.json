@@ -8,10 +8,16 @@
     "start": "parcel index.html",
     "build": "rm -rf dist && parcel build index.html --experimental-scope-hoisting --public-url /react-modal-sheet/",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@react-aria/focus": "3.0.2",
+    "@react-aria/aria-modal-polyfill": "3.1.0",
+    "@react-aria/button": "3.1.0",
+    "@react-aria/dialog": "3.1.0",
+    "@react-aria/focus": "3.1.0",
+    "@react-aria/overlays": "3.1.0",
+    "@react-stately/overlays": "3.1.0",
     "framer-motion": "2.1.0",
     "history": "5.0.0",
     "react-app-polyfill": "^1.0.0",

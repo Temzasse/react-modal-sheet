@@ -8,7 +8,7 @@ const Simple = () => {
   const [isOpen, setOpen] = React.useState(false);
   const ref = React.useRef<SheetRef>();
 
-  const snapTo = (point: number) => ref.current && ref.current.snapTo(point);
+  const snapTo = (i: number) => ref.current?.snapTo(i);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
@@ -23,32 +23,25 @@ const Simple = () => {
         snapPoints={[600, 400, 100, 0]}
         initialSnap={1}
       >
-        <SheetContent snapTo={snapTo} close={close} />
+        <Sheet.Container>
+          <Sheet.Content>
+            <SheetContentWrapper>
+              <h2>Sheet with snap points ✨</h2>
+
+              <Controls>
+                <Button onClick={close}>Close</Button>
+                <Button onClick={() => snapTo(0)}>Snap to 600</Button>
+                <Button onClick={() => snapTo(1)}>Snap to 400</Button>
+                <Button onClick={() => snapTo(2)}>Snap to 100</Button>
+                <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
+              </Controls>
+            </SheetContentWrapper>
+          </Sheet.Content>
+        </Sheet.Container>
+
+        <Sheet.Backdrop onClick={close} />
       </Sheet>
     </>
-  );
-};
-
-const SheetContent = ({
-  close,
-  snapTo,
-}: {
-  close: () => void;
-  snapTo: (i: number) => void;
-}) => {
-  return (
-    <SheetContentWrapper>
-      <h2>Sheet</h2>
-      <p>This is the bottom sheet ✨</p>
-
-      <Controls>
-        <Button onClick={close}>Close</Button>
-        <Button onClick={() => snapTo(0)}>Snap to 600</Button>
-        <Button onClick={() => snapTo(1)}>Snap to 400</Button>
-        <Button onClick={() => snapTo(2)}>Snap to 100</Button>
-        <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
-      </Controls>
-    </SheetContentWrapper>
   );
 };
 
@@ -57,10 +50,10 @@ const SheetContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 16px;
-  padding-top: 0px;
 
   h2 {
-    margin: 0;
+    margin-top: 0;
+    text-align: center;
   }
 `;
 

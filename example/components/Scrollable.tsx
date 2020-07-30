@@ -15,19 +15,27 @@ const Scrollable = () => {
       <Button onClick={open}>Scrollable Bottom Sheet</Button>
 
       <Sheet isOpen={isOpen} onClose={close} rootId="root">
-        <SheetContent>
-          {Array.from({ length: 50 })
-            .fill(1)
-            .map((_, i) => (
-              <Box key={i}>{i}</Box>
-            ))}
-        </SheetContent>
+        <Sheet.Container>
+          <Sheet.Header />
+
+          <Sheet.Content>
+            <BoxList>
+              {Array.from({ length: 50 })
+                .fill(1)
+                .map((_, i) => (
+                  <Box key={i}>{i}</Box>
+                ))}
+            </BoxList>
+          </Sheet.Content>
+        </Sheet.Container>
+
+        <Sheet.Backdrop />
       </Sheet>
     </>
   );
 };
 
-const SheetContent = styled.div`
+const BoxList = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;

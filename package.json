@@ -48,5 +48,8 @@
     "tsdx": "0.13.2",
     "tslib": "2.0.0",
     "typescript": "3.9.2"
+  },
+  "dependencies": {
+    "react-merge-refs": "1.1.0"
   }
 }

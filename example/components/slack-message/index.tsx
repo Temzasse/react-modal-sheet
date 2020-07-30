@@ -1,43 +1,88 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
+import { useOverlayTriggerState } from '@react-stately/overlays';
+import { useOverlay, useModal, OverlayProvider } from '@react-aria/overlays';
+import { FocusScope } from '@react-aria/focus';
+import { useButton } from '@react-aria/button';
+import { useDialog } from '@react-aria/dialog';
 
 import Sheet from '../../../src';
 import NewMessageHeader from './NewMessageHeader';
 import NewMessageContent from './NewMessageContent';
 
-const SlackMessage = () => {
-  const [isOpen, setOpen] = React.useState(false);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+// A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
-  const open = () => setOpen(true);
-  const close = () => setOpen(false);
+const SlackMessage = () => {
+  const sheetState = useOverlayTriggerState({});
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const openButtonRef = React.useRef<HTMLButtonElement>(null);
+  const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
+
   const focusInput = () => inputRef.current?.focus();
 
   return (
     <Wrapper>
       <Topbar>
         <Logo />
-        <WorkspaceTitle>Workspace</WorkspaceTitle>
+        <WorkspaceTitle>A11y Workspace</WorkspaceTitle>
         <SearchIcon size={20} />
       </Topbar>
 
       <Content>
-        <Fab onClick={open}>
+        <Fab {...openButton.buttonProps} ref={openButtonRef}>
           <MessageIcon size={20} color="#fff" />
         </Fab>
       </Content>
 
       <MessageSheet
-        isOpen={isOpen}
-        onClose={close}
-        rootId="root"
-        header={<NewMessageHeader close={close} />}
+        isOpen={sheetState.isOpen}
         onOpenEnd={focusInput}
+        onClose={sheetState.close}
+        rootId="root"
       >
-        <NewMessageContent inputRef={inputRef} />
+        <OverlayProvider>
+          <MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
+        </OverlayProvider>
       </MessageSheet>
     </Wrapper>
+  );
+};
+
+const MessageSheetComp = ({
+  sheetState,
+  inputRef,
+}: {
+  sheetState: any;
+  inputRef: any;
+}) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const dialog = useDialog({}, ref);
+  const overlay = useOverlay({ onClose: sheetState.close, isOpen: true, isDismissable: true }, ref); // prettier-ignore
+
+  useModal();
+
+  return (
+    <FocusScope contain autoFocus={false} restoreFocus>
+      <MessageSheet.Container
+        {...overlay.overlayProps}
+        {...dialog.dialogProps}
+        ref={ref}
+      >
+        <MessageSheet.Header>
+          <NewMessageHeader
+            sheetState={sheetState}
+            titleProps={dialog.titleProps}
+          />
+        </MessageSheet.Header>
+
+        <MessageSheet.Content>
+          <NewMessageContent inputRef={inputRef} />
+        </MessageSheet.Content>
+      </MessageSheet.Container>
+
+      <MessageSheet.Backdrop />
+    </FocusScope>
   );
 };
 
