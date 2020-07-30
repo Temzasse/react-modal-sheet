@@ -15,6 +15,7 @@
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
+    "typecheck": "tsc --noEmit --skipLibCheck",
     "prepare": "tsdx build"
   },
   "peerDependencies": {

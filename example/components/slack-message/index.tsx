@@ -64,9 +64,13 @@ const MessageSheetComp = ({
 
   return (
     <FocusScope contain autoFocus={false} restoreFocus>
+      {/**
+       * HACK: some props from React Aria need to be cast to `any`
+       * since they conflict with the Framer Motion props
+       */}
       <MessageSheet.Container
         {...overlay.overlayProps}
-        {...dialog.dialogProps}
+        {...(dialog.dialogProps as any)}
         ref={ref}
       >
         <MessageSheet.Header>

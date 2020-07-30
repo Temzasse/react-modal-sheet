@@ -1,4 +1,9 @@
-import { DragHandlers, MotionValue, useSpring } from 'framer-motion';
+import {
+  DragHandlers,
+  MotionValue,
+  useSpring,
+  MotionProps,
+} from 'framer-motion';
 
 export type SheetEvents = {
   onOpenStart?: () => void;
@@ -16,6 +21,29 @@ export type SheetProps = {
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
 } & SheetEvents;
+
+export type SheetContainerProps = Omit<
+  MotionProps,
+  'initial' | 'animate' | 'exit' | 'onAnimationComplete'
+> & { children: React.ReactNode };
+
+export type SheetContentProps = React.HTMLAttributes<HTMLElement>;
+
+export type SheetHeaderProps = Omit<
+  MotionProps,
+  | 'drag'
+  | 'dragElastic'
+  | 'dragConstraints'
+  | 'dragMomentum'
+  | 'onDrag'
+  | 'onDragStart'
+  | 'onDragEnd'
+> & { children?: React.ReactNode };
+
+export type SheetBackdropProps = Omit<
+  MotionProps,
+  'initial' | 'animate' | 'exit'
+>;
 
 export type SheetContextType = {
   y: MotionValue<any>;

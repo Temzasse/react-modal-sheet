@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
 
-const Simple = () => {
+const SnapPoints = () => {
   const [isOpen, setOpen] = React.useState(false);
   const ref = React.useRef<SheetRef>();
 
@@ -14,7 +14,7 @@ const Simple = () => {
 
   return (
     <>
-      <Button onClick={open}>Simple Bottom Sheet</Button>
+      <Button onClick={open}>Bottom Sheet with Snap Points</Button>
 
       <Sheet
         ref={ref}
@@ -39,7 +39,7 @@ const Simple = () => {
           </Sheet.Content>
         </Sheet.Container>
 
-        <Sheet.Backdrop onClick={close} />
+        <Sheet.Backdrop onTap={close} />
       </Sheet>
     </>
   );
@@ -63,4 +63,4 @@ const Controls = styled.div`
   align-items: center;
 `;
 
-export default Simple;
+export default SnapPoints;

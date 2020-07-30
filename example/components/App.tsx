@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Routes, Route, Link } from 'react-router-dom';
 
 import { Screen, DarkMode } from './common';
-import Simple from './Simple';
+import SnapPoints from './SnapPoints';
 import Scrollable from './Scrollable';
 import AppleMusic from './apple-music';
 import SlackMessage from './slack-message';
@@ -23,7 +23,7 @@ const App = () => {
         path="snap-points/*"
         element={
           <Screen bg="light">
-            <Simple />
+            <SnapPoints />
           </Screen>
         }
       />

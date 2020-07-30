@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
+import { SheetHeaderProps } from './types';
 import { useSheetContext } from './context';
 import styles from './styles';
 
-const SheetHeader = React.forwardRef<any, any>(
+const SheetHeader = React.forwardRef<any, SheetHeaderProps>(
   ({ children, style = {}, ...rest }, ref) => {
     const {
       indicatorRotation,
@@ -27,6 +28,7 @@ const SheetHeader = React.forwardRef<any, any>(
 
     return (
       <motion.div
+        {...rest}
         ref={ref}
         style={{ ...styles.draggable, ...style, y: dragY }}
         drag="y"
@@ -36,7 +38,6 @@ const SheetHeader = React.forwardRef<any, any>(
         onDrag={handleDrag}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        {...rest}
       >
         {children || (
           <div className="react-modal-sheet-header" style={styles.header}>
