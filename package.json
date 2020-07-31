@@ -47,7 +47,7 @@
     "trailingComma": "es5"
   },
   "np": {
-    "yarn": false
+    "yarn": true
   },
   "devDependencies": {
     "@types/react": "16.9.35",
