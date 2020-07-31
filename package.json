@@ -1,7 +1,19 @@
 {
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "MIT",
+  "name": "react-modal-sheet",
+  "description": "Flexible bottom sheet component for your React apps",
+  "author": "Teemu Taskula",
+  "repository": "https://github.com/Temzasse/react-modal-sheet",
+  "keywords": [
+    "react",
+    "modal",
+    "bottom-sheet",
+    "accessibility",
+    "framer-motion"
+  ],
   "main": "dist/index.js",
+  "module": "dist/react-modal-sheet.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -16,7 +28,8 @@
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "typecheck": "tsc --noEmit --skipLibCheck",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "release": "np"
   },
   "peerDependencies": {
     "framer-motion": "1.x || 2.x",
@@ -33,9 +46,9 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "react-modal-sheet",
-  "author": "Teemu Taskula",
-  "module": "dist/react-modal-sheet.esm.js",
+  "np": {
+    "yarn": false
+  },
   "devDependencies": {
     "@types/react": "16.9.35",
     "@types/react-dom": "16.9.8",
