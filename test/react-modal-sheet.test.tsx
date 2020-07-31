@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Sheet } from '../src';
+import Sheet from '../src';
 
 // TODO: add tests
 
@@ -9,7 +9,11 @@ describe('it', () => {
     const div = document.createElement('div');
     ReactDOM.render(
       <Sheet isOpen onClose={() => {}}>
-        Mock sheet test
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>Content here...</Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop />
       </Sheet>,
       div
     );
