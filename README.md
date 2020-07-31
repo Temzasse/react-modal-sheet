@@ -137,25 +137,33 @@ function Example() {
 
 ### `Sheet.Container`
 
-TODO
+Sheet container is positioned above the sheet backdrop and by default adds a small shadow and rounded corners to the sheet. `Sheet.Content` and `Sheet.Header` should be rendered inside `Sheet.Container`.
+
+> 🖥 Rendered element: `motion.div`.
 
 ### `Sheet.Content`
 
-TODO
+Sheet content makes sure that content which doesn't fit inside the sheet becomes scrollable. It also prevents unnecessary body scrolling on iOS.
+
+> 🖥 Rendered element: `div`.
 
 ### `Sheet.Header`
 
-TODO
+Sheet header is the only draggable part of the sheet. On native apps bottom sheets usually support dragging from any part of the sheet but achieving this on the Web is very difficult or plain impossible when the content also needs to be scrollable. Rendering any children inside `Sheet.Header` replaces the default header.
+
+> 🖥 Rendered element: `motion.div`.
 
 ### `Sheet.Backdrop`
 
-TODO
+Sheet backdrop is a translucent overlay that helps to separate the sheet from it's background. By default the backdrop doesn't have any interaction attached to it but if you, for example, want to close the sheet when the backdrop is clicked you can provide click/tap handlers to it which will change the rendered element from `div` to `button`.
+
+> 🖥 Rendered element: `motion.div` or `motion.button`.
 
 ## Advanced usage
 
 ### iOS Modal View effect
 
-By default when the sheet is opened it will render a translucent backdrop behind the sheet to create some separation between the sheet and the content behind it. In addition to the backdrop it's possible to apply a scaling effect to the main app element to highlight the modality of the presented content. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
+In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to the main app element to highlight the modality of the bottom sheet. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
 
 TODO: add GIF.
 
@@ -163,11 +171,11 @@ To enable this effect you can provide the id of the root element where your appl
 
 ```jsx
 function Example() {
-  return <Sheet rootId="root">{/* Compose sheet here */}</Sheet>;
+  return <Sheet rootId="root">{/*...*/}</Sheet>;
 }
 ```
 
-> ⚠️ **Limitations**: Since the effect is applied to the root element it will not work as desired if the HTML body element is scrolled down at all. One way to avoid this is to use something like `height: 100vh;` and `overflow: auto;` on the root element to make it fill the whole screen and be scrollable instead of the body element.
+> ⚠️ **Limitations**: Since the effect is applied to the root element it will NOT work as desired if the HTML body element is scrolled down at all. One way to avoid this is to use something like `height: 100vh;` and `overflow: auto;` on the root element to make it fill the whole screen and be scrollable instead of the body element.
 
 ## Customization
 
