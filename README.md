@@ -3,7 +3,7 @@
   <br/>
   <h1>🪐 React Modal Sheet</h1>
   &middot;
-  <i>Buttery smooth bottom sheet component for your React app</i>
+  <i>Flexible bottom sheet component for your React apps</i>
   &middot;
   <br/>
   <br/>
@@ -260,9 +260,11 @@ function Example() {
 
 ## Accessibility
 
-By default react-modal-sheet doesn't include any built-in accessibility properties in order to not make any assumptions and support a wide range of use cases. Also by not including 3rd party libraries for features like focus trapping or screen reader support allows you to utilize any accessibility libraries your project already uses, eg. [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html), which helps to reduce JS bloat by not including similar libraries multiple times in your app bundle.
+By default, react-modal-sheet doesn't include any built-in accessibility properties in order to not make any assumptions and to support a wide range of use cases. Additionally, not including 3rd party libraries for features like focus trapping or screen reader support makes it possible to utilize any accessibility libraries that your project may already use, eg. [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html). This also helps to reduce JS bloat by not including similar libraries multiple times in your app bundle.
 
-The example below utilizes React Aria to achieve an accessible modal like bottom sheet that can be closed via a button in a custom sheet header (built by following the [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation). If you want to see a working real world implementation you can take a look at the [Slack example](example/components/slack-message/index.tsx) and try out the related [demo](https://temzasse.github.io/react-modal-sheet/#/slack-message) (optimized for mobile).
+The example below utilizes React Aria to achieve an accessible modal-like bottom sheet that can be closed via a button rendered inside a custom sheet header.
+
+> ℹ️ The example was built by following the React Aria's [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation.
 
 ```jsx
 import React from 'react';
@@ -329,9 +331,14 @@ const SheetComp = ({ sheetState }) => {
         <Sheet.Header>{customHeader}</Sheet.Header>
         <Sheet.Content>{/*...*/}</Sheet.Content>
       </Sheet.Container>
-
       <Sheet.Backdrop />
     </>
   );
 };
 ```
+
+If you want to see a more real-world-like implementation you can take a look at the [Slack example](example/components/slack-message/index.tsx) and try out the related [demo](https://temzasse.github.io/react-modal-sheet/#/slack-message) (optimized for mobile).
+
+### Building a reusable sheet
+
+In your projects it might make sense to build a reusable bottom sheet that has all the accessibility features included and can then be easily used in various places in the project. Take a look at the [A11ySheet example](example/components/a11y/A11ySheet.tsx) to get some insight on how to build such a component. By incorporating all the accessibility features inside your own reusable component you don't need to repeat them every time you want to use a bottom sheet in your app.

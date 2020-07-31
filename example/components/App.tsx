@@ -7,6 +7,7 @@ import SnapPoints from './SnapPoints';
 import Scrollable from './Scrollable';
 import AppleMusic from './apple-music';
 import SlackMessage from './slack-message';
+import A11y from './a11y';
 
 const App = () => {
   return (
@@ -53,6 +54,14 @@ const App = () => {
           </Screen>
         }
       />
+      <Route
+        path="a11y/*"
+        element={
+          <Screen bg="light">
+            <A11y />
+          </Screen>
+        }
+      />
     </Routes>
   );
 };
@@ -64,6 +73,7 @@ const ExampleSelector = () => {
       <Link to="scrollable">Scrollable</Link>
       <Link to="apple-music">Apple Music</Link>
       <Link to="slack-message">Slack Message</Link>
+      <Link to="a11y">Accessible Sheet</Link>
     </ExampleLinks>
   );
 };
