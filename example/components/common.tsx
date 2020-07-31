@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
+import { minFullHeight } from './styled.utils';
 
 export const Button = styled.button`
   padding: 6px 16px;
@@ -16,9 +17,8 @@ export const Screen = styled.div<{ bg: 'light' | 'dark' }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
   background-color: ${p => (p.bg === 'dark' ? '#000' : '#fff')};
+  ${minFullHeight}
 
   & > button {
     margin: 16px 0px;
