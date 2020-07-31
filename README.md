@@ -69,15 +69,21 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 
 | Name           | Required | Default          | Description                                                                                       |
 | -------------- | -------- | ---------------- | ------------------------------------------------------------------------------------------------- |
-| `children`     | yes      |                  | Use `Sheet.Container|Content|Header|Backdrop` to compose your bottom sheet.                       |
+| `children`     | yes      |                  | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                       |
 | `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                          |
-| `onClose`      | yes      |                  | Callback function that is called when the sheet is closed by the user.                            |
+| `onClose`      | yes      |                  | Callback fn that is called when the sheet is closed by the user.                                  |
+| `onOpenStart`  | no       |                  | Callback fn that is called when the sheet opening animation starts.                               |
+| `onOpenEnd`    | no       |                  | Callback fn that is called when the sheet opening animation is completed.                         |
+| `onCloseStart` | no       |                  | Callback fn that is called when the sheet closing animation starts.                               |
+| `onCloseEnd`   | no       |                  | Callback fn that is called when the sheet closing animation is completed.                         |
 | `snapPoints`   | no       |                  | Eg. `[600, 400, 0]` - the distance from the bottom of the screen in px. (TODO: support % values)  |
 | `initialSnap`  | no       | 0                | Initial snap point when sheet is opened (index from `snapPoints`).                                |
-| `rootId`       | no       |                  | The id of the div where the app is mounted, eg. "root". Enables iOS modal effect.                 |
+| `rootId`       | no       |                  | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.        |
 | `springConfig` | no       | `DEFAULT_SPRING` | Overrides the config for the [spring animation](https://www.framer.com/api/motion/types/#spring). |
 
 **`DEFAULT_SPRING`**
+
+Spring animation happens when the sheet is opened/closed or when it snaps to a snap point.
 
 ```js
 {
