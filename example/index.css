@@ -20,12 +20,26 @@ textarea {
 }
 
 button {
- border: none;
- background: none;
- margin: 0;
- padding: 0; 
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
 }
 
 * {
   box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
