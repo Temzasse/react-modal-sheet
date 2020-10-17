@@ -9,7 +9,7 @@ import {
 } from 'framer-motion';
 
 import { SheetProps } from './types';
-import { getClosest } from './utils';
+import { getClosest, isBrowser } from './utils';
 import { SheetContext } from './context';
 import { useModalEffect } from './hooks';
 import styles from './styles';
@@ -137,7 +137,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       </SheetContext.Provider>
     );
 
-    return ReactDOM.createPortal(comp, document.body);
+    return isBrowser ? ReactDOM.createPortal(comp, document.body) : null;
   }
 );
 
