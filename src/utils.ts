@@ -6,17 +6,17 @@ export const getClosest = (nums: number[], goal: number) => {
   });
 };
 
-const $body = document.querySelector('body') as HTMLBodyElement;
 const highlightId = 'react-modal-sheet-highlight';
 
 export function applyRootStyles(rootId: string) {
+  const body = document.querySelector('body') as HTMLBodyElement;
   const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
 
   if (root) {
     const p = 24;
     const h = window.innerHeight;
     const s = (h - p) / h;
-    $body.style.backgroundColor = '#000';
+    body.style.backgroundColor = '#000';
     root.style.overflow = 'hidden';
     root.style.willChange = 'transform';
     root.style.transition = 'transform 200ms linear';
@@ -43,6 +43,7 @@ export function applyRootStyles(rootId: string) {
 }
 
 export function cleanupRootStyles(rootId: string) {
+  const body = document.querySelector('body') as HTMLBodyElement;
   const root = document.getElementById(rootId) as HTMLDivElement;
   const highlight = document.getElementById(highlightId) as HTMLDivElement;
 
@@ -50,7 +51,7 @@ export function cleanupRootStyles(rootId: string) {
     root.style.removeProperty('overflow');
     root.style.removeProperty('will-change');
     root.style.removeProperty('transition');
-    $body.style.removeProperty('background-color');
+    body.style.removeProperty('background-color');
     root.removeEventListener('transitionend', onTransitionEnd);
     highlight.parentNode?.removeChild(highlight);
   }
