@@ -32,11 +32,12 @@ const Sheet = React.forwardRef<any, SheetProps>(
     },
     ref
   ) => {
+    const [mounted, setMounted] = React.useState(false);
     const [isDragging, setDragging] = React.useState(false);
     const sheetRef = React.useRef<any>(null);
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
-    const sheetDragY = useMotionValue(window.innerHeight);
+    const sheetDragY = useMotionValue(isBrowser ? window.innerHeight : 0);
     const sheetSpringY = useSpring(sheetDragY, springConfig);
     const y = isDragging ? sheetDragY : sheetSpringY;
     const pointerEvents = isOpen ? 'auto' : 'none';
@@ -93,6 +94,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
       callbacks.current = { onOpenStart, onOpenEnd, onCloseStart, onCloseEnd };
     });
 
+    React.useEffect(() => {
+      setMounted(true);
+    }, []);
+
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
         if (snapPoints && snapPoints[snapIndex] !== undefined) {
@@ -122,22 +127,36 @@ const Sheet = React.forwardRef<any, SheetProps>(
       callbacks,
     };
 
-    const comp = (
-      <SheetContext.Provider value={context}>
-        <div {...rest} ref={ref} style={{ ...styles.wrapper, pointerEvents }}>
-          <AnimatePresence>
-            {/* NOTE: AnimatePresence requires us to set keys to children */}
-            {isOpen
-              ? React.Children.map(children, (child: any, i) =>
-                  React.cloneElement(child, { key: `sheet-child-${i}` })
-                )
-              : null}
-          </AnimatePresence>
-        </div>
-      </SheetContext.Provider>
-    );
+    const wrapperProps = {
+      ...rest,
+      ref,
+      style: {
+        ...styles.wrapper,
+        pointerEvents,
+      } as any,
+    };
 
-    return isBrowser ? ReactDOM.createPortal(comp, document.body) : null;
+    return mounted ? (
+      ReactDOM.createPortal(
+        <SheetContext.Provider value={context}>
+          <div {...wrapperProps}>
+            <AnimatePresence>
+              {/* NOTE: AnimatePresence requires us to set keys to children */}
+              {isOpen
+                ? React.Children.map(children, (child: any, i) =>
+                    React.cloneElement(child, { key: `sheet-child-${i}` })
+                  )
+                : null}
+            </AnimatePresence>
+          </div>
+        </SheetContext.Provider>,
+        document.body
+      )
+    ) : (
+      // NOTE: return the wrapper div so that SSR frameworks don't get confused
+      // with the HTML structure ("Expected server HTML to contain a matching <div>...")
+      <div {...wrapperProps} />
+    );
   }
 );
 
