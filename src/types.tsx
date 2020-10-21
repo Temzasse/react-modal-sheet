@@ -15,6 +15,7 @@ export type SheetEvents = {
 export type SheetProps = {
   isOpen: boolean;
   children: React.ReactNode;
+  doc?: Document;
   onClose: () => void;
   rootId?: string;
   snapPoints?: number[];

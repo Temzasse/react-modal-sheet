@@ -18,6 +18,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
   (
     {
       children,
+      doc = document,
       isOpen,
       onClose,
       onOpenStart,
@@ -150,7 +151,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
             </AnimatePresence>
           </div>
         </SheetContext.Provider>,
-        document.body
+        doc.body
       )
     ) : (
       // NOTE: return the wrapper div so that SSR frameworks don't get confused
