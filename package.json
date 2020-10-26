@@ -32,7 +32,7 @@
     "release": "np"
   },
   "peerDependencies": {
-    "framer-motion": "1.x || 2.x",
+    "framer-motion": "2.x",
     "react": ">=16"
   },
   "husky": {
@@ -54,7 +54,7 @@
     "@types/react-dom": "16.9.8",
     "@types/styled-components": "5.1.0",
     "csstype": "2.6.11",
-    "framer-motion": "1.11.0",
+    "framer-motion": "2.9.4",
     "husky": "4.2.5",
     "react": "16.13.1",
     "react-dom": "16.13.1",
