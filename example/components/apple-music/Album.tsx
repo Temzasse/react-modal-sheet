@@ -65,7 +65,7 @@ const Album = ({
           <MiniPlayerButton
             onClick={onMiniPlayerClick}
             initial={{ translateY: '100%' }}
-            animate={{ translateY: 0 }}
+            animate={{ translateY: '0px' }}
             transition={{ duration: 0.4 }}
           >
             <MiniImage src={album.image} />

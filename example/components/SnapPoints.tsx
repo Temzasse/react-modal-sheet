@@ -26,14 +26,23 @@ const SnapPoints = () => {
         <Sheet.Container>
           <Sheet.Content>
             <SheetContentWrapper>
-              <h2>Sheet with snap points ✨</h2>
-
               <Controls>
-                <Button onClick={close}>Close</Button>
-                <Button onClick={() => snapTo(0)}>Snap to 600</Button>
-                <Button onClick={() => snapTo(1)}>Snap to 400</Button>
-                <Button onClick={() => snapTo(2)}>Snap to 100</Button>
-                <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
+                <Button onClick={() => snapTo(0)}>
+                  Snap to
+                  <br /> 600
+                </Button>
+                <Button onClick={() => snapTo(1)}>
+                  Snap to
+                  <br /> 400
+                </Button>
+                <Button onClick={() => snapTo(2)}>
+                  Snap to
+                  <br /> 100
+                </Button>
+                <Button onClick={() => snapTo(3)}>
+                  Snap to
+                  <br /> 0 (close)
+                </Button>
               </Controls>
             </SheetContentWrapper>
           </Sheet.Content>
@@ -50,16 +59,11 @@ const SheetContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 16px;
-
-  h2 {
-    margin-top: 0;
-    text-align: center;
-  }
 `;
 
 const Controls = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
 `;
 
