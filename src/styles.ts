@@ -33,6 +33,9 @@ const styles: { [key: string]: CSS.Properties } = {
     display: 'flex',
     flexDirection: 'column',
   },
+  headerWrapper: {
+    width: '100%',
+  },
   header: {
     height: '40px',
     width: '100%',
@@ -51,10 +54,6 @@ const styles: { [key: string]: CSS.Properties } = {
     flex: 1,
     overflow: 'auto',
     position: 'relative',
-    touchAction: 'none', // Disable iOS body scrolling
-  },
-  draggable: {
-    width: '100%',
   },
 };
 

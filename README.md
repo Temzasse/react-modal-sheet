@@ -147,13 +147,13 @@ Sheet container is positioned above the sheet backdrop and by default adds a sma
 
 ### `Sheet.Content`
 
-Sheet content makes sure that content which doesn't fit inside the sheet becomes scrollable. It also prevents unnecessary body scrolling on iOS.
+Sheet content acts as a drag target and makes sure that content which doesn't fit inside the sheet becomes scrollable.
 
-> 🖥 Rendered element: `div`.
+> 🖥 Rendered element: `motion.div`.
 
 ### `Sheet.Header`
 
-Sheet header is the only draggable part of the sheet. On native apps bottom sheets usually support dragging from any part of the sheet but achieving this on the Web is very difficult or plain impossible when the content also needs to be scrollable. Rendering any children inside `Sheet.Header` replaces the default header.
+Sheet header acts as a drag target and has a dragging direction indicator. Rendering any children inside `Sheet.Header` replaces the default header.
 
 > 🖥 Rendered element: `motion.div`.
 
@@ -169,7 +169,9 @@ Sheet backdrop is a translucent overlay that helps to separate the sheet from it
 
 In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to the main app element to highlight the modality of the bottom sheet. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
 
-TODO: add GIF.
+| ![](media/3.gif) | ![](media/4.gif) |
+| :--------------: | :--------------: |
+
 
 To enable this effect you can provide the id of the root element where your application is mounted:
 
@@ -183,7 +185,7 @@ function Example() {
 
 ## Customization
 
-The default styles for the `Sheet` component somewhat follows the styles of the previously mentioned iOS Modal View. However, if these default styles are not to your liking it's easy to make changes to them: you can provide a custom header that is used as the drag target for the sheet or you can overide any style with CSS via the exposed class names.
+The default styles for the `Sheet` component somewhat follows the styles of the previously mentioned iOS Modal View. However, if these default styles are not to your liking it's easy to make changes to them: you can provide a custom header or you can overwrite any style with CSS via the exposed class names.
 
 ### Custom header
 

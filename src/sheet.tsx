@@ -113,6 +113,16 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     useModalEffect(isOpen, rootId);
 
+    const dragProps = {
+      drag: 'y' as const,
+      dragElastic: 0,
+      dragConstraints: { top: 0, bottom: 0 },
+      dragMomentum: false,
+      onDrag: handleDrag,
+      onDragStart: handleDragStart,
+      onDragEnd: handleDragEnd,
+    };
+
     const context = {
       y,
       sheetRef,
@@ -120,11 +130,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
       isDragging,
       initialSnap,
       snapPoints,
-      handleDrag,
-      handleDragStart,
-      handleDragEnd,
       indicatorRotation,
       callbacks,
+      dragProps,
     };
 
     const wrapperProps = {

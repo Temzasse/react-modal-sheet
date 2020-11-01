@@ -42,13 +42,13 @@ const Player = ({ song, album }: { song: string; album: AlbumType }) => {
         </Track>
 
         <Controls>
-          <Control>
+          <Control onClick={() => console.log('Prev song')}>
             <FaBackward size={32} />
           </Control>
-          <Control>
+          <Control onClick={() => console.log('Play / Pause')}>
             <FaPlay size={32} />
           </Control>
-          <Control>
+          <Control onClick={() => console.log('Next song')}>
             <FaForward size={32} />
           </Control>
         </Controls>

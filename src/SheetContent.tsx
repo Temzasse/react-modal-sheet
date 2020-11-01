@@ -1,19 +1,24 @@
 import * as React from 'react';
+import { motion } from 'framer-motion';
 
-import { SheetContentProps } from './types';
+import { SheetDraggableProps } from './types';
 import styles from './styles';
+import { useSheetContext } from './context';
 
-const SheetContent = React.forwardRef<any, SheetContentProps>(
+const SheetContent = React.forwardRef<any, SheetDraggableProps>(
   ({ children, style = {}, ...rest }, ref) => {
+    const { dragProps } = useSheetContext();
+
     return (
-      <div
+      <motion.div
         {...rest}
         ref={ref}
         className="react-modal-sheet-content"
         style={{ ...styles.content, ...style }}
+        {...dragProps}
       >
         {children}
-      </div>
+      </motion.div>
     );
   }
 );

@@ -27,9 +27,7 @@ export type SheetContainerProps = Omit<
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
 > & { children: React.ReactNode };
 
-export type SheetContentProps = React.HTMLAttributes<HTMLElement>;
-
-export type SheetHeaderProps = Omit<
+export type SheetDraggableProps = Omit<
   MotionProps,
   | 'drag'
   | 'dragElastic'
@@ -45,6 +43,16 @@ export type SheetBackdropProps = Omit<
   'initial' | 'animate' | 'exit'
 >;
 
+export type SheetDragProps = {
+  drag: 'y';
+  dragElastic: number;
+  dragConstraints: any;
+  dragMomentum: boolean;
+  onDrag: DragHandlers['onDrag'];
+  onDragStart: DragHandlers['onDragStart'];
+  onDragEnd: DragHandlers['onDragEnd'];
+};
+
 export type SheetContextType = {
   y: MotionValue<any>;
   sheetRef: React.MutableRefObject<any>;
@@ -52,9 +60,7 @@ export type SheetContextType = {
   isOpen: boolean;
   snapPoints: SheetProps['snapPoints'];
   initialSnap: SheetProps['initialSnap'];
-  handleDrag: DragHandlers['onDrag'];
-  handleDragStart: DragHandlers['onDragStart'];
-  handleDragEnd: DragHandlers['onDragEnd'];
   indicatorRotation: MotionValue<number>;
   callbacks: React.MutableRefObject<SheetEvents>;
+  dragProps: SheetDragProps;
 };
