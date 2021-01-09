@@ -10,6 +10,7 @@ export type SheetEvents = {
   onOpenEnd?: () => void;
   onCloseStart?: () => void;
   onCloseEnd?: () => void;
+  onSnap?: (index: number) => void;
 };
 
 export type SheetProps = {

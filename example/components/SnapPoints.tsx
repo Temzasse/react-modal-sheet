@@ -4,13 +4,22 @@ import styled from 'styled-components';
 import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
 
+const snapPoints = [600, 400, 100, 0];
+const startSnapPoint = snapPoints[snapPoints.length - 1];
+const initialSnap = 1; // Initial snap point when sheet is opened
+
 const SnapPoints = () => {
-  const [isOpen, setOpen] = React.useState(false);
   const ref = React.useRef<SheetRef>();
+  const [isOpen, setOpen] = React.useState(false);
+  const [snapPoint, setSnapPoint] = React.useState(startSnapPoint);
 
   const snapTo = (i: number) => ref.current?.snapTo(i);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
+
+  React.useEffect(() => {
+    console.log('> Current snap point', snapPoint);
+  }, [snapPoint]);
 
   return (
     <>
@@ -20,8 +29,9 @@ const SnapPoints = () => {
         ref={ref}
         isOpen={isOpen}
         onClose={close}
-        snapPoints={[600, 400, 100, 0]}
-        initialSnap={1}
+        onSnap={setSnapPoint}
+        snapPoints={snapPoints}
+        initialSnap={initialSnap}
       >
         <Sheet.Container>
           <Sheet.Content>

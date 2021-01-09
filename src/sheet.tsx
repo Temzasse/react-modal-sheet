@@ -24,6 +24,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       onOpenEnd,
       onCloseStart,
       onCloseEnd,
+      onSnap,
       snapPoints,
       initialSnap = 0,
       rootId,
@@ -78,14 +79,21 @@ const Sheet = React.forwardRef<any, SheetProps>(
           // Update the spring value so that the sheet is animated to the snap point
           sheetSpringY.set(snapTo);
 
+          if (snapPoints && onSnap) {
+            const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
+            const snapIndex = snapPoints.indexOf(snapValue);
+            onSnap(snapIndex);
+          }
+
           if (snapTo >= contentHeight) onClose();
+
           setDragging(false);
         }
 
         // Reset indicator rotation after dragging
         indicatorRotation.set(0);
       },
-      [onClose] // eslint-disable-line
+      [onClose, onSnap] // eslint-disable-line
     );
 
     // Keep the callback fns up-to-date so that they can be accessed inside
@@ -98,6 +106,13 @@ const Sheet = React.forwardRef<any, SheetProps>(
       setMounted(true);
     }, []);
 
+    // Trigger onSnap callback when sheet is opened or closed
+    React.useEffect(() => {
+      if (!snapPoints || !onSnap || !mounted) return;
+      const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
+      onSnap(snapIndex);
+    }, [isOpen]);
+
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
         if (snapPoints && snapPoints[snapIndex] !== undefined) {
@@ -106,6 +121,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
           const snapTo = contentHeight - snapPoints[snapIndex];
 
           sheetSpringY.set(snapTo);
+          if (onSnap) onSnap(snapIndex);
           if (snapTo >= contentHeight) onClose();
         }
       },
