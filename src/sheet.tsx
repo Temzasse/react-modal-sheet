@@ -1,18 +1,16 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
 import {
-  useSpring,
-  useMotionValue,
   AnimatePresence,
   PanInfo,
+  useMotionValue,
+  useSpring,
 } from 'framer-motion';
-
-import { SheetProps } from './types';
-import { getClosest, isBrowser } from './utils';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { SheetContext } from './context';
 import { useModalEffect } from './hooks';
 import styles from './styles';
+import { SheetProps } from './types';
+import { getClosest, isBrowser } from './utils';
 
 const Sheet = React.forwardRef<any, SheetProps>(
   (
@@ -128,6 +126,14 @@ const Sheet = React.forwardRef<any, SheetProps>(
     }));
 
     useModalEffect(isOpen, rootId);
+
+    React.useEffect(() => {
+      if (isOpen) {
+        document.querySelector('body').style.overflow = 'hidden';
+      } else {
+        document.querySelector('body').style.removeProperty('overflow');
+      }
+    }, [isOpen]);
 
     const dragProps = {
       drag: 'y' as const,
