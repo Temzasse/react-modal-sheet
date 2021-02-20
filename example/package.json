@@ -13,18 +13,19 @@
   },
   "dependencies": {
     "@react-aria/aria-modal-polyfill": "3.1.0",
-    "@react-aria/button": "3.1.0",
-    "@react-aria/dialog": "3.1.0",
-    "@react-aria/focus": "3.1.0",
-    "@react-aria/overlays": "3.1.0",
-    "@react-stately/overlays": "3.1.0",
-    "framer-motion": "2.9.4",
+    "@react-aria/button": "3.3.1",
+    "@react-aria/dialog": "3.1.2",
+    "@react-aria/focus": "3.2.3",
+    "@react-aria/overlays": "3.6.1",
+    "@react-stately/overlays": "3.1.1",
+    "framer-motion": "3.6.2",
     "history": "5.0.0",
-    "react-app-polyfill": "^1.0.0",
-    "react-icons": "3.10.0",
+    "react-app-polyfill": "2.0.0",
+    "react-icons": "4.2.0",
     "react-router": "6.0.0-beta.0",
     "react-router-dom": "6.0.0-beta.0",
-    "styled-components": "5.1.1"
+    "react-use": "17.1.1",
+    "styled-components": "5.2.1"
   },
   "alias": {
     "react": "../node_modules/react",
@@ -32,10 +33,10 @@
     "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.8.4",
+    "@types/react": "16.9.35",
+    "@types/react-dom": "16.9.8",
     "gh-pages": "3.1.0",
-    "parcel": "^1.12.3",
-    "typescript": "3.9.7"
+    "parcel": "1.12.4",
+    "typescript": "4.1.5"
   }
 }
