@@ -76,6 +76,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `children`     | yes      |                  | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                        |
 | `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                                                           |
 | `onClose`      | yes      |                  | Callback fn that is called when the sheet is closed by the user.                                                                   |
+| `disableDrag`  | no       | false            | Disable drag for the whole sheet.                                                                                                  |
 | `onOpenStart`  | no       |                  | Callback fn that is called when the sheet opening animation starts.                                                                |
 | `onOpenEnd`    | no       |                  | Callback fn that is called when the sheet opening animation is completed.                                                          |
 | `onCloseStart` | no       |                  | Callback fn that is called when the sheet closing animation starts.                                                                |
@@ -155,11 +156,23 @@ Sheet content acts as a drag target and makes sure that content which doesn't fi
 
 > 🖥 Rendered element: `motion.div`.
 
+#### Content props
+
+| Name          | Required | Default | Description                         |
+| ------------- | -------- | ------- | ----------------------------------- |
+| `disableDrag` | no       | false   | Disable drag for the sheet content. |
+
 ### `Sheet.Header`
 
 Sheet header acts as a drag target and has a dragging direction indicator. Rendering any children inside `Sheet.Header` replaces the default header.
 
 > 🖥 Rendered element: `motion.div`.
+
+#### Header props
+
+| Name          | Required | Default | Description                        |
+| ------------- | -------- | ------- | ---------------------------------- |
+| `disableDrag` | no       | false   | Disable drag for the sheet header. |
 
 ### `Sheet.Backdrop`
 
