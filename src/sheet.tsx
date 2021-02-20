@@ -29,6 +29,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       initialSnap = 0,
       rootId,
       springConfig = { stiffness: 300, damping: 30, mass: 0.2 },
+      disableDrag = false,
       ...rest
     },
     ref
@@ -129,15 +130,17 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     useModalEffect(isOpen, rootId);
 
-    const dragProps = {
-      drag: 'y' as const,
-      dragElastic: 0,
-      dragConstraints: { top: 0, bottom: 0 },
-      dragMomentum: false,
-      onDrag: handleDrag,
-      onDragStart: handleDragStart,
-      onDragEnd: handleDragEnd,
-    };
+    const dragProps = disableDrag
+      ? ({} as any)
+      : {
+          drag: 'y' as const,
+          dragElastic: 0,
+          dragConstraints: { top: 0, bottom: 0 },
+          dragMomentum: false,
+          onDrag: handleDrag,
+          onDragStart: handleDragStart,
+          onDragEnd: handleDragEnd,
+        };
 
     const context = {
       y,

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Routes, Route, Link } from 'react-router-dom';
-import { FaScroll as ScrollIcon } from 'react-icons/fa';
+import { FaScroll as ScrollIcon, FaLock as LockIcon } from 'react-icons/fa';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
 
 import {
@@ -16,6 +16,7 @@ import Scrollable from './Scrollable';
 import AppleMusic from './apple-music';
 import SlackMessage from './slack-message';
 import A11y from './a11y';
+import DisableDrag from './DisableDrag';
 
 const App = () => {
   return (
@@ -70,6 +71,14 @@ const App = () => {
           </Screen>
         }
       />
+      <Route
+        path="disable-drag/*"
+        element={
+          <Screen bg="light">
+            <DisableDrag />
+          </Screen>
+        }
+      />
     </Routes>
   );
 };
@@ -88,6 +97,13 @@ const ExampleSelector = () => {
         <ExampleLink to="scrollable">
           <ScrollIcon size={48} />
           <span>Scrollable</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="disable-drag">
+          <LockIcon size={48} />
+          <span>Disable drag</span>
         </ExampleLink>
       </li>
 

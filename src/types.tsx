@@ -21,6 +21,7 @@ export type SheetProps = {
   snapPoints?: number[];
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
+  disableDrag?: boolean;
 } & SheetEvents;
 
 export type SheetContainerProps = Omit<
@@ -37,7 +38,7 @@ export type SheetDraggableProps = Omit<
   | 'onDrag'
   | 'onDragStart'
   | 'onDragEnd'
-> & { children?: React.ReactNode };
+> & { children?: React.ReactNode; disableDrag?: boolean };
 
 export type SheetBackdropProps = Omit<
   MotionProps,
