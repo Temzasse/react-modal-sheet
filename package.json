@@ -32,8 +32,10 @@
     "release": "np"
   },
   "peerDependencies": {
-    "framer-motion": "2.x || 3.x",
-    "react": ">=16"
+    "react": ">=16",
+    "react-dom": ">=16",
+    "styled-components": "5.2.1",
+    "framer-motion": "^3.x"
   },
   "husky": {
     "hooks": {
@@ -54,14 +56,11 @@
     "@types/react-dom": "16.9.8",
     "@types/styled-components": "5.1.7",
     "csstype": "3.0.6",
-    "framer-motion": "3.6.2",
     "husky": "4.2.5",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "styled-components": "5.2.1",
     "tsdx": "0.14.1",
     "tslib": "2.1.0",
-    "typescript": "4.1.5"
+    "typescript": "4.1.5",
+    "framer-motion": "^3.x"
   },
   "dependencies": {
     "react-merge-refs": "1.1.0"
