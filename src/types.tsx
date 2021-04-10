@@ -22,7 +22,8 @@ export type SheetProps = {
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
   disableDrag?: boolean;
-} & SheetEvents;
+} & SheetEvents &
+  React.HTMLAttributes<HTMLDivElement>;
 
 export type SheetContainerProps = Omit<
   MotionProps,
