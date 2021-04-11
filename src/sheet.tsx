@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import {
-  useSpring,
+  animate,
   useMotionValue,
   AnimatePresence,
   PanInfo,
@@ -35,29 +35,20 @@ const Sheet = React.forwardRef<any, SheetProps>(
     ref
   ) => {
     const [mounted, setMounted] = React.useState(false);
-    const [isDragging, setDragging] = React.useState(false);
     const sheetRef = React.useRef<any>(null);
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
-    const sheetDragY = useMotionValue(isBrowser ? window.innerHeight : 0);
-    const sheetSpringY = useSpring(sheetDragY, springConfig);
-    const y = isDragging ? sheetDragY : sheetSpringY;
+    const y = useMotionValue(isBrowser ? window.innerHeight : 0);
     const pointerEvents = isOpen ? 'auto' : 'none';
 
     const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
       // Update drag indicator rotation based on drag velocity
-      const velocity = sheetDragY.getVelocity();
+      const velocity = y.getVelocity();
       if (velocity > 0) indicatorRotation.set(10);
       if (velocity < 0) indicatorRotation.set(-10);
 
       // Make sure user cannot drag beyond the top of the sheet
-      sheetDragY.set(Math.max(sheetDragY.get() + delta.y, 0));
-    }, []); // eslint-disable-line
-
-    const handleDragStart = React.useCallback(() => {
-      // Sync the drag value with the spring value so that dragging start at the correct y position
-      sheetDragY.set(sheetSpringY.get());
-      setDragging(true);
+      y.set(Math.max(y.get() + delta.y, 0));
     }, []); // eslint-disable-line
 
     const handleDragEnd = React.useCallback(
@@ -69,16 +60,13 @@ const Sheet = React.forwardRef<any, SheetProps>(
           const sheetEl = sheetRef.current as HTMLDivElement;
           const contentHeight = sheetEl.getBoundingClientRect().height;
           const snapTo = snapPoints
-            ? getClosest(
-                snapPoints.map(p => contentHeight - p),
-                sheetDragY.get()
-              )
-            : sheetDragY.get() / contentHeight > 0.6 // Close if dragged over 60%
+            ? getClosest(snapPoints.map(p => contentHeight - p), y.get()) // prettier-ignore
+            : y.get() / contentHeight > 0.6 // Close if dragged over 60%
             ? contentHeight
             : 0;
 
           // Update the spring value so that the sheet is animated to the snap point
-          sheetSpringY.set(snapTo);
+          animate(y, snapTo, { type: 'spring', ...springConfig });
 
           if (snapPoints && onSnap) {
             const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
@@ -87,8 +75,6 @@ const Sheet = React.forwardRef<any, SheetProps>(
           }
 
           if (snapTo >= contentHeight) onClose();
-
-          setDragging(false);
         }
 
         // Reset indicator rotation after dragging
@@ -121,7 +107,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
           const contentHeight = sheetEl.getBoundingClientRect().height;
           const snapTo = contentHeight - snapPoints[snapIndex];
 
-          sheetSpringY.set(snapTo);
+          animate(y, snapTo, { type: 'spring', ...springConfig });
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= contentHeight) onClose();
         }
@@ -138,7 +124,6 @@ const Sheet = React.forwardRef<any, SheetProps>(
           dragConstraints: { top: 0, bottom: 0 },
           dragMomentum: false,
           onDrag: handleDrag,
-          onDragStart: handleDragStart,
           onDragEnd: handleDragEnd,
         };
 
@@ -146,7 +131,6 @@ const Sheet = React.forwardRef<any, SheetProps>(
       y,
       sheetRef,
       isOpen,
-      isDragging,
       initialSnap,
       snapPoints,
       indicatorRotation,

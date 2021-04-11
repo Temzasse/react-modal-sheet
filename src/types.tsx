@@ -59,7 +59,6 @@ export type SheetDragProps = {
 export type SheetContextType = {
   y: MotionValue<any>;
   sheetRef: React.MutableRefObject<any>;
-  isDragging: boolean;
   isOpen: boolean;
   snapPoints: SheetProps['snapPoints'];
   initialSnap: SheetProps['initialSnap'];
