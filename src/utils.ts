@@ -1,4 +1,4 @@
-export const isBrowser = typeof window !== 'undefined';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 export const getClosest = (nums: number[], goal: number) => {
   return nums.reduce((prev, curr) => {
@@ -67,3 +67,23 @@ export function cleanupRootStyles(rootId: string) {
     root.addEventListener('transitionend', onTransitionEnd);
   }
 }
+
+const useLayoutEffectSSR =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+export function useWindowHeight() {
+  const [windowHeight, setWindowHeight] = useState(0);
+  useLayoutEffectSSR(() => {
+    setWindowHeight(window.innerHeight);
+  });
+
+  return windowHeight;
+}
+
+export const inDescendingOrder = (arr: number[]) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i + 1] > arr[i]) return false;
+  }
+
+  return true;
+};
