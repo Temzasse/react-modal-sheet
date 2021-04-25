@@ -166,16 +166,14 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     const sheet = (
       <SheetContext.Provider value={context}>
-        <div {...wrapperProps}>
-          <AnimatePresence>
-            {/* NOTE: AnimatePresence requires us to set keys to children */}
-            {isOpen
-              ? React.Children.map(children, (child: any, i) =>
-                  React.cloneElement(child, { key: `sheet-child-${i}` })
-                )
-              : null}
-          </AnimatePresence>
-        </div>
+        <AnimatePresence>
+          {/* NOTE: AnimatePresence requires us to set keys to children */}
+          {isOpen
+            ? React.Children.map(children, (child: any, i) =>
+                React.cloneElement(child, { key: `sheet-child-${i}` })
+              )
+            : null}
+        </AnimatePresence>
       </SheetContext.Provider>
     );
 
