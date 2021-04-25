@@ -1,12 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {
-  animate,
-  useMotionValue,
-  AnimatePresence,
-  PanInfo,
-} from 'framer-motion';
+import { animate, useMotionValue, PanInfo } from 'framer-motion';
 
 import { SheetContextType, SheetProps } from './types';
 import { getClosest, inDescendingOrder, useWindowHeight } from './utils';
