@@ -1,7 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { animate, useMotionValue, PanInfo } from 'framer-motion';
+import {
+  animate,
+  useMotionValue,
+  PanInfo,
+  AnimatePresence,
+} from 'framer-motion';
 
 import { SheetContextType, SheetProps } from './types';
 import { getClosest, inDescendingOrder, useWindowHeight } from './utils';
@@ -35,7 +40,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
     const windowHeight = useWindowHeight();
-    const y = useMotionValue(windowHeight);
+    const y = useMotionValue(isOpen ? windowHeight : 0);
     const pointerEvents = isOpen ? 'auto' : 'none';
 
     if (snapPoints) {
@@ -161,15 +166,20 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     const sheet = (
       <SheetContext.Provider value={context}>
-        {/* NOTE: AnimatePresence requires us to set keys to children */}
-        {React.Children.map(children, (child: any, i) =>
-          React.cloneElement(child, { key: `sheet-child-${i}` })
-        )}
+        <div {...wrapperProps}>
+          <AnimatePresence>
+            {/* NOTE: AnimatePresence requires us to set keys to children */}
+            {isOpen
+              ? React.Children.map(children, (child: any, i) =>
+                  React.cloneElement(child, { key: `sheet-child-${i}` })
+                )
+              : null}
+          </AnimatePresence>
+        </div>
       </SheetContext.Provider>
     );
 
     if (ssr) return sheet;
-
     return mounted ? (
       ReactDOM.createPortal(sheet, document.body)
     ) : (
