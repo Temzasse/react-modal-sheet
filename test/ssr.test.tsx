@@ -27,7 +27,7 @@ describe('Test with SSR disabled', () => {
   it('does not render <Sheet.Content> in html output', () => {
     const content = 'Hello world';
     const markup = renderToString(
-      <Sheet isOpen onClose={() => {}}>
+      <Sheet isOpen onClose={() => {}} ssr={false}>
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>{content}</Sheet.Content>
