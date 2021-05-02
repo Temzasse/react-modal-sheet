@@ -7,7 +7,7 @@ import Album from './Album';
 import Player from './Player';
 
 const IOSMusicPlayer = () => {
-  const [isPlayerOpen, setPlayerOpen] = React.useState(true);
+  const [isPlayerOpen, setPlayerOpen] = React.useState(false);
   const [currentSong, setCurrentSong] = React.useState<string>(album.songs[0]);
 
   const openPlayer = () => setPlayerOpen(true);
