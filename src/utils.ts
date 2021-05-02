@@ -74,8 +74,11 @@ const useLayoutEffectSSR =
 export function useWindowHeight() {
   const [windowHeight, setWindowHeight] = useState(0);
   useLayoutEffectSSR(() => {
-    setWindowHeight(window.innerHeight);
-  });
+    const updateHeight = () => setWindowHeight(window.innerHeight);
+    window.addEventListener('resize', updateHeight);
+    updateHeight();
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   return windowHeight;
 }
