@@ -4,12 +4,12 @@ import * as ReactDOM from 'react-dom';
 import {
   animate,
   useMotionValue,
-  AnimatePresence,
   PanInfo,
+  AnimatePresence,
 } from 'framer-motion';
 
-import { SheetProps } from './types';
-import { getClosest, isBrowser } from './utils';
+import { SheetContextType, SheetProps } from './types';
+import { getClosest, inDescendingOrder, isSSR, useWindowHeight } from './utils';
 import { SheetContext } from './context';
 import { useModalEffect } from './hooks';
 import styles from './styles';
@@ -34,12 +34,25 @@ const Sheet = React.forwardRef<any, SheetProps>(
     },
     ref
   ) => {
-    const [mounted, setMounted] = React.useState(false);
     const sheetRef = React.useRef<any>(null);
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
-    const y = useMotionValue(isBrowser ? window.innerHeight : 0);
+    const windowHeight = useWindowHeight();
+    const y = useMotionValue(isOpen ? windowHeight : 0);
     const pointerEvents = isOpen ? 'auto' : 'none';
+
+    if (snapPoints) {
+      // Convert negative / percentage snap points to absolute values
+      snapPoints = snapPoints.map(point => {
+        if (point > 0 && point <= 1) return point * windowHeight; // percentage values e.g. between 0.0 and 1.0
+        return point < 0 ? windowHeight + point : point; // negative values
+      });
+
+      console.assert(
+        inDescendingOrder(snapPoints) || windowHeight === 0,
+        `Snap points need to be in descending order got: [${snapPoints}]`
+      );
+    }
 
     const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
       // Update drag indicator rotation based on drag velocity
@@ -89,16 +102,12 @@ const Sheet = React.forwardRef<any, SheetProps>(
       callbacks.current = { onOpenStart, onOpenEnd, onCloseStart, onCloseEnd };
     });
 
-    React.useEffect(() => {
-      setMounted(true);
-    }, []);
-
     // Trigger onSnap callback when sheet is opened or closed
     React.useEffect(() => {
-      if (!snapPoints || !onSnap || !mounted) return;
+      if (!snapPoints || !onSnap) return;
       const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
       onSnap(snapIndex);
-    }, [isOpen]);
+    }, [isOpen]); // eslint-disable-line
 
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
@@ -127,7 +136,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
           onDragEnd: handleDragEnd,
         };
 
-    const context = {
+    const context: SheetContextType = {
       y,
       sheetRef,
       isOpen,
@@ -136,6 +145,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       indicatorRotation,
       callbacks,
       dragProps,
+      windowHeight,
     };
 
     const wrapperProps = {
@@ -147,27 +157,24 @@ const Sheet = React.forwardRef<any, SheetProps>(
       } as any,
     };
 
-    return mounted ? (
-      ReactDOM.createPortal(
-        <SheetContext.Provider value={context}>
-          <div {...wrapperProps}>
-            <AnimatePresence>
-              {/* NOTE: AnimatePresence requires us to set keys to children */}
-              {isOpen
-                ? React.Children.map(children, (child: any, i) =>
-                    React.cloneElement(child, { key: `sheet-child-${i}` })
-                  )
-                : null}
-            </AnimatePresence>
-          </div>
-        </SheetContext.Provider>,
-        document.body
-      )
-    ) : (
-      // NOTE: return the wrapper div so that SSR frameworks don't get confused
-      // with the HTML structure ("Expected server HTML to contain a matching <div>...")
-      <div {...wrapperProps} />
+    const sheet = (
+      <SheetContext.Provider value={context}>
+        <div {...wrapperProps}>
+          <AnimatePresence>
+            {/* NOTE: AnimatePresence requires us to set keys to children */}
+            {isOpen
+              ? React.Children.map(children, (child: any, i) =>
+                  React.cloneElement(child, { key: `sheet-child-${i}` })
+                )
+              : null}
+          </AnimatePresence>
+        </div>
+      </SheetContext.Provider>
     );
+
+    if (isSSR) return sheet;
+
+    return ReactDOM.createPortal(sheet, document.body);
   }
 );
 

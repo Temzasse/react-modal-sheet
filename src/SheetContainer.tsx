@@ -18,6 +18,7 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
       snapPoints,
       initialSnap = 0,
       sheetRef,
+      windowHeight,
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
@@ -31,9 +32,9 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
         ref={mergeRefs([sheetRef, ref])}
         className="react-modal-sheet-container"
         style={{ ...styles.container, height: sheetHeight, ...style, y }}
-        initial={{ y: window.innerHeight }}
+        initial={{ y: windowHeight }}
         animate={{ y: initialY, transition: { type: 'tween' } }}
-        exit={{ y: window.innerHeight }}
+        exit={{ y: windowHeight }}
         onAnimationComplete={handleAnimationComplete}
       >
         {children}

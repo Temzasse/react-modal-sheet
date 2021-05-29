@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import Sheet, { SheetRef } from '../../src';
-import { Button } from './common';
+import { Button, Screen } from './common';
 
 const snapPoints = [-50, 0.5, 100, 0];
 const initialSnap = 2; // Initial snap point when sheet is opened
@@ -21,7 +21,7 @@ const SnapPoints = () => {
   }, [snapPoint]);
 
   return (
-    <>
+    <Screen bg="light">
       <Button onClick={open}>Bottom Sheet with Snap Points</Button>
 
       <Sheet
@@ -49,7 +49,7 @@ const SnapPoints = () => {
 
         <Sheet.Backdrop onTap={close} />
       </Sheet>
-    </>
+    </Screen>
   );
 };
 

@@ -71,21 +71,21 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 
 ## Props
 
-| Name           | Required | Default          | Description                                                                                                                        |
-| -------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `children`     | yes      |                  | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                        |
-| `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                                                           |
-| `onClose`      | yes      |                  | Callback fn that is called when the sheet is closed by the user.                                                                   |
-| `disableDrag`  | no       | false            | Disable drag for the whole sheet.                                                                                                  |
-| `onOpenStart`  | no       |                  | Callback fn that is called when the sheet opening animation starts.                                                                |
-| `onOpenEnd`    | no       |                  | Callback fn that is called when the sheet opening animation is completed.                                                          |
-| `onCloseStart` | no       |                  | Callback fn that is called when the sheet closing animation starts.                                                                |
-| `onCloseEnd`   | no       |                  | Callback fn that is called when the sheet closing animation is completed.                                                          |
-| `onSnap`       | no       |                  | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop. |
-| `snapPoints`   | no       |                  | Eg. `[600, 400, 0]` - the distance from the bottom of the screen in px. (TODO: support % values)                                   |
-| `initialSnap`  | no       | 0                | Initial snap point when sheet is opened (index from `snapPoints`).                                                                 |
-| `rootId`       | no       |                  | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                         |
-| `springConfig` | no       | `DEFAULT_SPRING` | Overrides the config for the [spring animation](https://www.framer.com/api/motion/types/#spring).                                  |
+| Name           | Required | Default          | Description                                                                                                                                                                                                                       |
+| -------------- | -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`     | yes      |                  | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                                                                                                                       |
+| `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                          |
+| `onClose`      | yes      |                  | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                  |
+| `disableDrag`  | no       | false            | Disable drag for the whole sheet.                                                                                                                                                                                                 |
+| `onOpenStart`  | no       |                  | Callback fn that is called when the sheet opening animation starts.                                                                                                                                                               |
+| `onOpenEnd`    | no       |                  | Callback fn that is called when the sheet opening animation is completed.                                                                                                                                                         |
+| `onCloseStart` | no       |                  | Callback fn that is called when the sheet closing animation starts.                                                                                                                                                               |
+| `onCloseEnd`   | no       |                  | Callback fn that is called when the sheet closing animation is completed.                                                                                                                                                         |
+| `onSnap`       | no       |                  | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop.                                                                                                |
+| `snapPoints`   | no       |                  | Eg. `[-50, 0.5, 100, 0]` - where positive values are pixels from the bottom of the screen and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of window height from the bottom of the sceen. |
+| `initialSnap`  | no       | 0                | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                |
+| `rootId`       | no       |                  | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                                                                                                                        |
+| `springConfig` | no       | `DEFAULT_SPRING` | Overrides the config for the [spring animation](https://www.framer.com/api/motion/types/#spring).                                                                                                                                 |
 
 **`DEFAULT_SPRING`**
 

@@ -1,4 +1,6 @@
-export const isBrowser = typeof window !== 'undefined';
+import { useEffect, useLayoutEffect, useState } from 'react';
+
+export const isSSR = typeof window === 'undefined';
 
 export const getClosest = (nums: number[], goal: number) => {
   return nums.reduce((prev, curr) => {
@@ -67,3 +69,26 @@ export function cleanupRootStyles(rootId: string) {
     root.addEventListener('transitionend', onTransitionEnd);
   }
 }
+
+const useIsomorphicLayoutEffect = isSSR ? useEffect : useLayoutEffect;
+
+export function useWindowHeight() {
+  const [windowHeight, setWindowHeight] = useState(0);
+
+  useIsomorphicLayoutEffect(() => {
+    const updateHeight = () => setWindowHeight(window.innerHeight);
+    window.addEventListener('resize', updateHeight);
+    updateHeight();
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
+  return windowHeight;
+}
+
+export const inDescendingOrder = (arr: number[]) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i + 1] > arr[i]) return false;
+  }
+
+  return true;
+};

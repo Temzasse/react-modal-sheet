@@ -65,4 +65,5 @@ export type SheetContextType = {
   indicatorRotation: MotionValue<number>;
   callbacks: React.MutableRefObject<SheetEvents>;
   dragProps: SheetDragProps;
+  windowHeight: number;
 };
