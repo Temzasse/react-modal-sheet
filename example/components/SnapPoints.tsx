@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
 
-const snapPoints = [-50, 0.5, 100, 0];
-const initialSnap = 2; // Initial snap point when sheet is opened
+const snapPoints = [-50, 0.5, 200, 0];
+const initialSnap = 1; // Initial snap point when sheet is opened
 
 const SnapPoints = () => {
   const ref = React.useRef<SheetRef>();
@@ -40,7 +40,7 @@ const SnapPoints = () => {
                   Snap to -50 (from top)
                 </Button>
                 <Button onClick={() => snapTo(1)}>Snap to 50%</Button>
-                <Button onClick={() => snapTo(2)}>Snap to 100</Button>
+                <Button onClick={() => snapTo(2)}>Snap to 200</Button>
                 <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
               </Controls>
             </SheetContentWrapper>

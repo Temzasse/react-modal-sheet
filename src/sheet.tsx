@@ -146,6 +146,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       callbacks,
       dragProps,
       windowHeight,
+      springConfig,
     };
 
     const wrapperProps = {

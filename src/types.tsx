@@ -66,4 +66,5 @@ export type SheetContextType = {
   callbacks: React.MutableRefObject<SheetEvents>;
   dragProps: SheetDragProps;
   windowHeight: number;
+  springConfig: Parameters<typeof useSpring>[1];
 };

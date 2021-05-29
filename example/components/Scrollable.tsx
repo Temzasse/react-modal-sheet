@@ -6,7 +6,6 @@ import { Button } from './common';
 
 const Scrollable = () => {
   const [isOpen, setOpen] = React.useState(false);
-
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
@@ -14,7 +13,11 @@ const Scrollable = () => {
     <>
       <Button onClick={open}>Scrollable Bottom Sheet</Button>
 
-      <Sheet isOpen={isOpen} onClose={close}>
+      <Sheet
+        isOpen={isOpen}
+        onClose={close}
+        springConfig={{ stiffness: 150, damping: 20, mass: 1 }}
+      >
         <Sheet.Container>
           <Sheet.Header />
 
