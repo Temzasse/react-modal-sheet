@@ -9,7 +9,7 @@ import {
 } from 'framer-motion';
 
 import { SheetContextType, SheetProps } from './types';
-import { getClosest, inDescendingOrder, useWindowHeight } from './utils';
+import { getClosest, inDescendingOrder, isSSR, useWindowHeight } from './utils';
 import { SheetContext } from './context';
 import { useModalEffect } from './hooks';
 import styles from './styles';
@@ -30,12 +30,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
       rootId,
       springConfig = { stiffness: 300, damping: 30, mass: 0.2 },
       disableDrag = false,
-      ssr = true,
       ...rest
     },
     ref
   ) => {
-    const [mounted, setMounted] = React.useState(false);
     const sheetRef = React.useRef<any>(null);
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
@@ -44,13 +42,12 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const pointerEvents = isOpen ? 'auto' : 'none';
 
     if (snapPoints) {
-      // convert negative / percentage snap points to absolute values
+      // Convert negative / percentage snap points to absolute values
       snapPoints = snapPoints.map(point => {
         if (point > 0 && point <= 1) return point * windowHeight; // percentage values e.g. between 0.0 and 1.0
         return point < 0 ? windowHeight + point : point; // negative values
       });
 
-      // TODO: snapPoints need to be in descending order right (ignore if ssr = windowHeight = 0)?
       console.assert(
         inDescendingOrder(snapPoints) || windowHeight === 0,
         `Snap points need to be in descending order got: [${snapPoints}]`
@@ -105,13 +102,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
       callbacks.current = { onOpenStart, onOpenEnd, onCloseStart, onCloseEnd };
     });
 
-    React.useEffect(() => {
-      setMounted(true);
-    }, []);
-
     // Trigger onSnap callback when sheet is opened or closed
     React.useEffect(() => {
-      if (!snapPoints || !onSnap || !mounted) return;
+      if (!snapPoints || !onSnap) return;
       const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
       onSnap(snapIndex);
     }, [isOpen]);
@@ -179,14 +172,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
       </SheetContext.Provider>
     );
 
-    if (ssr) return sheet;
-    return mounted ? (
-      ReactDOM.createPortal(sheet, document.body)
-    ) : (
-      // NOTE: return the wrapper div so that SSR frameworks don't get confused
-      // with the HTML structure ("Expected server HTML to contain a matching <div>...")
-      <div {...wrapperProps} />
-    );
+    if (isSSR) return sheet;
+
+    return ReactDOM.createPortal(sheet, document.body);
   }
 );
 

@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 
+export const isSSR = typeof window === 'undefined';
+
 export const getClosest = (nums: number[], goal: number) => {
   return nums.reduce((prev, curr) => {
     return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
@@ -68,12 +70,12 @@ export function cleanupRootStyles(rootId: string) {
   }
 }
 
-const useLayoutEffectSSR =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = isSSR ? useEffect : useLayoutEffect;
 
 export function useWindowHeight() {
   const [windowHeight, setWindowHeight] = useState(0);
-  useLayoutEffectSSR(() => {
+
+  useIsomorphicLayoutEffect(() => {
     const updateHeight = () => setWindowHeight(window.innerHeight);
     window.addEventListener('resize', updateHeight);
     updateHeight();
