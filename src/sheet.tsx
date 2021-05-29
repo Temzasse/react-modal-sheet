@@ -107,7 +107,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       if (!snapPoints || !onSnap) return;
       const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
       onSnap(snapIndex);
-    }, [isOpen]);
+    }, [isOpen]); // eslint-disable-line
 
     React.useImperativeHandle(ref, () => ({
       snapTo: (snapIndex: number) => {
