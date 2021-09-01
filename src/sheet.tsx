@@ -152,10 +152,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const wrapperProps = {
       ...rest,
       ref,
-      style: {
-        ...styles.wrapper,
-        pointerEvents,
-      } as any,
+      style: styles.wrapper,
     };
 
     const sheet = (

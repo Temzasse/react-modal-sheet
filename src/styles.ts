@@ -9,6 +9,7 @@ const styles: { [key: string]: CSS.Properties } = {
     right: 0,
     zIndex: 9999999,
     overflow: 'hidden',
+    pointerEvents: 'none',
   },
   backdrop: {
     zIndex: 1,
@@ -32,6 +33,7 @@ const styles: { [key: string]: CSS.Properties } = {
     boxShadow: '0px -2px 16px rgba(0, 0, 0, 0.3)',
     display: 'flex',
     flexDirection: 'column',
+    pointerEvents: 'auto',
   },
   headerWrapper: {
     width: '100%',
