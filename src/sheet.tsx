@@ -39,7 +39,6 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const indicatorRotation = useMotionValue(0);
     const windowHeight = useWindowHeight();
     const y = useMotionValue(isOpen ? windowHeight : 0);
-    const pointerEvents = isOpen ? 'auto' : 'none';
 
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
