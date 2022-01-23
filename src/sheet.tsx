@@ -38,7 +38,11 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
     const windowHeight = useWindowHeight();
-    const y = useMotionValue(isOpen ? windowHeight : 0);
+
+    // NOTE: the inital value for `y` doesn't matter since it is overwritten by
+    // the value driven by the `AnimatePresence` component when the sheet is opened
+    // and after that it is driven by the gestures and/or snapping
+    const y = useMotionValue(0);
 
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
@@ -109,6 +113,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     }, [isOpen]); // eslint-disable-line
 
     React.useImperativeHandle(ref, () => ({
+      y,
       snapTo: (snapIndex: number) => {
         if (snapPoints && snapPoints[snapIndex] !== undefined) {
           const sheetEl = sheetRef.current as HTMLDivElement;

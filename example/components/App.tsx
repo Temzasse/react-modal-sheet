@@ -17,6 +17,7 @@ import AppleMusic from './apple-music';
 import SlackMessage from './slack-message';
 import A11y from './a11y';
 import DisableDrag from './DisableDrag';
+import ScrollableSnapPoints from './ScrollableSnapPoints';
 
 const App = () => {
   return (
@@ -34,6 +35,14 @@ const App = () => {
         element={
           <Screen bg="light">
             <SnapPoints />
+          </Screen>
+        }
+      />
+      <Route
+        path="scrollable-snap-points/*"
+        element={
+          <Screen bg="light">
+            <ScrollableSnapPoints />
           </Screen>
         }
       />
@@ -97,6 +106,13 @@ const ExampleSelector = () => {
         <ExampleLink to="scrollable">
           <ScrollIcon size={48} />
           <span>Scrollable</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="scrollable-snap-points">
+          <ScrollIcon size={48} />
+          <span>Scrollable (with snap points)</span>
         </ExampleLink>
       </li>
 

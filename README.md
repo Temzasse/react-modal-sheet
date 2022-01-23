@@ -99,7 +99,7 @@ Spring animation happens when the sheet is opened/closed or when it snaps to a s
 }
 ```
 
-## Methods
+## Methods and properties
 
 ### `snapTo(index)`
 
@@ -134,6 +134,51 @@ function Example() {
             <button onClick={() => snapTo(1)}>Snap to index 1</button>
             <button onClick={() => snapTo(2)}>Snap to index 2</button>
             <button onClick={() => snapTo(3)}>Snap to index 3</button>
+          </Sheet.Content>
+        </Sheet.Container>
+      </Sheet>
+    </>
+  );
+}
+```
+
+### Motion value `y`
+
+The `y` value is an internal `MotionValue` that represents the distance to the top most position of the sheet when it is fully open. So for example the `y` value is zero when the sheet is completely open.
+
+Similarly to the `snapTo` method the `y` value can be accessed via a ref.
+
+The `y` value can be useful for certain situtation eg. when you want to combine snap points with scrollable sheet content and ensure that the content stays properly scrollable in any snap point. Below you can see a simplified example of this situation and for a more detailed example take a look at the [ScrollableSnapPoints](example/components/ScrollableSnapPoints.tsx) component in the example app.
+
+```tsx
+import React from 'react';
+import Sheet, { SheetRef } from 'react-modal-sheet';
+
+function Example() {
+  const [isOpen, setOpen] = React.useState(false);
+  const ref = React.useRef<SheetRef>();
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open sheet</button>
+
+      <Sheet
+        isOpen={isOpen}
+        onClose={() => setOpen(false)}
+        snapPoints={[600, 400, 100, 0]}
+        initialSnap={1}
+      >
+        <Sheet.Container>
+          {/**
+           * Since `Sheet.Content` is a `motion.div` it can receive motion values
+           * in it's style prop which allows us to utilise the exposed `y` value.
+           *
+           * By syncing the padding bottom with the `y` motion value we introduce
+           * an offset that ensures that the sheet content can be scrolled all the
+           * way to the bottom in every snap point.
+           */}
+          <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
+            {/* Some content here that makes the sheet content scrollable */}
           </Sheet.Content>
         </Sheet.Container>
       </Sheet>
@@ -378,4 +423,4 @@ If you want to see a more real-world-like implementation you can take a look at 
 
 ### Building a reusable sheet
 
-In your projects it might make sense to build a reusable bottom sheet that has all the accessibility features included and can then be easily used in various places in the project. Take a look at the [A11ySheet example](example/components/a11y/A11ySheet.tsx) to get some insight on how to build such a component. By incorporating all the accessibility features inside your own reusable component you don't need to repeat them every time you want to use a bottom sheet in your app.
+In your projects it might make sense to build a reusable bottom sheet that has all the accessibility features included and can then be easily used in various places in the project. Take a look at the [A11ySheet](example/components/a11y/A11ySheet.tsx) example to get some insight on how to build such a component. By incorporating all the accessibility features inside your own reusable component you don't need to repeat them every time you want to use a bottom sheet in your app.
