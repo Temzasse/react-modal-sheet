@@ -115,11 +115,14 @@ const Sheet = React.forwardRef<any, SheetProps>(
     React.useImperativeHandle(ref, () => ({
       y,
       snapTo: (snapIndex: number) => {
-        if (snapPoints && snapPoints[snapIndex] !== undefined) {
-          const sheetEl = sheetRef.current as HTMLDivElement;
+        const sheetEl = sheetRef.current as HTMLDivElement | null;
+        if (
+          snapPoints &&
+          snapPoints[snapIndex] !== undefined &&
+          sheetEl !== null
+        ) {
           const contentHeight = sheetEl.getBoundingClientRect().height;
           const snapTo = contentHeight - snapPoints[snapIndex];
-
           animate(y, snapTo, { type: 'spring', ...springConfig });
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= contentHeight) onClose();
