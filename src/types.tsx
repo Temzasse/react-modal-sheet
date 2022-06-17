@@ -28,7 +28,9 @@ export type SheetProps = {
 export type SheetContainerProps = Omit<
   MotionProps,
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
-> & { children: React.ReactNode };
+> & {
+  children: React.ReactNode;
+};
 
 export type SheetDraggableProps = Omit<
   MotionProps,
@@ -39,7 +41,10 @@ export type SheetDraggableProps = Omit<
   | 'onDrag'
   | 'onDragStart'
   | 'onDragEnd'
-> & { children?: React.ReactNode; disableDrag?: boolean };
+> & {
+  children?: React.ReactNode;
+  disableDrag?: boolean;
+};
 
 export type SheetBackdropProps = Omit<
   MotionProps,
@@ -68,3 +73,28 @@ export type SheetContextType = {
   windowHeight: number;
   springConfig: Parameters<typeof useSpring>[1];
 };
+
+type ContainerComponent = React.ForwardRefExoticComponent<
+  SheetContainerProps & React.RefAttributes<any>
+>;
+
+type DraggableComponent = React.ForwardRefExoticComponent<
+  SheetDraggableProps & React.RefAttributes<any>
+>;
+
+type BackdropComponent = React.ForwardRefExoticComponent<
+  SheetBackdropProps & React.RefAttributes<any>
+>;
+
+type SheetComponent = React.ForwardRefExoticComponent<
+  SheetProps & React.RefAttributes<any>
+>;
+
+type SheetCompoundComponent = {
+  Container: ContainerComponent;
+  Header: DraggableComponent;
+  Content: DraggableComponent;
+  Backdrop: BackdropComponent;
+};
+
+export type SheetCompound = SheetComponent & SheetCompoundComponent;

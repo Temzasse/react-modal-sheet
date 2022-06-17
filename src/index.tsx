@@ -5,26 +5,18 @@ import SheetContainer from './SheetContainer';
 import SheetContent from './SheetContent';
 import SheetHeader from './SheetHeader';
 import SheetBackdrop from './SheetBackdrop';
+import { SheetCompound } from './types';
 
 export type SheetRef = {
   y: MotionValue<number>;
   snapTo: (index: number) => void;
 };
 
-type SheetCompoundComponent = {
-  Container: typeof SheetContainer;
-  Header: typeof SheetHeader;
-  Content: typeof SheetContent;
-  Backdrop: typeof SheetBackdrop;
-};
-
 // HACK: this is needed to get the typing to work properly...
-const _Sheet: any = Sheet;
-_Sheet.Container = SheetContainer;
-_Sheet.Header = SheetHeader;
-_Sheet.Content = SheetContent;
-_Sheet.Backdrop = SheetBackdrop;
+const _SheetCompound: any = Sheet;
+_SheetCompound.Container = SheetContainer;
+_SheetCompound.Header = SheetHeader;
+_SheetCompound.Content = SheetContent;
+_SheetCompound.Backdrop = SheetBackdrop;
 
-const SheetCompound: typeof Sheet & SheetCompoundComponent = _Sheet;
-
-export default SheetCompound;
+export default _SheetCompound as SheetCompound;
