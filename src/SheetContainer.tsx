@@ -20,6 +20,7 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
       sheetRef,
       windowHeight,
       springConfig,
+      useContentHeight,
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
@@ -32,7 +33,14 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
         {...rest}
         ref={mergeRefs([sheetRef, ref])}
         className="react-modal-sheet-container"
-        style={{ ...styles.container, height: sheetHeight, ...style, y }}
+        style={{
+          ...styles.container,
+          height: useContentHeight
+            ? sheetRef.current?.getBoundingClientRect().height
+            : sheetHeight,
+          ...style,
+          y,
+        }}
         initial={{ y: windowHeight }}
         animate={{
           y: initialY,
