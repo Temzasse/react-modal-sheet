@@ -20,6 +20,7 @@ export type SheetProps = {
   rootId?: string;
   mountPoint?: Element;
   snapPoints?: number[];
+  useContentHeight?: boolean;
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
   disableDrag?: boolean;
@@ -67,6 +68,7 @@ export type SheetContextType = {
   sheetRef: React.MutableRefObject<any>;
   isOpen: boolean;
   snapPoints: SheetProps['snapPoints'];
+  useContentHeight?: boolean;
   initialSnap: SheetProps['initialSnap'];
   indicatorRotation: MotionValue<number>;
   callbacks: React.MutableRefObject<SheetEvents>;
