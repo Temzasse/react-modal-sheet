@@ -145,13 +145,13 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const dragProps = disableDrag
       ? ({} as any)
       : {
-          drag: 'y' as const,
-          dragElastic: 0,
-          dragConstraints: { top: 0, bottom: 0 },
-          dragMomentum: false,
-          onDrag: handleDrag,
-          onDragEnd: handleDragEnd,
-        };
+        drag: 'y' as const,
+        dragElastic: 0,
+        dragConstraints: { top: 0, bottom: 0 },
+        dragMomentum: false,
+        onDrag: handleDrag,
+        onDragEnd: handleDragEnd,
+      };
 
     const context: SheetContextType = {
       y,
@@ -180,8 +180,8 @@ const Sheet = React.forwardRef<any, SheetProps>(
             {/* NOTE: AnimatePresence requires us to set keys to children */}
             {isOpen
               ? React.Children.map(children, (child: any, i) =>
-                  React.cloneElement(child, { key: `sheet-child-${i}` })
-                )
+                React.cloneElement(child, { key: `sheet-child-${i}` })
+              )
               : null}
           </AnimatePresence>
         </div>

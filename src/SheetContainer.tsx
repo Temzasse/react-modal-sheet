@@ -36,10 +36,9 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
         style={{
           ...styles.container,
           ...style,
+          ...(!useContentHeight && { height: sheetHeight }),
+          ...(useContentHeight && { maxHeight: sheetHeight }),
           y,
-          height: useContentHeight
-            ? sheetRef.current?.getBoundingClientRect().height
-            : sheetHeight,
         }}
         initial={{ y: windowHeight }}
         animate={{
