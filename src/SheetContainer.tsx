@@ -27,17 +27,15 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
     const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
     const h = snapPoints ? snapPoints[0] : null;
     const sheetHeight = h ? `min(${h}px, ${MAX_HEIGHT})` : MAX_HEIGHT;
-
-    return (
+    return (<>
       <motion.div
         {...rest}
         ref={mergeRefs([sheetRef, ref])}
         className="react-modal-sheet-container"
         style={{
           ...styles.container,
-          height: useContentHeight
-            ? sheetRef.current?.getBoundingClientRect().height
-            : sheetHeight,
+          ...(!useContentHeight) && { height: sheetHeight },
+          ...(useContentHeight) && { maxHeight: sheetHeight },
           ...style,
           y,
         }}
@@ -51,7 +49,7 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
       >
         {children}
       </motion.div>
-    );
+    </>);
   }
 );
 

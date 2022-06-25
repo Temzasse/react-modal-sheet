@@ -6,6 +6,7 @@ import { Button } from './common';
 
 const ContentHeight = () => {
   const [isOpen, setOpen] = React.useState(false);
+  const [boxes, setBoxes] = React.useState([0, 1]);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
@@ -24,10 +25,9 @@ const ContentHeight = () => {
 
           <Sheet.Content>
             <BoxList>
-              {Array.from({ length: 2 })
-                .fill(1)
+              {boxes
                 .map((_, i) => (
-                  <Box key={i}>{i}</Box>
+                  <Box key={i} onClick={() => setBoxes(prev => [...prev, i + 1])}>{i}</Box>
                 ))}
             </BoxList>
           </Sheet.Content>
