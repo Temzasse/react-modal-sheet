@@ -86,6 +86,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `initialSnap`  | no       | 0                | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                |
 | `rootId`       | no       |                  | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                                                                                                                        |
 | `springConfig` | no       | `DEFAULT_SPRING` | Overrides the config for the [spring animation](https://www.framer.com/api/motion/types/#spring).                                                                                                                                 |
+| `mountPoint`   | no       | `document.body`  | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                |
 
 **`DEFAULT_SPRING`**
 
