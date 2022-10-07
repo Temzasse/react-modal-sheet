@@ -1,8 +1,13 @@
 import * as React from 'react';
-import { OverlayTriggerState } from '@react-stately/overlays';
-import { useOverlay, useModal, OverlayProvider } from '@react-aria/overlays';
-import { FocusScope } from '@react-aria/focus';
-import { useDialog } from '@react-aria/dialog';
+import { OverlayTriggerState } from 'react-stately';
+
+import {
+  useOverlay,
+  useModal,
+  OverlayProvider,
+  FocusScope,
+  useDialog,
+} from 'react-aria';
 
 import Sheet from '../../../src';
 

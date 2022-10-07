@@ -1,11 +1,16 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
-import { useOverlayTriggerState } from '@react-stately/overlays';
-import { useOverlay, useModal, OverlayProvider } from '@react-aria/overlays';
-import { FocusScope } from '@react-aria/focus';
-import { useButton } from '@react-aria/button';
-import { useDialog } from '@react-aria/dialog';
+import { useOverlayTriggerState } from 'react-stately';
+
+import {
+  useOverlay,
+  useModal,
+  OverlayProvider,
+  FocusScope,
+  useButton,
+  useDialog,
+} from 'react-aria';
 
 import Sheet from '../../../src';
 import NewMessageHeader from './NewMessageHeader';
@@ -80,7 +85,7 @@ const MessageSheetComp = ({
           />
         </MessageSheet.Header>
 
-        <MessageSheet.Content>
+        <MessageSheet.Content disableDrag>
           <NewMessageContent inputRef={inputRef} />
         </MessageSheet.Content>
       </MessageSheet.Container>

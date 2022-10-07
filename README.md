@@ -353,11 +353,16 @@ The example below utilizes React Aria to achieve an accessible modal-like bottom
 ```jsx
 import React from 'react';
 import Sheet from 'react-modal-sheet';
-import { useOverlayTriggerState } from '@react-stately/overlays';
-import { useOverlay, useModal, OverlayProvider } from '@react-aria/overlays';
-import { FocusScope } from '@react-aria/focus';
-import { useButton } from '@react-aria/button';
-import { useDialog } from '@react-aria/dialog';
+import { useOverlayTriggerState } from 'react-stately';
+
+import {
+  useOverlay,
+  useModal,
+  OverlayProvider,
+  FocusScope,
+  useButton,
+  useDialog,
+} from 'react-aria';
 
 const A11yExample = () => {
   const sheetState = useOverlayTriggerState({});

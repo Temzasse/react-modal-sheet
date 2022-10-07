@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FiX as CloseIcon } from 'react-icons/fi';
-import { useButton } from '@react-aria/button';
+import { useButton } from 'react-aria';
 
 const NewMessageHeader = ({
   sheetState,

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { useButton } from '@react-aria/button';
-import { useOverlayTriggerState } from '@react-stately/overlays';
+import { useButton } from 'react-aria';
+import { useOverlayTriggerState } from 'react-stately';
 
 import { Button, Screen } from '../common';
 import A11ySheetBase from './A11ySheet';
