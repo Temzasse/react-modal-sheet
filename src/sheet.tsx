@@ -49,7 +49,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
       snapPoints = snapPoints.map(point => {
-        if (point > 0 && point <= 1) return point * windowHeight; // percentage values e.g. between 0.0 and 1.0
+        if (point > 0 && point <= 1) return Math.round(point * windowHeight); // percentage values e.g. between 0.0 and 1.0
         return point < 0 ? windowHeight + point : point; // negative values
       });
 
@@ -77,18 +77,20 @@ const Sheet = React.forwardRef<any, SheetProps>(
         } else {
           const sheetEl = sheetRef.current as HTMLDivElement;
           const contentHeight = sheetEl.getBoundingClientRect().height;
-          const snapTo = snapPoints
-            ? getClosest(snapPoints.map(p => contentHeight - p), y.get()) // prettier-ignore
-            : y.get() / contentHeight > 0.6 // Close if dragged over 60%
-            ? contentHeight
-            : 0;
+          const snapTo = Math.round(
+            snapPoints
+              ? getClosest(snapPoints.map(p => contentHeight - p), y.get()) // prettier-ignore
+              : y.get() / contentHeight > 0.6 // Close if dragged over 60%
+              ? contentHeight
+              : 0
+          );
 
           // Update the spring value so that the sheet is animated to the snap point
           animate(y, snapTo, { type: 'spring', ...springConfig });
 
           if (snapPoints && onSnap) {
             const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
-            const snapIndex = snapPoints.indexOf(snapValue);
+            const snapIndex = snapPoints.indexOf(getClosest(snapPoints, snapValue)); // prettier-ignore
             onSnap(snapIndex);
           }
 
