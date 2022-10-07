@@ -2,8 +2,8 @@ import * as React from 'react';
 import { motion } from 'framer-motion';
 
 import { SheetDraggableProps } from './types';
-import styles from './styles';
 import { useSheetContext } from './context';
+import styles from './styles';
 
 const SheetContent = React.forwardRef<any, SheetDraggableProps>(
   ({ children, disableDrag = false, style = {}, ...rest }, ref) => {

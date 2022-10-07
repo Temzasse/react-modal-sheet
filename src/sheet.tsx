@@ -10,9 +10,10 @@ import {
 } from 'framer-motion';
 
 import { SheetContextType, SheetProps } from './types';
-import { getClosest, inDescendingOrder, isSSR, useWindowHeight } from './utils';
+import { getClosest, inDescendingOrder, useWindowHeight } from './utils';
 import { SheetContext } from './context';
 import { useModalEffect } from './hooks';
+import { IS_SSR } from './constants';
 import styles from './styles';
 
 const Sheet = React.forwardRef<any, SheetProps>(
@@ -27,7 +28,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       onCloseEnd,
       onSnap,
       snapPoints,
-      useContentHeight,
+      detent,
       initialSnap = 0,
       rootId,
       mountPoint,
@@ -38,6 +39,12 @@ const Sheet = React.forwardRef<any, SheetProps>(
     },
     ref
   ) => {
+    if (detent === 'content-height' && snapPoints) {
+      throw Error(
+        'Using `detent="content-height"` with `snapPoints` is not supported'
+      );
+    }
+
     const sheetRef = React.useRef<any>(null);
     const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
@@ -159,7 +166,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       isOpen,
       initialSnap,
       snapPoints,
-      useContentHeight,
+      detent,
       indicatorRotation,
       callbacks,
       dragProps,
@@ -188,7 +195,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       </SheetContext.Provider>
     );
 
-    if (isSSR) return sheet;
+    if (IS_SSR) return sheet;
 
     return ReactDOM.createPortal(sheet, mountPoint ?? document.body);
   }

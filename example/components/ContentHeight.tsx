@@ -18,43 +18,27 @@ const ContentHeight = () => {
         isOpen={isOpen}
         onClose={close}
         springConfig={{ stiffness: 150, damping: 20, mass: 1 }}
-        useContentHeight={true}
+        detent="content-height"
       >
         <Sheet.Container>
           <Sheet.Header />
 
           <Sheet.Content>
             <BoxList>
-              {boxes
-                .map((_, i) => (
-                  <Box key={i} onClick={() => setBoxes(prev => [...prev, i + 1])}>{i}</Box>
-                ))}
+              {boxes.map((_, i) => (
+                <Box key={i} onClick={() => setBoxes(prev => [...prev, i + 1])}>
+                  {i} (click to create new boxes )
+                </Box>
+              ))}
             </BoxList>
           </Sheet.Content>
         </Sheet.Container>
 
-        <Sheet.Backdrop />
+        <Sheet.Backdrop onTap={close} />
       </Sheet>
     </>
   );
 };
-
-const MessageSheet = styled(Sheet)`
-  margin: 0 auto;
-  max-width: 680px;
-
-  .react-modal-sheet-container {
-    background-color: #222 !important;
-  }
-
-  .react-modal-sheet-backdrop {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-  }
-
-  .react-modal-sheet-drag-indicator {
-    background-color: #666 !important;
-  }
-`;
 
 const BoxList = styled.div`
   height: 100%;
@@ -74,7 +58,7 @@ const Box = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 16px;
 `;
 
 export default ContentHeight;
