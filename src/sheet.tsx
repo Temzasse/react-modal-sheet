@@ -31,6 +31,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       mountPoint,
       springConfig = { stiffness: 300, damping: 30, mass: 0.2 },
       disableDrag = false,
+      style,
       ...rest
     },
     ref
@@ -160,7 +161,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const wrapperProps = {
       ...rest,
       ref,
-      style: styles.wrapper,
+      style: { ...styles.wrapper, ...style },
     };
 
     const sheet = (
