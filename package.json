@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
+  "version": "1.6.1",
   "license": "MIT",
   "name": "react-modal-sheet",
   "description": "Flexible bottom sheet component for your React apps",
