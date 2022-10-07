@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { usePreventScroll } from '@react-aria/overlays';
 
 import {
   animate,
@@ -135,6 +136,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
     }));
 
     useModalEffect(isOpen, rootId);
+
+    // Framer Motion should handle body scroll locking but it's not working
+    // properly on iOS. Scroll locking from React Aria seems to work much better.
+    usePreventScroll({ isDisabled: !isOpen });
 
     const dragProps = disableDrag
       ? ({} as any)
