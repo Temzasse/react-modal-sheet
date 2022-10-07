@@ -18,6 +18,7 @@ export type SheetProps = {
   children: React.ReactNode;
   onClose: () => void;
   rootId?: string;
+  mountPoint?: Element;
   snapPoints?: number[];
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];

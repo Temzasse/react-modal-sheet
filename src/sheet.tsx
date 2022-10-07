@@ -28,6 +28,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       snapPoints,
       initialSnap = 0,
       rootId,
+      mountPoint,
       springConfig = { stiffness: 300, damping: 30, mass: 0.2 },
       disableDrag = false,
       ...rest
@@ -179,7 +180,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     if (isSSR) return sheet;
 
-    return ReactDOM.createPortal(sheet, document.body);
+    return ReactDOM.createPortal(sheet, mountPoint ?? document.body);
   }
 );
 
