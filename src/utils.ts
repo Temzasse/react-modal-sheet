@@ -1,11 +1,8 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { IS_SSR } from './constants';
-
-export const getClosest = (nums: number[], goal: number) => {
+export function getClosest(nums: number[], goal: number) {
   return nums.reduce((prev, curr) => {
     return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
   });
-};
+}
 
 const highlightId = 'react-modal-sheet-highlight';
 
@@ -69,25 +66,27 @@ export function cleanupRootStyles(rootId: string) {
   }
 }
 
-const useIsomorphicLayoutEffect = IS_SSR ? useEffect : useLayoutEffect;
-
-export function useWindowHeight() {
-  const [windowHeight, setWindowHeight] = useState(0);
-
-  useIsomorphicLayoutEffect(() => {
-    const updateHeight = () => setWindowHeight(window.innerHeight);
-    window.addEventListener('resize', updateHeight);
-    updateHeight();
-    return () => window.removeEventListener('resize', updateHeight);
-  }, []);
-
-  return windowHeight;
-}
-
-export const inDescendingOrder = (arr: number[]) => {
+export function inDescendingOrder(arr: number[]) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i + 1] > arr[i]) return false;
   }
 
   return true;
-};
+}
+
+export function validateSnapTo({
+  snapTo,
+  sheetHeight,
+}: {
+  snapTo: number;
+  sheetHeight: number;
+}) {
+  if (snapTo < 0) {
+    console.warn(
+      `Snap point is out of bounds. Sheet height is ${sheetHeight} but snap point is ${sheetHeight +
+        Math.abs(snapTo)}.`
+    );
+  }
+
+  return Math.max(Math.round(snapTo), 0);
+}

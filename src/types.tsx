@@ -61,7 +61,6 @@ export type SheetDragProps = {
   dragConstraints: any;
   dragMomentum: boolean;
   onDrag: DragHandlers['onDrag'];
-  onDragStart: DragHandlers['onDragStart'];
   onDragEnd: DragHandlers['onDragEnd'];
 };
 
@@ -74,7 +73,7 @@ export type SheetContextType = {
   initialSnap: SheetProps['initialSnap'];
   indicatorRotation: MotionValue<number>;
   callbacks: React.MutableRefObject<SheetEvents>;
-  dragProps: SheetDragProps;
+  dragProps?: SheetDragProps;
   windowHeight: number;
   springConfig: Parameters<typeof useSpring>[1];
 };

@@ -1,7 +1,12 @@
 import * as React from 'react';
 
+import { IS_SSR } from './constants';
 import { SheetEvents } from './types';
 import { applyRootStyles, cleanupRootStyles } from './utils';
+
+export const useIsomorphicLayoutEffect = IS_SSR
+  ? React.useEffect
+  : React.useLayoutEffect;
 
 export const useModalEffect = (isOpen: boolean, rootId?: string) => {
   const prevOpen = usePrevious(isOpen);
@@ -54,7 +59,20 @@ export const useEventCallbacks = (
   return { handleAnimationComplete };
 };
 
-const usePrevious = <T,>(state: T): T | undefined => {
+export function useWindowHeight() {
+  const [windowHeight, setWindowHeight] = React.useState(0);
+
+  useIsomorphicLayoutEffect(() => {
+    const updateHeight = () => setWindowHeight(window.innerHeight);
+    window.addEventListener('resize', updateHeight);
+    updateHeight();
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
+  return windowHeight;
+}
+
+export function usePrevious<T>(state: T): T | undefined {
   const ref = React.useRef<T>();
 
   React.useEffect(() => {
@@ -62,4 +80,19 @@ const usePrevious = <T,>(state: T): T | undefined => {
   });
 
   return ref.current;
-};
+}
+
+// Userland version of the `useEvent` React hook:
+// RFC: https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
+export function useEvent<T extends (...args: any[]) => any>(handler: T) {
+  const handlerRef = React.useRef<T>();
+
+  useIsomorphicLayoutEffect(() => {
+    handlerRef.current = handler;
+  });
+
+  return React.useCallback((...args: any[]) => {
+    const fn = handlerRef.current;
+    return fn?.(...args);
+  }, []) as T;
+}
