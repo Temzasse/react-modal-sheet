@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { motion, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import mergeRefs from 'react-merge-refs';
 
 import { SheetContainerProps } from './types';
@@ -26,7 +26,6 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
     const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
     const h = snapPoints ? snapPoints[0] : null;
     const sheetHeight = h ? `min(${h}px, ${MAX_HEIGHT})` : MAX_HEIGHT;
-    const restrictedY = useTransform(y, value => Math.max(value, 0));
 
     return (
       <motion.div
@@ -37,7 +36,7 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
           ...styles.container,
           height: sheetHeight,
           ...style,
-          y: restrictedY,
+          y,
         }}
         initial={{ y: windowHeight }}
         animate={{
