@@ -1,7 +1,8 @@
+<p align='center'>
+  <img src="media/banner.jpg" alt="React Modal Sheet logo"/>
+<p/>
+
 <div align="center" >
-  <br/>
-  <br/>
-  <h1>🪐 React Modal Sheet</h1>
   &middot;
   <i>Flexible bottom sheet component for your React apps</i>
   &middot;
