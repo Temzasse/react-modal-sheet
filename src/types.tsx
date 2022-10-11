@@ -26,6 +26,7 @@ export type SheetProps = {
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
   disableDrag?: boolean;
+  prefersReducedMotion?: boolean;
 } & SheetEvents &
   React.HTMLAttributes<HTMLDivElement>;
 
@@ -76,6 +77,7 @@ export type SheetContextType = {
   dragProps?: SheetDragProps;
   windowHeight: number;
   springConfig: Parameters<typeof useSpring>[1];
+  prefersReducedMotion?: boolean;
 };
 
 type ContainerComponent = React.ForwardRefExoticComponent<
