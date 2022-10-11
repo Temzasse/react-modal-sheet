@@ -40,11 +40,11 @@ npm install framer-motion
 ## Usage
 
 ```jsx
-import React from 'react';
 import Sheet from 'react-modal-sheet';
+import { useState } from 'react';
 
 function Example() {
-  const [isOpen, setOpen] = React.useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   return (
     <>
@@ -77,6 +77,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `isOpen`       | yes      |                  | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                          |
 | `onClose`      | yes      |                  | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                  |
 | `disableDrag`  | no       | false            | Disable drag for the whole sheet.                                                                                                                                                                                                 |
+| `detent`       | no       | `'full-height'`  | The [detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados) in which the sheet should be in when opened. Available values: `'full-height'` or `'content-height'`.       |
 | `onOpenStart`  | no       |                  | Callback fn that is called when the sheet opening animation starts.                                                                                                                                                               |
 | `onOpenEnd`    | no       |                  | Callback fn that is called when the sheet opening animation is completed.                                                                                                                                                         |
 | `onCloseStart` | no       |                  | Callback fn that is called when the sheet closing animation starts.                                                                                                                                                               |
@@ -107,12 +108,12 @@ Spring animation happens when the sheet is opened/closed or when it snaps to a s
 Imperative method that can be accessed via a ref for snapping to a snap point in given index.
 
 ```tsx
-import React from 'react';
 import Sheet, { SheetRef } from 'react-modal-sheet';
+import { useState, useRef } from 'react';
 
 function Example() {
-  const [isOpen, setOpen] = React.useState(false);
-  const ref = React.useRef<SheetRef>();
+  const [isOpen, setOpen] = useState(false);
+  const ref = useRef<SheetRef>();
   const snapTo = (i: number) => ref.current?.snapTo(i);
 
   return (
@@ -153,12 +154,12 @@ Similarly to the `snapTo` method the `y` value can be accessed via a ref.
 The `y` value can be useful for certain situtation eg. when you want to combine snap points with scrollable sheet content and ensure that the content stays properly scrollable in any snap point. Below you can see a simplified example of this situation and for a more detailed example take a look at the [ScrollableSnapPoints](example/components/ScrollableSnapPoints.tsx) component in the example app.
 
 ```tsx
-import React from 'react';
 import Sheet, { SheetRef } from 'react-modal-sheet';
+import { useState, useRef } from 'react';
 
 function Example() {
-  const [isOpen, setOpen] = React.useState(false);
-  const ref = React.useRef<SheetRef>();
+  const [isOpen, setOpen] = useState(false);
+  const ref = useRef<SheetRef>();
 
   return (
     <>
@@ -188,6 +189,36 @@ function Example() {
   );
 }
 ```
+
+### Detents
+
+By default the sheet will take the full height of the page minus top padding and safe area inset. If you want the sheet height to be based on it's content you can pass `detent="content-height"` prop to the `Sheet` component:
+
+```tsx
+function Example() {
+  const [isOpen, setOpen] = useState(false);
+
+  return (
+    <Sheet
+      isOpen={isOpen}
+      onClose={() => setOpen(false)}
+      detent="content-height"
+    >
+      <Sheet.Container>
+        <Sheet.Content>
+          <div style={{ height: 200 }}>Some content</div>
+        </Sheet.Content>
+      </Sheet.Container>
+    </Sheet>
+  );
+}
+```
+
+If the sheet height changes dynamically the sheet will grow until it hits the maximum full height after which it becomes scrollable.
+
+It is possible to use snap points with `detent="content-height"` **but** the snap points are restricted by the content height. For example if one of the snap points is 800px and the sheet height is only 700px then snapping to the 800px snap point would only snap to 700px since otherwise the sheet would become detached from the bottom.
+
+> ℹ️ If you are wondering where the term `detent` comes from it's from Apple's [Human Interface Guidelines](<[detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados)>).
 
 ## Compound Components
 
@@ -300,9 +331,9 @@ You can add your own styles or override the default sheet styles via the exposed
 #### CSS-in-JS
 
 ```jsx
-import React from 'react';
-import styled from 'styled-components';
 import Sheet from 'react-modal-sheeet';
+import styled from 'styled-components';
+import { useState } from 'react';
 
 const CustomSheet = styled(Sheet)`
   .react-modal-sheet-backdrop {
@@ -323,7 +354,7 @@ const CustomSheet = styled(Sheet)`
 `;
 
 function Example() {
-  const [isOpen, setOpen] = React.useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   return (
     <>
@@ -351,8 +382,8 @@ The example below utilizes React Aria to achieve an accessible modal-like bottom
 > ℹ️ The example was built by following the React Aria's [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation.
 
 ```jsx
-import React from 'react';
 import Sheet from 'react-modal-sheet';
+import { useRef } from 'react';
 import { useOverlayTriggerState } from 'react-stately';
 
 import {
@@ -366,7 +397,7 @@ import {
 
 const A11yExample = () => {
   const sheetState = useOverlayTriggerState({});
-  const openButtonRef = React.useRef(null);
+  const openButtonRef = useRef(null);
   const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
 
   return (
@@ -387,14 +418,14 @@ const A11yExample = () => {
 };
 
 const SheetComp = ({ sheetState }) => {
-  const containerRef = React.useRef(null);
+  const containerRef = useRef(null);
   const dialog = useDialog({}, containerRef);
   const overlay = useOverlay(
     { onClose: sheetState.close, isOpen: true, isDismissable: true },
     containerRef
   );
 
-  const closeButtonRef = React.useRef(null);
+  const closeButtonRef = useRef(null);
   const closeButton = useButton(
     { onPress: sheetState.close, 'aria-label': 'Close sheet' },
     closeButtonRef
