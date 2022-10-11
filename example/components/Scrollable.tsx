@@ -38,23 +38,6 @@ const Scrollable = () => {
   );
 };
 
-const MessageSheet = styled(Sheet)`
-  margin: 0 auto;
-  max-width: 680px;
-
-  .react-modal-sheet-container {
-    background-color: #222 !important;
-  }
-
-  .react-modal-sheet-backdrop {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-  }
-
-  .react-modal-sheet-drag-indicator {
-    background-color: #666 !important;
-  }
-`;
-
 const BoxList = styled.div`
   height: 100%;
   display: flex;
