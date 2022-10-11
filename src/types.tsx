@@ -13,6 +13,8 @@ export type SheetEvents = {
   onSnap?: (index: number) => void;
 };
 
+export type SheetDetent = 'full-height' | 'content-height';
+
 export type SheetProps = {
   isOpen: boolean;
   children: React.ReactNode;
@@ -20,6 +22,7 @@ export type SheetProps = {
   rootId?: string;
   mountPoint?: Element;
   snapPoints?: number[];
+  detent?: SheetDetent;
   initialSnap?: number; // index of snap points array
   springConfig?: Parameters<typeof useSpring>[1];
   disableDrag?: boolean;
@@ -58,7 +61,6 @@ export type SheetDragProps = {
   dragConstraints: any;
   dragMomentum: boolean;
   onDrag: DragHandlers['onDrag'];
-  onDragStart: DragHandlers['onDragStart'];
   onDragEnd: DragHandlers['onDragEnd'];
 };
 
@@ -67,10 +69,11 @@ export type SheetContextType = {
   sheetRef: React.MutableRefObject<any>;
   isOpen: boolean;
   snapPoints: SheetProps['snapPoints'];
+  detent?: SheetDetent;
   initialSnap: SheetProps['initialSnap'];
   indicatorRotation: MotionValue<number>;
   callbacks: React.MutableRefObject<SheetEvents>;
-  dragProps: SheetDragProps;
+  dragProps?: SheetDragProps;
   windowHeight: number;
   springConfig: Parameters<typeof useSpring>[1];
 };

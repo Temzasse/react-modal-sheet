@@ -1,59 +1,52 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Sheet from '../../src';
+import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
 
-const Scrollable = () => {
+const ContentHeight = () => {
   const [isOpen, setOpen] = React.useState(false);
+  const [boxes, setBoxes] = React.useState([0, 1]);
+  const ref = React.useRef<SheetRef>();
   const open = () => setOpen(true);
   const close = () => setOpen(false);
+  const snapTo = (i: number) => ref.current?.snapTo(i);
 
   return (
     <>
-      <Button onClick={open}>Scrollable Bottom Sheet</Button>
+      <Button onClick={open}>Bottom Sheet Height of Content</Button>
 
       <Sheet
+        ref={ref}
         isOpen={isOpen}
         onClose={close}
+        initialSnap={0}
+        snapPoints={[-50, 100, 0]}
         springConfig={{ stiffness: 150, damping: 20, mass: 1 }}
+        detent="content-height"
       >
         <Sheet.Container>
           <Sheet.Header />
 
           <Sheet.Content>
             <BoxList>
-              {Array.from({ length: 50 })
-                .fill(1)
-                .map((_, i) => (
-                  <Box key={i}>{i}</Box>
-                ))}
+              <Button onClick={() => snapTo(0)}>Snap to top</Button>
+              <Button onClick={() => snapTo(1)}>Snap to bottom</Button>
+
+              {boxes.map((_, i) => (
+                <Box key={i} onClick={() => setBoxes(prev => [...prev, i + 1])}>
+                  {i} (click to create new boxes )
+                </Box>
+              ))}
             </BoxList>
           </Sheet.Content>
         </Sheet.Container>
 
-        <Sheet.Backdrop />
+        <Sheet.Backdrop onTap={close} />
       </Sheet>
     </>
   );
 };
-
-const MessageSheet = styled(Sheet)`
-  margin: 0 auto;
-  max-width: 680px;
-
-  .react-modal-sheet-container {
-    background-color: #222 !important;
-  }
-
-  .react-modal-sheet-backdrop {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-  }
-
-  .react-modal-sheet-drag-indicator {
-    background-color: #666 !important;
-  }
-`;
 
 const BoxList = styled.div`
   height: 100%;
@@ -73,7 +66,7 @@ const Box = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 16px;
 `;
 
-export default Scrollable;
+export default ContentHeight;

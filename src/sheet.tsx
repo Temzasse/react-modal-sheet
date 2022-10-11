@@ -4,33 +4,47 @@ import { usePreventScroll } from '@react-aria/overlays';
 
 import {
   animate,
-  useMotionValue,
-  PanInfo,
   AnimatePresence,
+  PanInfo,
+  useMotionValue,
 } from 'framer-motion';
 
+import {
+  useModalEffect,
+  useWindowHeight,
+  useIsomorphicLayoutEffect,
+  useEvent,
+} from './hooks';
+
+import {
+  DEFAULT_SPRING_CONFIG,
+  DRAG_CLOSE_THRESHOLD,
+  DRAG_VELOCITY_THRESHOLD,
+  IS_SSR,
+} from './constants';
+
 import { SheetContextType, SheetProps } from './types';
-import { getClosest, inDescendingOrder, isSSR, useWindowHeight } from './utils';
 import { SheetContext } from './context';
-import { useModalEffect } from './hooks';
+import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
 import styles from './styles';
 
 const Sheet = React.forwardRef<any, SheetProps>(
   (
     {
-      children,
-      isOpen,
-      onClose,
       onOpenStart,
       onOpenEnd,
+      onClose,
       onCloseStart,
       onCloseEnd,
       onSnap,
+      children,
+      isOpen,
       snapPoints,
+      detent,
       initialSnap = 0,
       rootId,
       mountPoint,
-      springConfig = { stiffness: 300, damping: 30, mass: 0.2 },
+      springConfig = DEFAULT_SPRING_CONFIG,
       disableDrag = false,
       style,
       ...rest
@@ -38,7 +52,6 @@ const Sheet = React.forwardRef<any, SheetProps>(
     ref
   ) => {
     const sheetRef = React.useRef<any>(null);
-    const callbacks = React.useRef({ onOpenStart, onOpenEnd, onCloseStart, onCloseEnd }); // prettier-ignore
     const indicatorRotation = useMotionValue(0);
     const windowHeight = useWindowHeight();
 
@@ -47,10 +60,29 @@ const Sheet = React.forwardRef<any, SheetProps>(
     // and after that it is driven by the gestures and/or snapping
     const y = useMotionValue(0);
 
+    // Keep the callback fns up-to-date so that they can be accessed inside
+    // the effect without including them to the dependencies array
+    const callbacks = React.useRef({
+      onOpenStart,
+      onOpenEnd,
+      onCloseStart,
+      onCloseEnd,
+    });
+
+    useIsomorphicLayoutEffect(() => {
+      callbacks.current = {
+        onOpenStart,
+        onOpenEnd,
+        onCloseStart,
+        onCloseEnd,
+      };
+    });
+
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
       snapPoints = snapPoints.map(point => {
-        if (point > 0 && point <= 1) return Math.round(point * windowHeight); // percentage values e.g. between 0.0 and 1.0
+        // Percentage values e.g. between 0.0 and 1.0
+        if (point > 0 && point <= 1) return Math.round(point * windowHeight);
         return point < 0 ? windowHeight + point : point; // negative values
       });
 
@@ -60,54 +92,61 @@ const Sheet = React.forwardRef<any, SheetProps>(
       );
     }
 
-    const handleDrag = React.useCallback((_, { delta }: PanInfo) => {
+    const onDrag = useEvent((_, { delta }: PanInfo) => {
       // Update drag indicator rotation based on drag velocity
       const velocity = y.getVelocity();
+
       if (velocity > 0) indicatorRotation.set(10);
       if (velocity < 0) indicatorRotation.set(-10);
 
       // Make sure user cannot drag beyond the top of the sheet
       y.set(Math.max(y.get() + delta.y, 0));
-    }, []); // eslint-disable-line
+    });
 
-    const handleDragEnd = React.useCallback(
-      (_, { velocity }: PanInfo) => {
-        if (velocity.y > 500) {
-          // User flicked the sheet down
-          onClose();
-        } else {
-          const sheetEl = sheetRef.current as HTMLDivElement;
-          const contentHeight = sheetEl.getBoundingClientRect().height;
-          const snapTo = Math.round(
-            snapPoints
-              ? getClosest(snapPoints.map(p => contentHeight - p), y.get()) // prettier-ignore
-              : y.get() / contentHeight > 0.6 // Close if dragged over 60%
-              ? contentHeight
-              : 0
-          );
+    const onDragEnd = useEvent((_, { velocity }: PanInfo) => {
+      if (velocity.y > DRAG_VELOCITY_THRESHOLD) {
+        // User flicked the sheet down
+        onClose();
+      } else {
+        const sheetEl = sheetRef.current as HTMLDivElement;
+        const sheetHeight = sheetEl.getBoundingClientRect().height;
+        const currentY = y.get();
 
-          // Update the spring value so that the sheet is animated to the snap point
-          animate(y, snapTo, { type: 'spring', ...springConfig });
+        let snapTo = 0;
 
-          if (snapPoints && onSnap) {
-            const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
-            const snapIndex = snapPoints.indexOf(getClosest(snapPoints, snapValue)); // prettier-ignore
-            onSnap(snapIndex);
+        if (snapPoints) {
+          const snapToValues = snapPoints
+            .map(p => sheetHeight - p)
+            .filter(p => p >= 0); // negative values can occur with `content-height` detent
+
+          // Allow snapping to the top of the sheet if detent is set to `content-height`
+          if (detent === 'content-height' && !snapToValues.includes(0)) {
+            snapToValues.unshift(0);
           }
 
-          if (snapTo >= contentHeight) onClose();
+          // Get the closest snap point
+          snapTo = getClosest(snapToValues, currentY);
+        } else if (currentY / sheetHeight > DRAG_CLOSE_THRESHOLD) {
+          // Close if dragged over enough far
+          snapTo = sheetHeight;
         }
 
-        // Reset indicator rotation after dragging
-        indicatorRotation.set(0);
-      },
-      [onClose, onSnap] // eslint-disable-line
-    );
+        snapTo = validateSnapTo({ snapTo, sheetHeight });
 
-    // Keep the callback fns up-to-date so that they can be accessed inside
-    // the effect without including them to the dependencies array
-    React.useEffect(() => {
-      callbacks.current = { onOpenStart, onOpenEnd, onCloseStart, onCloseEnd };
+        // Update the spring value so that the sheet is animated to the snap point
+        animate(y, snapTo, { type: 'spring', ...springConfig });
+
+        if (snapPoints && onSnap) {
+          const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
+          const snapIndex = snapPoints.indexOf(getClosest(snapPoints, snapValue)); // prettier-ignore
+          onSnap(snapIndex);
+        }
+
+        if (snapTo >= sheetHeight) onClose();
+      }
+
+      // Reset indicator rotation after dragging
+      indicatorRotation.set(0);
     });
 
     // Trigger onSnap callback when sheet is opened or closed
@@ -121,16 +160,23 @@ const Sheet = React.forwardRef<any, SheetProps>(
       y,
       snapTo: (snapIndex: number) => {
         const sheetEl = sheetRef.current as HTMLDivElement | null;
+
         if (
           snapPoints &&
           snapPoints[snapIndex] !== undefined &&
           sheetEl !== null
         ) {
-          const contentHeight = sheetEl.getBoundingClientRect().height;
-          const snapTo = contentHeight - snapPoints[snapIndex];
+          const sheetHeight = sheetEl.getBoundingClientRect().height;
+          const snapPoint = snapPoints[snapIndex];
+          const snapTo = validateSnapTo({
+            snapTo: sheetHeight - snapPoint,
+            sheetHeight,
+          });
+
           animate(y, snapTo, { type: 'spring', ...springConfig });
+
           if (onSnap) onSnap(snapIndex);
-          if (snapTo >= contentHeight) onClose();
+          if (snapTo >= sheetHeight) onClose();
         }
       },
     }));
@@ -141,16 +187,18 @@ const Sheet = React.forwardRef<any, SheetProps>(
     // properly on iOS. Scroll locking from React Aria seems to work much better.
     usePreventScroll({ isDisabled: !isOpen });
 
-    const dragProps = disableDrag
-      ? ({} as any)
-      : {
-          drag: 'y' as const,
-          dragElastic: 0,
-          dragConstraints: { top: 0, bottom: 0 },
-          dragMomentum: false,
-          onDrag: handleDrag,
-          onDragEnd: handleDragEnd,
-        };
+    const dragProps = React.useMemo(() => {
+      const dragProps: SheetContextType['dragProps'] = {
+        drag: 'y',
+        dragElastic: 0,
+        dragConstraints: { top: 0, bottom: 0 },
+        dragMomentum: false,
+        onDrag,
+        onDragEnd,
+      };
+
+      return disableDrag ? undefined : dragProps;
+    }, [disableDrag]); // eslint-disable-line
 
     const context: SheetContextType = {
       y,
@@ -158,6 +206,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       isOpen,
       initialSnap,
       snapPoints,
+      detent,
       indicatorRotation,
       callbacks,
       dragProps,
@@ -165,15 +214,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
       springConfig,
     };
 
-    const wrapperProps = {
-      ...rest,
-      ref,
-      style: { ...styles.wrapper, ...style },
-    };
-
     const sheet = (
       <SheetContext.Provider value={context}>
-        <div {...wrapperProps}>
+        <div {...rest} ref={ref} style={{ ...styles.wrapper, ...style }}>
           <AnimatePresence>
             {/* NOTE: AnimatePresence requires us to set keys to children */}
             {isOpen
@@ -186,7 +229,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       </SheetContext.Provider>
     );
 
-    if (isSSR) return sheet;
+    if (IS_SSR) return sheet;
 
     return ReactDOM.createPortal(sheet, mountPoint ?? document.body);
   }

@@ -5,9 +5,8 @@ import mergeRefs from 'react-merge-refs';
 import { SheetContainerProps } from './types';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
+import { MAX_HEIGHT } from './constants';
 import styles from './styles';
-
-const MAX_HEIGHT = 'calc(100% - env(safe-area-inset-top) - 34px)';
 
 const SheetContainer = React.forwardRef<any, SheetContainerProps>(
   ({ children, style = {}, ...rest }, ref) => {
@@ -20,12 +19,17 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
       sheetRef,
       windowHeight,
       springConfig,
+      detent = 'full-height',
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
     const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
-    const h = snapPoints ? snapPoints[0] : null;
-    const sheetHeight = h ? `min(${h}px, ${MAX_HEIGHT})` : MAX_HEIGHT;
+    const maxSnapHeight = snapPoints ? snapPoints[0] : null;
+
+    const height =
+      maxSnapHeight !== null
+        ? `min(${maxSnapHeight}px, ${MAX_HEIGHT})`
+        : MAX_HEIGHT;
 
     return (
       <motion.div
@@ -34,8 +38,9 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
         className="react-modal-sheet-container"
         style={{
           ...styles.container,
-          height: sheetHeight,
           ...style,
+          ...(detent === 'full-height' && { height }),
+          ...(detent === 'content-height' && { maxHeight: height }),
           y,
         }}
         initial={{ y: windowHeight }}
