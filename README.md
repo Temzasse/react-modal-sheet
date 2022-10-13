@@ -220,7 +220,7 @@ If the sheet height changes dynamically the sheet will grow until it hits the ma
 
 It is possible to use snap points with `detent="content-height"` **but** the snap points are restricted by the content height. For example if one of the snap points is 800px and the sheet height is only 700px then snapping to the 800px snap point would only snap to 700px since otherwise the sheet would become detached from the bottom.
 
-> ℹ️ If you are wondering where the term `detent` comes from it's from Apple's [Human Interface Guidelines](<[detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados)>).
+> ℹ️ If you are wondering where the term `detent` comes from it's from Apple's [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados).
 
 ## Compound Components
 
