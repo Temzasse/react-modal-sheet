@@ -7,6 +7,7 @@ import {
   AnimatePresence,
   PanInfo,
   useMotionValue,
+  useReducedMotion,
 } from 'framer-motion';
 
 import {
@@ -47,6 +48,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       springConfig = DEFAULT_SPRING_CONFIG,
       disableDrag = false,
       style,
+      prefersReducedMotion = false,
       ...rest
     },
     ref
@@ -54,6 +56,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const sheetRef = React.useRef<any>(null);
     const indicatorRotation = useMotionValue(0);
     const windowHeight = useWindowHeight();
+    const shouldReduceMotion = useReducedMotion();
 
     // NOTE: the inital value for `y` doesn't matter since it is overwritten by
     // the value driven by the `AnimatePresence` component when the sheet is opened
@@ -134,7 +137,11 @@ const Sheet = React.forwardRef<any, SheetProps>(
         snapTo = validateSnapTo({ snapTo, sheetHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
-        animate(y, snapTo, { type: 'spring', ...springConfig });
+        if (prefersReducedMotion || shouldReduceMotion) {
+          animate(y, snapTo, { type: 'tween', duration: 0.01 });
+        } else {
+          animate(y, snapTo, { type: 'spring', ...springConfig });
+        }
 
         if (snapPoints && onSnap) {
           const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
@@ -173,7 +180,11 @@ const Sheet = React.forwardRef<any, SheetProps>(
             sheetHeight,
           });
 
-          animate(y, snapTo, { type: 'spring', ...springConfig });
+          if (prefersReducedMotion || shouldReduceMotion) {
+            animate(y, snapTo, { type: 'tween', duration: 0.01 });
+          } else {
+            animate(y, snapTo, { type: 'spring', ...springConfig });
+          }
 
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= sheetHeight) onClose();
@@ -212,6 +223,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       dragProps,
       windowHeight,
       springConfig,
+      prefersReducedMotion,
     };
 
     const sheet = (
