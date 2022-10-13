@@ -3,6 +3,7 @@ import {
   MotionValue,
   useSpring,
   MotionProps,
+  AnimationOptions,
 } from 'framer-motion';
 
 export type SheetEvents = {
@@ -70,14 +71,14 @@ export type SheetContextType = {
   sheetRef: React.MutableRefObject<any>;
   isOpen: boolean;
   snapPoints: SheetProps['snapPoints'];
-  detent?: SheetDetent;
+  detent: SheetDetent;
   initialSnap: SheetProps['initialSnap'];
   indicatorRotation: MotionValue<number>;
   callbacks: React.MutableRefObject<SheetEvents>;
   dragProps?: SheetDragProps;
   windowHeight: number;
-  springConfig: Parameters<typeof useSpring>[1];
-  prefersReducedMotion?: boolean;
+  animationOptions: AnimationOptions<number>;
+  reduceMotion: boolean;
 };
 
 type ContainerComponent = React.ForwardRefExoticComponent<

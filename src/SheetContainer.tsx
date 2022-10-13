@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import mergeRefs from 'react-merge-refs';
 
 import { SheetContainerProps } from './types';
@@ -18,21 +18,14 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
       initialSnap = 0,
       sheetRef,
       windowHeight,
-      springConfig,
-      detent = 'full-height',
-      prefersReducedMotion,
+      detent,
+      animationOptions,
+      reduceMotion,
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
     const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
     const maxSnapHeight = snapPoints ? snapPoints[0] : null;
-    const shouldReduceMotion = useReducedMotion();
-    const initial =
-      prefersReducedMotion || shouldReduceMotion ? false : { y: windowHeight };
-    const transition =
-      prefersReducedMotion || shouldReduceMotion
-        ? { type: 'tween', duration: 0.01 }
-        : { type: 'spring', ...springConfig };
 
     const height =
       maxSnapHeight !== null
@@ -51,12 +44,9 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
           ...(detent === 'content-height' && { maxHeight: height }),
           y,
         }}
-        initial={initial}
-        animate={{
-          y: initialY,
-          transition,
-        }}
-        exit={{ y: windowHeight, transition }}
+        initial={reduceMotion ? false : { y: windowHeight }}
+        animate={{ y: initialY, transition: animationOptions }}
+        exit={{ y: windowHeight, transition: animationOptions }}
         onAnimationComplete={handleAnimationComplete}
       >
         {children}

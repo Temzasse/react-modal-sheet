@@ -5,6 +5,7 @@ import { usePreventScroll } from '@react-aria/overlays';
 import {
   animate,
   AnimatePresence,
+  AnimationOptions,
   PanInfo,
   useMotionValue,
   useReducedMotion,
@@ -41,13 +42,13 @@ const Sheet = React.forwardRef<any, SheetProps>(
       children,
       isOpen,
       snapPoints,
-      detent,
-      initialSnap = 0,
       rootId,
       mountPoint,
+      style,
+      detent = 'full-height',
+      initialSnap = 0,
       springConfig = DEFAULT_SPRING_CONFIG,
       disableDrag = false,
-      style,
       prefersReducedMotion = false,
       ...rest
     },
@@ -57,6 +58,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const indicatorRotation = useMotionValue(0);
     const windowHeight = useWindowHeight();
     const shouldReduceMotion = useReducedMotion();
+    const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
+    const animationOptions: AnimationOptions<number> = reduceMotion
+      ? { type: 'tween', duration: 0.01 }
+      : { type: 'spring', ...springConfig };
 
     // NOTE: the inital value for `y` doesn't matter since it is overwritten by
     // the value driven by the `AnimatePresence` component when the sheet is opened
@@ -137,11 +142,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
         snapTo = validateSnapTo({ snapTo, sheetHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
-        if (prefersReducedMotion || shouldReduceMotion) {
-          animate(y, snapTo, { type: 'tween', duration: 0.01 });
-        } else {
-          animate(y, snapTo, { type: 'spring', ...springConfig });
-        }
+        animate(y, snapTo, animationOptions);
 
         if (snapPoints && onSnap) {
           const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
@@ -180,12 +181,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
             sheetHeight,
           });
 
-          if (prefersReducedMotion || shouldReduceMotion) {
-            animate(y, snapTo, { type: 'tween', duration: 0.01 });
-          } else {
-            animate(y, snapTo, { type: 'spring', ...springConfig });
-          }
-
+          animate(y, snapTo, animationOptions);
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= sheetHeight) onClose();
         }
@@ -222,8 +218,8 @@ const Sheet = React.forwardRef<any, SheetProps>(
       callbacks,
       dragProps,
       windowHeight,
-      springConfig,
-      prefersReducedMotion,
+      animationOptions,
+      reduceMotion,
     };
 
     const sheet = (
