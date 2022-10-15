@@ -7,18 +7,20 @@ import styles from './styles';
 
 const SheetContent = React.forwardRef<any, SheetDraggableProps>(
   ({ children, style, ...rest }, ref) => {
-    const { dragProps } = useSheetContext();
+    const { windowHeight, dragProps } = useSheetContext();
 
     return (
-      <motion.div
-        {...rest}
-        ref={ref}
-        className="react-modal-sheet-content"
-        style={{ ...styles.content, ...style }}
-        {...dragProps}
-      >
-        {children}
-      </motion.div>
+      <React.Fragment key={windowHeight}>
+        <motion.div
+          {...rest}
+          ref={ref}
+          className="react-modal-sheet-content"
+          style={{ ...styles.content, ...style }}
+          {...dragProps}
+        >
+          {children}
+        </motion.div>
+      </React.Fragment>
     );
   }
 );
