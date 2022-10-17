@@ -6,8 +6,9 @@ import { useSheetContext } from './context';
 import styles from './styles';
 
 const SheetHeader = React.forwardRef<any, SheetDraggableProps>(
-  ({ children, style, ...rest }, ref) => {
+  ({ children, style, disableDrag, ...rest }, ref) => {
     const { indicatorRotation, dragProps } = useSheetContext();
+    const _dragProps = disableDrag ? undefined : dragProps;
 
     const indicator1Transform = useTransform(
       indicatorRotation,
@@ -24,7 +25,7 @@ const SheetHeader = React.forwardRef<any, SheetDraggableProps>(
         {...rest}
         ref={ref}
         style={{ ...styles.headerWrapper, ...style }}
-        {...dragProps}
+        {..._dragProps}
       >
         {children || (
           <div className="react-modal-sheet-header" style={styles.header}>
