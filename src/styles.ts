@@ -20,6 +20,7 @@ const styles: { [key: string]: CSS.Properties } = {
     height: '100%',
     backgroundColor: 'rgba(51, 51, 51, 0.5)',
     touchAction: 'none', // Disable iOS body scrolling
+    border: 'none',
   },
   container: {
     zIndex: 2,
