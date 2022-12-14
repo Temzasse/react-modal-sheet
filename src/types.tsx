@@ -16,6 +16,10 @@ export type SheetEvents = {
 
 export type SheetDetent = 'full-height' | 'content-height';
 
+type CommonProps = MotionProps & {
+  className?: string;
+};
+
 export type SheetProps = {
   isOpen: boolean;
   children: React.ReactNode;
@@ -32,14 +36,14 @@ export type SheetProps = {
   React.HTMLAttributes<HTMLDivElement>;
 
 export type SheetContainerProps = Omit<
-  MotionProps,
+  CommonProps,
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
 > & {
   children: React.ReactNode;
 };
 
 export type SheetDraggableProps = Omit<
-  MotionProps,
+  CommonProps,
   | 'drag'
   | 'dragElastic'
   | 'dragConstraints'
@@ -53,7 +57,7 @@ export type SheetDraggableProps = Omit<
 };
 
 export type SheetBackdropProps = Omit<
-  MotionProps,
+  CommonProps,
   'initial' | 'animate' | 'exit'
 >;
 

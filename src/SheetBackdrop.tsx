@@ -7,7 +7,7 @@ import styles from './styles';
 const isClickable = (props: any) => !!props.onClick || !!props.onTap;
 
 const SheetBackdrop = React.forwardRef<any, SheetBackdropProps>(
-  ({ style = {}, ...rest }, ref) => {
+  ({ style = {}, className = '', ...rest }, ref) => {
     const Comp = isClickable(rest) ? motion.button : motion.div;
     const pointerEvents = isClickable(rest) ? 'auto' : 'none';
 
@@ -15,7 +15,7 @@ const SheetBackdrop = React.forwardRef<any, SheetBackdropProps>(
       <Comp
         {...rest}
         ref={ref}
-        className="react-modal-sheet-backdrop"
+        className={`react-modal-sheet-backdrop ${className}`}
         style={{ ...styles.backdrop, ...style, pointerEvents }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

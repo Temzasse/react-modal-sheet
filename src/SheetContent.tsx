@@ -6,7 +6,7 @@ import { useSheetContext } from './context';
 import styles from './styles';
 
 const SheetContent = React.forwardRef<any, SheetDraggableProps>(
-  ({ children, style, disableDrag, ...rest }, ref) => {
+  ({ children, style, disableDrag, className = '', ...rest }, ref) => {
     const { dragProps } = useSheetContext();
     const _dragProps = disableDrag ? undefined : dragProps;
 
@@ -14,7 +14,7 @@ const SheetContent = React.forwardRef<any, SheetDraggableProps>(
       <motion.div
         {...rest}
         ref={ref}
-        className="react-modal-sheet-content"
+        className={`react-modal-sheet-content ${className}`}
         style={{ ...styles.content, ...style }}
         {..._dragProps}
       >

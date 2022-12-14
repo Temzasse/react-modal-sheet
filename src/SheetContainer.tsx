@@ -9,7 +9,7 @@ import { MAX_HEIGHT } from './constants';
 import styles from './styles';
 
 const SheetContainer = React.forwardRef<any, SheetContainerProps>(
-  ({ children, style = {}, ...rest }, ref) => {
+  ({ children, style = {}, className = '', ...rest }, ref) => {
     const {
       y,
       isOpen,
@@ -36,7 +36,7 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
       <motion.div
         {...rest}
         ref={mergeRefs([sheetRef, ref])}
-        className="react-modal-sheet-container"
+        className={`react-modal-sheet-container ${className}`}
         style={{
           ...styles.container,
           ...style,
