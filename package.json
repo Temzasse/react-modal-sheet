@@ -50,21 +50,21 @@
     "yarn": true
   },
   "devDependencies": {
-    "@types/react": "17.0.37",
-    "@types/react-dom": "17.0.11",
-    "@types/styled-components": "5.1.7",
-    "csstype": "3.0.6",
-    "framer-motion": "6.3.11",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.10",
+    "@types/styled-components": "5.1.26",
+    "csstype": "3.1.1",
+    "framer-motion": "8.4.3",
     "husky": "4.2.5",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "styled-components": "5.3.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "styled-components": "5.3.6",
     "tsdx": "0.14.1",
-    "tslib": "2.4.0",
-    "typescript": "4.7.3"
+    "tslib": "2.4.1",
+    "typescript": "4.9.4"
   },
   "dependencies": {
-    "@react-aria/overlays": "3.11.0",
-    "react-merge-refs": "1.1.0"
+    "@react-aria/utils": "3.14.2",
+    "react-merge-refs": "2.0.1"
   }
 }

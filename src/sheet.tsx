@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { usePreventScroll } from '@react-aria/overlays';
 
 import {
   animate,
@@ -28,6 +27,7 @@ import {
 import { SheetContextType, SheetProps } from './types';
 import { SheetContext } from './context';
 import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
+import { usePreventScroll } from './use-prevent-scroll';
 import styles from './styles';
 
 const Sheet = React.forwardRef<any, SheetProps>(
@@ -200,6 +200,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
         dragElastic: 0,
         dragConstraints: { top: 0, bottom: 0 },
         dragMomentum: false,
+        dragPropagation: false,
         onDrag,
         onDragEnd,
       };

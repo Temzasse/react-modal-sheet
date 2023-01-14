@@ -1,9 +1,9 @@
 import {
   DragHandlers,
   MotionValue,
-  useSpring,
   MotionProps,
   AnimationOptions,
+  Spring,
 } from 'framer-motion';
 
 export type SheetEvents = {
@@ -29,7 +29,7 @@ export type SheetProps = {
   snapPoints?: number[];
   detent?: SheetDetent;
   initialSnap?: number; // index of snap points array
-  springConfig?: Parameters<typeof useSpring>[1];
+  springConfig?: Omit<Spring, 'type'>;
   disableDrag?: boolean;
   prefersReducedMotion?: boolean;
 } & SheetEvents &
@@ -66,6 +66,7 @@ export type SheetDragProps = {
   dragElastic: number;
   dragConstraints: any;
   dragMomentum: boolean;
+  dragPropagation: boolean;
   onDrag: DragHandlers['onDrag'];
   onDragEnd: DragHandlers['onDragEnd'];
 };
