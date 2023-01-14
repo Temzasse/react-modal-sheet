@@ -61,7 +61,6 @@ const Content = styled.div`
 const BoxList = styled.div`
   width: 100%;
   display: flex;
-  padding: 16px;
   padding: 24px 0px;
   overflow: auto;
 `;
