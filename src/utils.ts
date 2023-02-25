@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 export function getClosest(nums: number[], goal: number) {
   return nums.reduce((prev, curr) => {
     return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
@@ -89,4 +91,18 @@ export function validateSnapTo({
   }
 
   return Math.max(Math.round(snapTo), 0);
+}
+
+export function mergeRefs<T = any>(
+  refs: React.ForwardedRef<T>[]
+): React.RefCallback<T> {
+  return (value: any) => {
+    refs.forEach((ref: any) => {
+      if (typeof ref === 'function') {
+        ref(value);
+      } else if (ref) {
+        ref.current = value;
+      }
+    });
+  };
 }

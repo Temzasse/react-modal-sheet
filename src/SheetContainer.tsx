@@ -5,21 +5,8 @@ import { SheetContainerProps } from './types';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
 import { MAX_HEIGHT } from './constants';
+import { mergeRefs } from './utils';
 import styles from './styles';
-
-function mergeRefs<T = any>(
-  refs: React.ForwardedRef<T>[]
-): React.RefCallback<T> {
-  return (value: any) => {
-    refs.forEach((ref: any) => {
-      if (typeof ref === 'function') {
-        ref(value);
-      } else if (ref) {
-        ref.current = value;
-      }
-    });
-  };
-}
 
 const SheetContainer = React.forwardRef<any, SheetContainerProps>(
   ({ children, style = {}, className = '', ...rest }, ref) => {
