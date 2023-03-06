@@ -150,7 +150,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
           onSnap(snapIndex);
         }
 
-        if (snapTo >= sheetHeight) onClose();
+        const roundedSheetHeight = Math.round(sheetHeight);
+        const shouldClose = snapTo >= roundedSheetHeight;
+
+        if (shouldClose) onClose();
       }
 
       // Reset indicator rotation after dragging
