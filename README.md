@@ -73,7 +73,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 ## Props
 
 | Name                   | Required | Default          | Description                                                                                                                                                                                                                       |
-|------------------------|----------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------- | -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `children`             | yes      |                  | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                                                                                                                       |
 | `isOpen`               | yes      |                  | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                          |
 | `onClose`              | yes      |                  | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                  |
@@ -224,6 +224,12 @@ It is possible to use snap points with `detent="content-height"` **but** the sna
 
 ## Compound Components
 
+### `Sheet`
+
+Sheet is the root element that wraps the whole sheet. It renders a fixed positioned wrapper element that covers the whole screen to contain the actual sheet that is animated in (don't worry the root element is not interactive when the sheet is closed). All sheet compound components should be rendered within `Sheet`.
+
+> 🖥 Rendered element: `motion.div`.
+
 ### `Sheet.Container`
 
 Sheet container is positioned above the sheet backdrop and by default adds a small shadow and rounded corners to the sheet. `Sheet.Content` and `Sheet.Header` should be rendered inside `Sheet.Container`.
@@ -239,7 +245,7 @@ Sheet content acts as a drag target and makes sure that content which doesn't fi
 #### Content props
 
 | Name          | Required | Default | Description                         |
-|---------------|----------|---------|-------------------------------------|
+| ------------- | -------- | ------- | ----------------------------------- |
 | `disableDrag` | no       | false   | Disable drag for the sheet content. |
 
 ### `Sheet.Header`
@@ -251,7 +257,7 @@ Sheet header acts as a drag target and has a dragging direction indicator. Rende
 #### Header props
 
 | Name          | Required | Default | Description                        |
-|---------------|----------|---------|------------------------------------|
+| ------------- | -------- | ------- | ---------------------------------- |
 | `disableDrag` | no       | false   | Disable drag for the sheet header. |
 
 ### `Sheet.Backdrop`

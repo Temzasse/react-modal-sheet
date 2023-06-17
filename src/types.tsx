@@ -2,8 +2,9 @@ import {
   DragHandlers,
   MotionValue,
   MotionProps,
-  AnimationOptions,
+  Transition,
   Spring,
+  motion,
 } from 'framer-motion';
 
 export type SheetEvents = {
@@ -33,7 +34,7 @@ export type SheetProps = {
   disableDrag?: boolean;
   prefersReducedMotion?: boolean;
 } & SheetEvents &
-  React.HTMLAttributes<HTMLDivElement>;
+  React.ComponentPropsWithoutRef<typeof motion.div>;
 
 export type SheetContainerProps = Omit<
   CommonProps,
@@ -82,7 +83,7 @@ export type SheetContextType = {
   callbacks: React.MutableRefObject<SheetEvents>;
   dragProps?: SheetDragProps;
   windowHeight: number;
-  animationOptions: AnimationOptions<number>;
+  animationOptions: Transition;
   reduceMotion: boolean;
 };
 

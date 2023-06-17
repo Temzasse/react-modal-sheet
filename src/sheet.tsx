@@ -1,13 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
 import {
   animate,
   AnimatePresence,
-  AnimationOptions,
+  motion,
   PanInfo,
+  Transition,
   useMotionValue,
   useReducedMotion,
+  useTransform,
 } from 'framer-motion';
 
 import {
@@ -59,7 +60,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const windowHeight = useWindowHeight();
     const shouldReduceMotion = useReducedMotion();
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
-    const animationOptions: AnimationOptions<number> = reduceMotion
+    const animationOptions: Transition = reduceMotion
       ? { type: 'tween', duration: 0.01 }
       : { type: 'spring', ...springConfig };
 
@@ -67,6 +68,14 @@ const Sheet = React.forwardRef<any, SheetProps>(
     // the value driven by the `AnimatePresence` component when the sheet is opened
     // and after that it is driven by the gestures and/or snapping
     const y = useMotionValue(0);
+
+    const zIndex = useTransform(y, value =>
+      value >= windowHeight ? -1 : 9999999
+    );
+
+    const visibility = useTransform(y, value =>
+      value >= windowHeight ? 'hidden' : 'visible'
+    );
 
     // Keep the callback fns up-to-date so that they can be accessed inside
     // the effect without including them to the dependencies array
@@ -228,7 +237,11 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     const sheet = (
       <SheetContext.Provider value={context}>
-        <div {...rest} ref={ref} style={{ ...styles.wrapper, ...style }}>
+        <motion.div
+          {...rest}
+          ref={ref}
+          style={{ ...styles.wrapper, zIndex, visibility, ...style }}
+        >
           <AnimatePresence>
             {/* NOTE: AnimatePresence requires us to set keys to children */}
             {isOpen
@@ -237,7 +250,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
                 )
               : null}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </SheetContext.Provider>
     );
 
