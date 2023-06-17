@@ -33,7 +33,7 @@
     "release": "np"
   },
   "peerDependencies": {
-    "framer-motion": ">=2",
+    "framer-motion": ">=6",
     "react": ">=16"
   },
   "husky": {
