@@ -132,9 +132,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
         let snapTo = 0;
 
         if (snapPoints) {
-          const snapToValues = snapPoints
-            .map(p => sheetHeight - p)
-            .filter(p => p >= 0); // negative values can occur with `content-height` detent
+          const snapToValues = snapPoints.map(
+            p => sheetHeight - Math.min(p, sheetHeight)
+          );
 
           // Allow snapping to the top of the sheet if detent is set to `content-height`
           if (detent === 'content-height' && !snapToValues.includes(0)) {

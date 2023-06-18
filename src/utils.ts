@@ -1,9 +1,18 @@
 import * as React from 'react';
 
 export function getClosest(nums: number[], goal: number) {
-  return nums.reduce((prev, curr) => {
-    return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
-  });
+  let closest = nums[0];
+  let minDifference = Math.abs(nums[0] - goal);
+
+  for (let i = 1; i < nums.length; i++) {
+    const difference = Math.abs(nums[i] - goal);
+    if (difference < minDifference) {
+      closest = nums[i];
+      minDifference = difference;
+    }
+  }
+
+  return closest;
 }
 
 const highlightId = 'react-modal-sheet-highlight';
