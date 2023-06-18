@@ -339,7 +339,7 @@ You can add your own styles or override the default sheet styles via the exposed
 #### CSS-in-JS
 
 ```jsx
-import Sheet from 'react-modal-sheeet';
+import Sheet from 'react-modal-sheet';
 import styled from 'styled-components';
 import { useState } from 'react';
 
