@@ -17,7 +17,7 @@ const styles: { [key: string]: CSS.Properties } = {
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(51, 51, 51, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     touchAction: 'none', // Disable iOS body scrolling
     border: 'none',
   },
