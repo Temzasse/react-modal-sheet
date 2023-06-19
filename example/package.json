@@ -19,7 +19,7 @@
     "react-router-dom": "6.0.0-beta.0",
     "react-stately": "3.23.0",
     "react-use": "17.1.1",
-    "styled-components": "5.3.6"
+    "styled-components": "6.0.0-rc.3"
   },
   "alias": {
     "react": "../node_modules/react",
