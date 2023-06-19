@@ -369,12 +369,11 @@ function Example() {
       <button onClick={() => setOpen(true)}>Open sheet</button>
 
       <CustomSheet isOpen={isOpen} onClose={() => setOpen(false)}>
-        <CustomSheet.Container>
-          <CustomSheet.Header />
-          <CustomSheet.Content>{/*...*/}</CustomSheet.Content>
-        </CustomSheet.Container>
-
-        <CustomSheet.Backdrop />
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>{/*...*/}</Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop />
       </CustomSheet>
     </>
   );
