@@ -29,16 +29,21 @@ const ContentHeight = () => {
           <Sheet.Header />
 
           <Sheet.Content>
-            <BoxList>
-              <Button onClick={() => snapTo(0)}>Snap to top</Button>
-              <Button onClick={() => snapTo(1)}>Snap to bottom</Button>
+            <Sheet.Scroller>
+              <BoxList>
+                <Button onClick={() => snapTo(0)}>Snap to top</Button>
+                <Button onClick={() => snapTo(1)}>Snap to bottom</Button>
 
-              {boxes.map((_, i) => (
-                <Box key={i} onClick={() => setBoxes(prev => [...prev, i + 1])}>
-                  {i} (click to create new boxes )
-                </Box>
-              ))}
-            </BoxList>
+                {boxes.map((_, i) => (
+                  <Box
+                    key={i}
+                    onClick={() => setBoxes(prev => [...prev, i + 1])}
+                  >
+                    {i} (click to create new boxes )
+                  </Box>
+                ))}
+              </BoxList>
+            </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
 
@@ -49,12 +54,10 @@ const ContentHeight = () => {
 };
 
 const BoxList = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 16px;
   padding-top: 0px;
-  overflow: auto;
 `;
 
 const Box = styled.div`

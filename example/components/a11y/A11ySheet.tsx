@@ -16,12 +16,12 @@ type SheetProps = {
   label: string;
 };
 
-const A11ySheet: React.FC<SheetProps> = ({
+const A11ySheet = ({
   state,
   label,
   children,
   ...rest
-}) => {
+}: React.PropsWithChildren<SheetProps>) => {
   return (
     <Sheet {...rest} isOpen={state.isOpen} onClose={state.close}>
       <OverlayProvider>
@@ -35,7 +35,11 @@ const A11ySheet: React.FC<SheetProps> = ({
   );
 };
 
-const A11ySheetContent: React.FC<SheetProps> = ({ state, label, children }) => {
+const A11ySheetContent = ({
+  state,
+  label,
+  children,
+}: React.PropsWithChildren<SheetProps>) => {
   const a11yProps = useA11ySheet(state, label);
 
   return (

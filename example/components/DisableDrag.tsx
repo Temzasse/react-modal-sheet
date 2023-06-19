@@ -62,7 +62,7 @@ const BoxList = styled.div`
   width: 100%;
   display: flex;
   padding: 24px 0px;
-  overflow: auto;
+  overflow-x: auto;
 `;
 
 const Box = styled.div`

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import Sheet from '../../../src';
+
 const people = [
   'john',
   'hannah',
@@ -36,16 +38,21 @@ const NewMessageContent = ({
         />
       </Search>
 
-      <PeopleList>
-        {people.map(({ id, name, image }) => (
-          <Person key={id} tabIndex={0}>
-            <PersonImage src={image(id)} alt={`Profile picture for ${name}`} />
-            <PersonName>{name}</PersonName>
-            <PersonStatus online={id % 2 === 0} />
-            <PersonName dimmed>{name}</PersonName>
-          </Person>
-        ))}
-      </PeopleList>
+      <Sheet.Scroller>
+        <PeopleList>
+          {people.map(({ id, name, image }) => (
+            <Person key={id} tabIndex={0}>
+              <PersonImage
+                src={image(id)}
+                alt={`Profile picture for ${name}`}
+              />
+              <PersonName>{name}</PersonName>
+              <PersonStatus online={id % 2 === 0} />
+              <PersonName dimmed>{name}</PersonName>
+            </Person>
+          ))}
+        </PeopleList>
+      </Sheet.Scroller>
     </Wrapper>
   );
 };
@@ -86,12 +93,9 @@ const PeopleList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 16px;
-  flex: 1;
-  overflow: auto;
-
-  & > * + * {
-    margin-top: 24px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `;
 
 const Person = styled.li`

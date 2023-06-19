@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import Sheet from '../../../src';
+import { useMetaThemeColor } from '../hooks';
 import { album } from './data';
 import Album from './Album';
 import Player from './Player';
@@ -12,6 +13,9 @@ const IOSMusicPlayer = () => {
 
   const openPlayer = () => setPlayerOpen(true);
   const closePlayer = () => setPlayerOpen(false);
+
+  useMetaThemeColor({ when: isPlayerOpen, from: '#111', to: '#000' });
+  useMetaThemeColor({ to: '#111' });
 
   return (
     <Wrapper>
@@ -24,15 +28,15 @@ const IOSMusicPlayer = () => {
       />
 
       <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
-        <PlayerSheet.Container>
-          <PlayerSheet.Header />
+        <Sheet.Container>
+          <Sheet.Header />
 
-          <PlayerSheet.Content>
+          <Sheet.Content>
             <Player album={album} song={currentSong} />
-          </PlayerSheet.Content>
-        </PlayerSheet.Container>
+          </Sheet.Content>
+        </Sheet.Container>
 
-        <PlayerSheet.Backdrop />
+        <Sheet.Backdrop />
       </PlayerSheet>
     </Wrapper>
   );

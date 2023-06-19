@@ -22,13 +22,15 @@ const Scrollable = () => {
           <Sheet.Header />
 
           <Sheet.Content>
-            <BoxList>
-              {Array.from({ length: 50 })
-                .fill(1)
-                .map((_, i) => (
-                  <Box key={i}>{i}</Box>
-                ))}
-            </BoxList>
+            <Sheet.Scroller>
+              <BoxList>
+                {Array.from({ length: 50 })
+                  .fill(1)
+                  .map((_, i) => (
+                    <Box key={i}>{i}</Box>
+                  ))}
+              </BoxList>
+            </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
 
@@ -39,12 +41,10 @@ const Scrollable = () => {
 };
 
 const BoxList = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 16px;
   padding-top: 0px;
-  overflow: auto;
 `;
 
 const Box = styled.div`

@@ -15,6 +15,7 @@ import {
 import Sheet from '../../../src';
 import NewMessageHeader from './NewMessageHeader';
 import NewMessageContent from './NewMessageContent';
+import { useMetaThemeColor } from 'components/hooks';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
@@ -23,8 +24,10 @@ const SlackMessage = () => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const openButtonRef = React.useRef<HTMLButtonElement>(null);
   const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
-
   const focusInput = () => inputRef.current?.focus();
+
+  useMetaThemeColor({ when: sheetState.isOpen, from: '#111', to: '#000' });
+  useMetaThemeColor({ to: '#111' });
 
   return (
     <Wrapper>
@@ -73,24 +76,24 @@ const MessageSheetComp = ({
   // since they conflict with the Framer Motion props
   return (
     <>
-      <MessageSheet.Container
+      <Sheet.Container
         {...overlay.overlayProps}
         {...(dialog.dialogProps as any)}
         ref={ref}
       >
-        <MessageSheet.Header>
+        <Sheet.Header>
           <NewMessageHeader
             sheetState={sheetState}
             titleProps={dialog.titleProps}
           />
-        </MessageSheet.Header>
+        </Sheet.Header>
 
-        <MessageSheet.Content disableDrag>
+        <Sheet.Content>
           <NewMessageContent inputRef={inputRef} />
-        </MessageSheet.Content>
-      </MessageSheet.Container>
+        </Sheet.Content>
+      </Sheet.Container>
 
-      <MessageSheet.Backdrop />
+      <Sheet.Backdrop />
     </>
   );
 };

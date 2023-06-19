@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
+import { useMetaThemeColor } from './hooks';
 
 const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1; // Initial snap point when sheet is opened
@@ -20,6 +21,12 @@ const SnapPoints = () => {
     console.log('> Current snap point', snapPoint);
   }, [snapPoint]);
 
+  useMetaThemeColor({
+    when: isOpen,
+    from: '#fff',
+    to: '#000',
+  });
+
   return (
     <>
       <Button onClick={open}>Bottom Sheet with Snap Points</Button>
@@ -31,6 +38,7 @@ const SnapPoints = () => {
         onSnap={setSnapPoint}
         snapPoints={snapPoints}
         initialSnap={initialSnap}
+        rootId="root"
       >
         <Sheet.Container>
           <Sheet.Content>

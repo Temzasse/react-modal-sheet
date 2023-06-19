@@ -78,24 +78,24 @@ const MessageSheetComp = ({
   // since they conflict with the Framer Motion props
   return (
     <>
-      <MessageSheet.Container
+      <Sheet.Container
         {...overlay.overlayProps}
         {...(dialog.dialogProps as any)}
         ref={ref}
       >
-        <MessageSheet.Header>
+        <Sheet.Header>
           <NewMessageHeader
             sheetState={sheetState}
             titleProps={dialog.titleProps}
           />
-        </MessageSheet.Header>
+        </Sheet.Header>
 
-        <MessageSheet.Content>
+        <Sheet.Content>
           <NewMessageContent inputRef={inputRef} />
-        </MessageSheet.Content>
-      </MessageSheet.Container>
+        </Sheet.Content>
+      </Sheet.Container>
 
-      <MessageSheet.Backdrop />
+      <Sheet.Backdrop />
     </>
   );
 };

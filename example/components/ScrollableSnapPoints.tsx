@@ -31,22 +31,24 @@ const ScrollableSnapPoints = () => {
           <Sheet.Header />
 
           <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
-            <BoxList>
-              <Controls>
-                <Button onClick={() => snapTo(0)}>
-                  Snap to -50 (from top)
-                </Button>
-                <Button onClick={() => snapTo(1)}>Snap to 50%</Button>
-                <Button onClick={() => snapTo(2)}>Snap to 200</Button>
-                <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
-              </Controls>
+            <Sheet.Scroller>
+              <BoxList>
+                <Controls>
+                  <Button onClick={() => snapTo(0)}>
+                    Snap to -50 (from top)
+                  </Button>
+                  <Button onClick={() => snapTo(1)}>Snap to 50%</Button>
+                  <Button onClick={() => snapTo(2)}>Snap to 200</Button>
+                  <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
+                </Controls>
 
-              {Array.from({ length: 20 })
-                .fill(1)
-                .map((_, i) => (
-                  <Box key={i}>{i + 1}</Box>
-                ))}
-            </BoxList>
+                {Array.from({ length: 20 })
+                  .fill(1)
+                  .map((_, i) => (
+                    <Box key={i}>{i + 1}</Box>
+                  ))}
+              </BoxList>
+            </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
 
@@ -57,12 +59,10 @@ const ScrollableSnapPoints = () => {
 };
 
 const BoxList = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 16px;
   padding-top: 0px;
-  overflow: auto;
 `;
 
 const Box = styled.div`
