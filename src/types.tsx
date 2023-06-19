@@ -62,6 +62,10 @@ export type SheetBackdropProps = Omit<
   'initial' | 'animate' | 'exit'
 >;
 
+export type SheetScrollerProps = React.HTMLAttributes<HTMLDivElement> & {
+  draggableAt?: 'top' | 'bottom' | 'both';
+};
+
 export type SheetDragProps = {
   drag: 'y';
   dragElastic: number;
@@ -85,6 +89,13 @@ export type SheetContextType = {
   windowHeight: number;
   animationOptions: Transition;
   reduceMotion: boolean;
+  disableDrag: boolean;
+};
+
+export type SheetScrollerContextType = {
+  disableDrag: boolean;
+  setDragDisabled: () => void;
+  setDragEnabled: () => void;
 };
 
 type ContainerComponent = React.ForwardRefExoticComponent<
@@ -103,11 +114,16 @@ type SheetComponent = React.ForwardRefExoticComponent<
   SheetProps & React.RefAttributes<any>
 >;
 
+type ScrollerComponent = React.ForwardRefExoticComponent<
+  SheetScrollerProps & React.RefAttributes<any>
+>;
+
 type SheetCompoundComponent = {
   Container: ContainerComponent;
   Header: DraggableComponent;
   Content: DraggableComponent;
   Backdrop: BackdropComponent;
+  Scroller: ScrollerComponent;
 };
 
 export type SheetCompound = SheetComponent & SheetCompoundComponent;

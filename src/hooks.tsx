@@ -8,7 +8,7 @@ export const useIsomorphicLayoutEffect = IS_SSR
   ? React.useEffect
   : React.useLayoutEffect;
 
-export const useModalEffect = (isOpen: boolean, rootId?: string) => {
+export function useModalEffect(isOpen: boolean, rootId?: string) {
   const prevOpen = usePrevious(isOpen);
 
   // Automatically apply the iOS modal effect to the body when sheet opens/closes
@@ -26,12 +26,12 @@ export const useModalEffect = (isOpen: boolean, rootId?: string) => {
       if (rootId && isOpen) cleanupRootStyles(rootId);
     };
   }, [isOpen]); // eslint-disable-line
-};
+}
 
-export const useEventCallbacks = (
+export function useEventCallbacks(
   isOpen: boolean,
   callbacks: React.MutableRefObject<SheetEvents>
-) => {
+) {
   const prevOpen = usePrevious(isOpen);
   const didOpen = React.useRef(false);
 
@@ -57,7 +57,7 @@ export const useEventCallbacks = (
   }, [isOpen, prevOpen]); // eslint-disable-line
 
   return { handleAnimationComplete };
-};
+}
 
 export function useWindowHeight() {
   const [windowHeight, setWindowHeight] = React.useState(0);

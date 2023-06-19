@@ -53,9 +53,15 @@ const styles: { [key: string]: CSS.Properties } = {
     backgroundColor: '#ddd',
   },
   content: {
-    flex: 1,
-    overflow: 'auto',
+    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '0px',
     position: 'relative',
+  },
+  scroller: {
+    height: '100%',
+    overflowY: 'auto',
   },
 };
 

@@ -26,7 +26,7 @@ import {
 } from './constants';
 
 import { SheetContextType, SheetProps } from './types';
-import { SheetContext } from './context';
+import { SheetScrollerContextProvider, SheetContext } from './context';
 import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
 import { usePreventScroll } from './use-prevent-scroll';
 import styles from './styles';
@@ -233,6 +233,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       windowHeight,
       animationOptions,
       reduceMotion,
+      disableDrag,
     };
 
     const sheet = (
@@ -244,11 +245,13 @@ const Sheet = React.forwardRef<any, SheetProps>(
         >
           <AnimatePresence>
             {/* NOTE: AnimatePresence requires us to set keys to children */}
-            {isOpen
-              ? React.Children.map(children, (child: any, i) =>
+            {isOpen ? (
+              <SheetScrollerContextProvider>
+                {React.Children.map(children, (child: any, i) =>
                   React.cloneElement(child, { key: `sheet-child-${i}` })
-                )
-              : null}
+                )}
+              </SheetScrollerContextProvider>
+            ) : null}
           </AnimatePresence>
         </motion.div>
       </SheetContext.Provider>
