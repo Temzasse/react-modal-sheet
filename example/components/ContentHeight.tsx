@@ -22,7 +22,6 @@ const ContentHeight = () => {
         onClose={close}
         initialSnap={0}
         snapPoints={[-50, 100, 0]}
-        springConfig={{ stiffness: 150, damping: 20, mass: 1 }}
         detent="content-height"
       >
         <Sheet.Container>

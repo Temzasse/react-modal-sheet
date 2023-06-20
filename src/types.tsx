@@ -3,7 +3,6 @@ import {
   MotionValue,
   MotionProps,
   Transition,
-  Spring,
   motion,
 } from 'framer-motion';
 
@@ -30,7 +29,7 @@ export type SheetProps = {
   snapPoints?: number[];
   detent?: SheetDetent;
   initialSnap?: number; // index of snap points array
-  springConfig?: Omit<Spring, 'type'>;
+  transitionConfig?: Transition;
   disableDrag?: boolean;
   prefersReducedMotion?: boolean;
 } & SheetEvents &

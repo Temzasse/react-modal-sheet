@@ -19,7 +19,7 @@ import {
 } from './hooks';
 
 import {
-  DEFAULT_SPRING_CONFIG,
+  DEFAULT_TRANSITION_CONFIG,
   DRAG_CLOSE_THRESHOLD,
   DRAG_VELOCITY_THRESHOLD,
   IS_SSR,
@@ -48,9 +48,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
       style,
       detent = 'full-height',
       initialSnap = 0,
-      springConfig = DEFAULT_SPRING_CONFIG,
       disableDrag = false,
       prefersReducedMotion = false,
+      transitionConfig = DEFAULT_TRANSITION_CONFIG,
       ...rest
     },
     ref
@@ -62,7 +62,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = reduceMotion
       ? { type: 'tween', duration: 0.01 }
-      : { type: 'spring', ...springConfig };
+      : DEFAULT_TRANSITION_CONFIG;
 
     // NOTE: the inital value for `y` doesn't matter since it is overwritten by
     // the value driven by the `AnimatePresence` component when the sheet is opened

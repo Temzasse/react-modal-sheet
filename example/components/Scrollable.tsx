@@ -13,11 +13,7 @@ const Scrollable = () => {
     <>
       <Button onClick={open}>Scrollable Bottom Sheet</Button>
 
-      <Sheet
-        isOpen={isOpen}
-        onClose={close}
-        springConfig={{ stiffness: 150, damping: 20, mass: 1 }}
-      >
+      <Sheet isOpen={isOpen} onClose={close}>
         <Sheet.Container>
           <Sheet.Header />
 

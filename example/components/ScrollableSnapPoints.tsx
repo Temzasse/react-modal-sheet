@@ -25,7 +25,6 @@ const ScrollableSnapPoints = () => {
         onClose={close}
         snapPoints={snapPoints}
         initialSnap={initialSnap}
-        springConfig={{ stiffness: 150, damping: 20, mass: 1 }}
       >
         <Sheet.Container>
           <Sheet.Header />
