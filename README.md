@@ -65,7 +65,7 @@ function Example() {
 
 The `Sheet` component follows the [Compound Component pattern](https://kentcdodds.com/blog/compound-components-with-react-hooks) in order to provide a flexible yet powerful API for creating highly customizable bottom sheet components.
 
-Since the final bottom sheet is composed from smaller building blocks (`Container`, `Content`, `Header`, and `Backdrop`) you are in total control over the rendering output. So for example, if you don't want to have any backdrop in your sheet then you can just skip rendering it instead of passing some prop like `renderBackdrop={false}` to the main sheet component. Cool huh? 😎
+Since the final bottom sheet is composed from smaller building blocks (`Container`, `Content`, `Scroller`, `Header`, and `Backdrop`) you are in total control over the rendering output. So for example, if you don't want to have any backdrop in your sheet then you can just skip rendering it instead of passing some prop like `renderBackdrop={false}` to the main sheet component. Cool huh? 😎
 
 Also, by constructing the sheet from smaller pieces makes it easier to apply any necessary accessibility related properties to the right components without requiring the main sheet component to be aware of them. You can read more about accessibility in the [Accessibility](#Accessibility) section.
 
@@ -86,7 +86,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `snapPoints`           | no       |                                      | Eg. `[-50, 0.5, 100, 0]` - where positive values are pixels from the bottom of the screen and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of window height from the bottom of the sceen. |
 | `initialSnap`          | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                |
 | `rootId`               | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                                                                                                                        |
-| `tweenConfig`          | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://www.framer.com/motion/transition/#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                                                                           |
+| `tweenConfig`          | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://www.framer.com/motion/transition/#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                   |
 | `mountPoint`           | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                |
 | `prefersReducedMotion` | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                |
 
@@ -170,7 +170,9 @@ function Example() {
            * way to the bottom in every snap point.
            */}
           <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
-            {/* Some content here that makes the sheet content scrollable */}
+            <Sheet.Scroller draggableAt="both">
+              {/* Some content here that makes the sheet content scrollable */}
+            </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
       </Sheet>
@@ -195,7 +197,9 @@ function Example() {
     >
       <Sheet.Container>
         <Sheet.Content>
-          <div style={{ height: 200 }}>Some content</div>
+          <Sheet.Scroller>
+            <div style={{ height: 200 }}>Some content</div>
+          </Sheet.Scroller>
         </Sheet.Content>
       </Sheet.Container>
     </Sheet>

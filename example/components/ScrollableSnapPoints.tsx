@@ -30,7 +30,7 @@ const ScrollableSnapPoints = () => {
           <Sheet.Header />
 
           <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
-            <Sheet.Scroller>
+            <Sheet.Scroller draggableAt="both">
               <BoxList>
                 <Controls>
                   <Button onClick={() => snapTo(0)}>
