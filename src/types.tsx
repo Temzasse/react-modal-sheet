@@ -2,8 +2,9 @@ import {
   DragHandlers,
   MotionValue,
   MotionProps,
-  Transition,
   motion,
+  EasingDefinition,
+  Transition,
 } from 'framer-motion';
 
 export type SheetEvents = {
@@ -20,6 +21,11 @@ type CommonProps = MotionProps & {
   className?: string;
 };
 
+export type SheetTweenConfig = {
+  ease: EasingDefinition;
+  duration: number;
+};
+
 export type SheetProps = {
   isOpen: boolean;
   children: React.ReactNode;
@@ -29,7 +35,7 @@ export type SheetProps = {
   snapPoints?: number[];
   detent?: SheetDetent;
   initialSnap?: number; // index of snap points array
-  transitionConfig?: Transition;
+  tweenConfig?: SheetTweenConfig;
   disableDrag?: boolean;
   prefersReducedMotion?: boolean;
 } & SheetEvents &

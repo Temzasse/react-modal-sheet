@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
 import {
   animate,
   AnimatePresence,
@@ -19,7 +20,8 @@ import {
 } from './hooks';
 
 import {
-  DEFAULT_TRANSITION_CONFIG,
+  REDUCED_MOTION_TWEEN_CONFIG,
+  DEFAULT_TWEEN_CONFIG,
   DRAG_CLOSE_THRESHOLD,
   DRAG_VELOCITY_THRESHOLD,
   IS_SSR,
@@ -50,7 +52,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       initialSnap = 0,
       disableDrag = false,
       prefersReducedMotion = false,
-      transitionConfig = DEFAULT_TRANSITION_CONFIG,
+      tweenConfig = DEFAULT_TWEEN_CONFIG,
       ...rest
     },
     ref
@@ -60,9 +62,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
     const windowHeight = useWindowHeight();
     const shouldReduceMotion = useReducedMotion();
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
-    const animationOptions: Transition = reduceMotion
-      ? { type: 'tween', duration: 0.01 }
-      : DEFAULT_TRANSITION_CONFIG;
+    const animationOptions: Transition = {
+      type: 'tween',
+      ...(reduceMotion ? REDUCED_MOTION_TWEEN_CONFIG : tweenConfig),
+    };
 
     // NOTE: the inital value for `y` doesn't matter since it is overwritten by
     // the value driven by the `AnimatePresence` component when the sheet is opened
