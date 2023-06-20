@@ -56,7 +56,6 @@ function Example() {
           <Sheet.Header />
           <Sheet.Content>{/* Your sheet content goes here */}</Sheet.Content>
         </Sheet.Container>
-
         <Sheet.Backdrop />
       </Sheet>
     </>
@@ -236,18 +235,6 @@ Sheet container is positioned above the sheet backdrop and by default adds a sma
 
 > 🖥 Rendered element: `motion.div`.
 
-### `Sheet.Content`
-
-Sheet content acts as a drag target and makes sure that content which doesn't fit inside the sheet becomes scrollable.
-
-> 🖥 Rendered element: `motion.div`.
-
-#### Content props
-
-| Name          | Required | Default | Description                         |
-| ------------- | -------- | ------- | ----------------------------------- |
-| `disableDrag` | no       | false   | Disable drag for the sheet content. |
-
 ### `Sheet.Header`
 
 Sheet header acts as a drag target and has a dragging direction indicator. Rendering any children inside `Sheet.Header` replaces the default header.
@@ -260,13 +247,67 @@ Sheet header acts as a drag target and has a dragging direction indicator. Rende
 | ------------- | -------- | ------- | ---------------------------------- |
 | `disableDrag` | no       | false   | Disable drag for the sheet header. |
 
+### `Sheet.Content`
+
+Sheet content acts as a drag target and can be used in conjunction with `Sheet.Scroller` to make sure that content which doesn't fit inside the sheet becomes scrollable.
+
+> 🖥 Rendered element: `motion.div`.
+
+#### Content props
+
+| Name          | Required | Default | Description                         |
+| ------------- | -------- | ------- | ----------------------------------- |
+| `disableDrag` | no       | false   | Disable drag for the sheet content. |
+
+### `Sheet.Scroller`
+
+Sheet scroller can be used to make the whole sheet content or parts of it scrollable in a way that drag gestures are properly disabled and enabled based on the scroll state. See the [Scrolling on touch devices](#scrolling-on-touch-devices) section for more details.
+
+> 🖥 Rendered element: `motion.div`.
+
+#### Scroller props
+
+| Name          | Required | Default | Description                                                                                                                            |
+| ------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `draggableAt` | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`. |
+
 ### `Sheet.Backdrop`
 
-Sheet backdrop is a translucent overlay that helps to separate the sheet from it's background. By default the backdrop doesn't have any interaction attached to it but if you, for example, want to close the sheet when the backdrop is clicked you can provide click/tap handlers to it which will change the rendered element from `div` to `button`.
+Sheet backdrop is a translucent overlay that helps to separate the sheet from it's background. By default the backdrop doesn't have any interaction attached to it but if you, for example, want to close the sheet when the backdrop is clicked you can provide tap handler to it which will change the rendered element from `div` to `button`.
+
+⚠️ **Note:** as the element is a motion component you need to use [`onTap`](https://www.framer.com/motion/gestures/#tap) instead of `onClick` if you want to add a click handler to it.
 
 > 🖥 Rendered element: `motion.div` or `motion.button`.
 
 ## Advanced usage
+
+### Scrolling on touch devices
+
+Scrolling and dragging are **the same** gesture on touch devices which can create problems when you want to have scrollable content inside the sheet. React Modal Sheet provides a `Sheet.Scroller` component that is able to automatically disable and enable dragging inside the `Sheet.Content` component based on the scroll state. There are three modes for the `Sheet.Scroller` reflected in the `draggableAt` prop:
+
+1. Enable dragging when the scroller is not yet scrolled - it is at the `top` position.
+2. Enable dragging when the scroller is scrolled all the way to the bottom - it is at the `bottom` position.
+3. Enable dragging in `both` positions.
+
+The scroller component is in-between these states when the user has scrolled only some amount. Dragging is always **disabled** in this in-between state in order to avoid it getting mixed with dragging gestures. The `Sheet.Scroller` component applies the special handling only for touch devices.
+
+The default value for the `draggableAt` prop is `top` which should be a good default for most use cases. You shouldn't need `bottom` or `both` unless you have scrollable content inside a sheet that also has snap points.
+
+```jsx
+function ScrollableExample() {
+  return (
+    <Sheet>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>
+          <Sheet.Scroller>{/*...*/}</Sheet.Scroller>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
 
 ### iOS Modal View effect
 
@@ -302,10 +343,8 @@ function Example() {
         <Sheet.Header>
           <YourCustomSheetHeader />
         </Sheet.Header>
-
         <Sheet.Content>{/*...*/}</Sheet.Content>
       </Sheet.Container>
-
       <Sheet.Backdrop />
     </Sheet>
   );
