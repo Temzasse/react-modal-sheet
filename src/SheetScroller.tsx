@@ -30,18 +30,16 @@ const SheetScroller = React.forwardRef<any, SheetScrollerProps>(
       }
     }
 
-    console.log('> RENDERING');
-
     function onScroll(e: React.UIEvent<HTMLDivElement>) {
       determineDragState(e.currentTarget);
     }
 
-    function onTouchStartCapture(e: React.TouchEvent<HTMLDivElement>) {
+    function onTouchStart(e: React.TouchEvent<HTMLDivElement>) {
       determineDragState(e.currentTarget);
     }
 
     const scrollProps = isTouchDevice()
-      ? { onScroll, onTouchStartCapture }
+      ? { onScroll, onTouchStart }
       : undefined;
 
     return (
