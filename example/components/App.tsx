@@ -20,6 +20,7 @@ import A11y from './a11y';
 import DisableDrag from './DisableDrag';
 import ScrollableSnapPoints from './ScrollableSnapPoints';
 import ContentHeight from './ContentHeight';
+import Standard from './standard';
 
 const App = () => {
   return (
@@ -98,6 +99,14 @@ const App = () => {
           </Screen>
         }
       />
+      <Route
+        path="standard/*"
+        element={
+          <Screen bg="light">
+            <Standard />
+          </Screen>
+        }
+      />
     </Routes>
   );
 };
@@ -158,6 +167,13 @@ const ExampleSelector = () => {
         <ExampleLink to="a11y">
           <A11yIcon size={48} />
           <span>Accessible Sheet</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="standard">
+          {/* TODO: add icon? */}
+          <span>Standard Bottom Sheet</span>
         </ExampleLink>
       </li>
     </ExampleLinks>
