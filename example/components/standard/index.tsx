@@ -44,8 +44,8 @@ const Standard = () => {
           <Sheet.Header ref={headerRef}>
             <HeaderContent onClick={toggleOpen}>
               {isOpen
-                ? 'Click or drag here to close'
-                : 'Click or drag here to open'}
+                ? 'Click or drag here to close ⬇️'
+                : 'Click or drag here to open ⬆️'}
             </HeaderContent>
           </Sheet.Header>
           <Sheet.Content disableDrag>
