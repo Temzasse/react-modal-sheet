@@ -27,7 +27,7 @@ const Standard = () => {
 
   return (
     <>
-      <Button onClick={open}>Bottom Sheet with Snap Points</Button>
+      <Button onClick={open}>Open Sheet</Button>
 
       <StandardBottomSheet
         isOpen={isOpen}
