@@ -132,3 +132,25 @@ type SheetCompoundComponent = {
 };
 
 export type SheetCompound = SheetComponent & SheetCompoundComponent;
+
+type SplitCommonProps = {
+  extraSpace: boolean;
+};
+
+export type SplitProps = Omit<SheetProps, 'rootId' | 'mountPoint'> &
+  Partial<SplitCommonProps>;
+
+export type SplitContextType = SheetContextType & SplitCommonProps;
+
+type SplitComponent = React.ForwardRefExoticComponent<
+  SplitProps & React.RefAttributes<any>
+>;
+
+type SplitCompoundComponent = {
+  Container: ContainerComponent;
+  Header: DraggableComponent;
+  Content: DraggableComponent;
+  Scroller: ScrollerComponent;
+};
+
+export type SplitCompound = SplitComponent & SplitCompoundComponent;

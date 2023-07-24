@@ -1,9 +1,13 @@
 import * as React from 'react';
-import { SheetScrollerContextType, SheetContextType } from './types';
+import {
+  SheetScrollerContextType,
+  SheetContextType,
+  SplitContextType,
+} from './types';
 
-export const SheetContext = React.createContext<SheetContextType | undefined>(
-  undefined
-);
+export const SheetContext = React.createContext<
+  SheetContextType | SplitContextType | undefined
+>(undefined);
 
 export const useSheetContext = () => {
   const context = React.useContext(SheetContext);

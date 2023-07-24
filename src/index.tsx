@@ -6,19 +6,30 @@ import SheetContent from './SheetContent';
 import SheetHeader from './SheetHeader';
 import SheetBackdrop from './SheetBackdrop';
 import SheetScroller from './SheetScroller';
-import { SheetCompound } from './types';
+
+import SplitPane from './split';
+import SplitContainer from './SplitContainer';
+import SplitContent from './SplitContent';
+import { SheetCompound, SplitCompound } from './types';
 
 export type SheetRef = {
   y: MotionValue<number>;
   snapTo: (index: number) => void;
 };
 
-// HACK: this is needed to get the typing to work properly...
-const _SheetCompound: any = Sheet;
-_SheetCompound.Container = SheetContainer;
-_SheetCompound.Header = SheetHeader;
-_SheetCompound.Content = SheetContent;
-_SheetCompound.Backdrop = SheetBackdrop;
-_SheetCompound.Scroller = SheetScroller;
+const _SheetCompound: SheetCompound = Object.assign(Sheet, {
+  Container: SheetContainer,
+  Header: SheetHeader,
+  Content: SheetContent,
+  Backdrop: SheetBackdrop,
+  Scroller: SheetScroller,
+});
+
+export const Split: SplitCompound = Object.assign(SplitPane, {
+  Container: SplitContainer,
+  Header: SheetHeader,
+  Content: SplitContent,
+  Scroller: SheetScroller,
+});
 
 export default _SheetCompound as SheetCompound;

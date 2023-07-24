@@ -9,6 +9,7 @@ import {
   AiFillApple as AppleIcon,
   AiOutlineSlack as SlackIcon,
   AiOutlineControl as SnapIcon,
+  AiOutlineBorderVerticle as SplitIcon,
 } from 'react-icons/ai';
 
 import { Screen, DarkMode } from './common';
@@ -20,6 +21,7 @@ import A11y from './a11y';
 import DisableDrag from './DisableDrag';
 import ScrollableSnapPoints from './ScrollableSnapPoints';
 import ContentHeight from './ContentHeight';
+import SplitPane from './SplitPane';
 
 const App = () => {
   return (
@@ -98,6 +100,14 @@ const App = () => {
           </Screen>
         }
       />
+      <Route
+        path="split-pane/*"
+        element={
+          <Screen bg="light">
+            <SplitPane />
+          </Screen>
+        }
+      />
     </Routes>
   );
 };
@@ -158,6 +168,13 @@ const ExampleSelector = () => {
         <ExampleLink to="a11y">
           <A11yIcon size={48} />
           <span>Accessible Sheet</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="split-pane">
+          <SplitIcon size={48} />
+          <span>Split Pane</span>
         </ExampleLink>
       </li>
     </ExampleLinks>
