@@ -10,7 +10,7 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 
-import { useWindowHeight, useIsomorphicLayoutEffect, useEvent } from './hooks';
+import { useElementHeight, useIsomorphicLayoutEffect, useEvent } from './hooks';
 
 import {
   REDUCED_MOTION_TWEEN_CONFIG,
@@ -53,9 +53,9 @@ const Sheet = React.forwardRef<any, SplitProps>(
     },
     ref
   ) => {
+    const [windowHeight, thisRef] = useElementHeight();
     const sheetRef = React.useRef<any>(null);
     const indicatorRotation = useMotionValue(0);
-    const windowHeight = useWindowHeight();
     const shouldReduceMotion = useReducedMotion();
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
@@ -116,15 +116,13 @@ const Sheet = React.forwardRef<any, SplitProps>(
         // User flicked the sheet down
         onClose();
       } else {
-        const sheetEl = sheetRef.current as HTMLDivElement;
-        const sheetHeight = sheetEl.getBoundingClientRect().height;
         const currentY = y.get();
 
         let snapTo = 0;
 
         if (snapPoints) {
           const snapToValues = snapPoints.map(
-            p => sheetHeight - Math.min(p, sheetHeight)
+            p => windowHeight - Math.min(p, windowHeight)
           );
 
           // Allow snapping to the top of the sheet if detent is set to `content-height`
@@ -134,12 +132,12 @@ const Sheet = React.forwardRef<any, SplitProps>(
 
           // Get the closest snap point
           snapTo = getClosest(snapToValues, currentY);
-        } else if (currentY / sheetHeight > DRAG_CLOSE_THRESHOLD) {
+        } else if (currentY / windowHeight > DRAG_CLOSE_THRESHOLD) {
           // Close if dragged over enough far
-          snapTo = sheetHeight;
+          snapTo = windowHeight;
         }
 
-        snapTo = validateSnapTo({ snapTo, sheetHeight });
+        snapTo = validateSnapTo({ snapTo, sheetHeight: windowHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
         animate(y, snapTo, animationOptions);
@@ -150,7 +148,7 @@ const Sheet = React.forwardRef<any, SplitProps>(
           onSnap(snapIndex);
         }
 
-        const roundedSheetHeight = Math.round(sheetHeight);
+        const roundedSheetHeight = Math.round(windowHeight);
         const shouldClose = snapTo >= roundedSheetHeight;
 
         if (shouldClose) onClose();
@@ -161,32 +159,23 @@ const Sheet = React.forwardRef<any, SplitProps>(
     });
 
     // Trigger onSnap callback when sheet is opened or closed
-    const thisRef = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
-      if (!isOpen) {
-        const sheetEl = thisRef?.current as HTMLDivElement;
-        const sheetHeight = sheetEl.getBoundingClientRect().height;
-        console.log('Close!!' + sheetHeight);
-        animate(y, sheetHeight, animationOptions);
-      } else {
-        const sheetEl = thisRef?.current as HTMLDivElement;
-        if (
-          snapPoints &&
-          snapPoints[initialSnap] !== undefined &&
-          sheetEl !== null
-        ) {
-          const sheetHeight = sheetEl.getBoundingClientRect().height;
+      if (isOpen) {
+        if (snapPoints && snapPoints[initialSnap] !== undefined) {
           const snapPoint = snapPoints[initialSnap];
           const snapTo = validateSnapTo({
-            snapTo: sheetHeight - snapPoint,
-            sheetHeight,
+            snapTo: windowHeight - snapPoint,
+            sheetHeight: windowHeight,
           });
 
           animate(y, snapTo, animationOptions);
-          console.log('Open!!' + sheetHeight);
+        } else {
+          animate(y, windowHeight / 2, animationOptions);
         }
-        // ((ref as any).current as any).snapTo(initialSnap);
+      } else {
+        animate(y, windowHeight, animationOptions);
       }
+
       if (!snapPoints || !onSnap) return;
       const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
       onSnap(snapIndex);
@@ -195,23 +184,16 @@ const Sheet = React.forwardRef<any, SplitProps>(
     React.useImperativeHandle(ref, () => ({
       y,
       snapTo: (snapIndex: number) => {
-        const sheetEl = sheetRef.current as HTMLDivElement | null;
-
-        if (
-          snapPoints &&
-          snapPoints[snapIndex] !== undefined &&
-          sheetEl !== null
-        ) {
-          const sheetHeight = sheetEl.getBoundingClientRect().height;
+        if (snapPoints && snapPoints[snapIndex] !== undefined) {
           const snapPoint = snapPoints[snapIndex];
           const snapTo = validateSnapTo({
-            snapTo: sheetHeight - snapPoint,
-            sheetHeight,
+            snapTo: windowHeight - snapPoint,
+            sheetHeight: windowHeight,
           });
 
           animate(y, snapTo, animationOptions);
           if (onSnap) onSnap(snapIndex);
-          if (snapTo >= sheetHeight) onClose();
+          if (snapTo < 0) onClose();
         }
       },
     }));

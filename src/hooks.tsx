@@ -72,6 +72,33 @@ export function useWindowHeight() {
   return windowHeight;
 }
 
+export function useElementHeight<T extends HTMLElement>() {
+  const [elementHeight, setElementHeight] = React.useState(0);
+  const elementRef = React.useRef<T>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const updateHeight = () => {
+      if (elementRef.current) {
+        const height = elementRef.current.getBoundingClientRect().height;
+        setElementHeight(height);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(() => updateHeight());
+
+    if (elementRef.current) {
+      resizeObserver.observe(elementRef.current);
+    }
+    return () => {
+      if (elementRef.current) {
+        resizeObserver.unobserve(elementRef.current);
+      }
+    };
+  }, [elementRef]);
+
+  return [elementHeight, elementRef] as const;
+}
+
 export function usePrevious<T>(state: T): T | undefined {
   const ref = React.useRef<T>();
 

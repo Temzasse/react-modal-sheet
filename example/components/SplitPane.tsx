@@ -4,13 +4,22 @@ import styled from 'styled-components';
 import { Split, SheetRef } from '../../src';
 import { Button } from './common';
 
+const snapPoints = [-50, 0.5, 200, 0];
+const initialSnap = 1; // Initial snap point when sheet is opened
+
 const ContentHeight = () => {
-  const [isOpen, setOpen] = React.useState(true);
-  const [boxes, setBoxes] = React.useState([0, 1]);
   const ref = React.useRef<SheetRef>();
+  const [isOpen, setOpen] = React.useState(true);
+  const [snapPoint, setSnapPoint] = React.useState(initialSnap);
+  const [boxes, setBoxes] = React.useState([0, 1]);
+
+  const snapTo = (i: number) => ref.current?.snapTo(i);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
-  const snapTo = (i: number) => ref.current?.snapTo(i);
+
+  React.useEffect(() => {
+    console.log('> Current snap point', snapPoint);
+  }, [snapPoint]);
 
   return (
     <>
@@ -18,8 +27,9 @@ const ContentHeight = () => {
         ref={ref}
         isOpen={isOpen}
         onClose={close}
-        initialSnap={1}
-        snapPoints={[-50, 0.5, 0]}
+        onSnap={setSnapPoint}
+        initialSnap={initialSnap}
+        snapPoints={snapPoints}
         detent="full-height"
         extraSpace={false}
       >
@@ -42,7 +52,8 @@ const ContentHeight = () => {
               <BoxList>
                 <Button onClick={() => snapTo(0)}>Snap to top</Button>
                 <Button onClick={() => snapTo(1)}>Snap to 50%</Button>
-                <Button onClick={() => snapTo(2)}>Snap to 0 (close)</Button>
+                <Button onClick={() => snapTo(2)}>Snap to 200</Button>
+                <Button onClick={() => snapTo(3)}>Snap to 0 (close)</Button>
 
                 {boxes.map((_, i) => (
                   <Box
