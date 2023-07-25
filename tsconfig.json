@@ -17,6 +17,7 @@
     "paths": {
       "*": ["src/*", "node_modules/*"]
     },
+    "types": ["resize-observer-browser"],
     "jsx": "react",
     "esModuleInterop": true
   }
