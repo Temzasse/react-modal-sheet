@@ -31,8 +31,6 @@ const Standard = () => {
         onOpen={open}
         onClose={close}
         // Set snap points consisting of '40% of window height' and 'header height'.
-        //
-        // FIXME: The 'Snap points need to be in descending order' warning is triggered when 40% of window height is smaller than header height.
         openSnapPoint={0.8}
         closedSnapPoint={HEADER_HEIGHT}
       >
