@@ -3,17 +3,14 @@ import styled from 'styled-components';
 
 import Sheet from '../../../src';
 import { Button } from '../common';
-import { useMeasure } from 'react-use';
 import { StandardBottomSheet } from './StandardBottomSheet';
 
-const OPENED_SNAP_INDEX = 0;
-const CLOSED_SNAP_INDEX = 1;
+const HEADER_HEIGHT = 80;
 
 /**
  * A sheet that shows only `<Sheet.Header>` when closed and both `<Sheet.Header>` and `<Sheet.Content>` when open.
  */
 const Standard = () => {
-  const [headerRef, { height: headerHeight }] = useMeasure();
   // FIXME: The opened sheet is rendered momentarily immediately after the page is loaded.
   //        This behavior is incorrect because the sheet is initially closed.
   //
@@ -36,12 +33,11 @@ const Standard = () => {
         // Set snap points consisting of '40% of window height' and 'header height'.
         //
         // FIXME: The 'Snap points need to be in descending order' warning is triggered when 40% of window height is smaller than header height.
-        snapPoints={headerHeight === 0 ? [0.4, 0] : [0.4, headerHeight]}
-        initialSnap={OPENED_SNAP_INDEX}
-        closedSnapIndex={CLOSED_SNAP_INDEX}
+        openSnapPoint={0.8}
+        closedSnapPoint={HEADER_HEIGHT}
       >
         <Sheet.Container>
-          <Sheet.Header ref={headerRef}>
+          <Sheet.Header style={{ height: HEADER_HEIGHT }}>
             <HeaderContent onClick={toggleOpen}>
               {isOpen
                 ? 'Click or drag here to close ⬇️'

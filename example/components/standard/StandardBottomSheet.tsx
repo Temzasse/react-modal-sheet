@@ -2,17 +2,19 @@ import * as React from 'react';
 import Sheet, { SheetRef } from '../../../src';
 import { SheetProps } from '../../../src/types';
 
-type StandardBottomSheet = SheetProps & {
-  snapPoints: Exclude<SheetProps['snapPoints'], undefined>;
-  closedSnapIndex: number;
+const OPENED_SNAP_INDEX = 0;
+const CLOSED_SNAP_INDEX = 1;
+
+type StandardBottomSheet = Omit<SheetProps, 'snapPoints' | 'initialSnap'> & {
+  openSnapPoint: number;
+  closedSnapPoint: number;
   onOpen?: () => void;
 };
 
 export const StandardBottomSheet: React.FC<StandardBottomSheet> = ({
   isOpen,
-  snapPoints,
-  initialSnap = 0,
-  closedSnapIndex,
+  openSnapPoint,
+  closedSnapPoint,
   onOpen,
   onClose,
   onSnap,
@@ -21,21 +23,22 @@ export const StandardBottomSheet: React.FC<StandardBottomSheet> = ({
   const ref = React.useRef<SheetRef>();
   const snapTo = (snapPoint: number) => ref.current?.snapTo(snapPoint);
   const [isOpenFlushing, setIsOpenFlushing] = React.useState<boolean>(false);
+  const snapPoints = React.useMemo(() => [openSnapPoint, closedSnapPoint], [openSnapPoint, closedSnapPoint])
 
   React.useEffect(() => {
-    snapTo(isOpen ? initialSnap : closedSnapIndex);
-  }, [isOpen, initialSnap, closedSnapIndex]);
+    snapTo(isOpen ? OPENED_SNAP_INDEX : CLOSED_SNAP_INDEX);
+  }, [isOpen, OPENED_SNAP_INDEX, CLOSED_SNAP_INDEX]);
 
   const handleSnap = React.useCallback(
     (snapPoint: number) => {
       if (onSnap) onSnap(snapPoint);
-      if (snapPoint === closedSnapIndex) {
+      if (snapPoint === CLOSED_SNAP_INDEX) {
         onClose();
       } else {
         if (onOpen && isOpen === false) onOpen();
       }
     },
-    [onClose, onSnap, closedSnapIndex]
+    [onClose, onSnap, CLOSED_SNAP_INDEX]
   );
 
   const handleClose = React.useCallback(() => {
@@ -47,7 +50,7 @@ export const StandardBottomSheet: React.FC<StandardBottomSheet> = ({
     setIsOpenFlushing(true);
     setIsOpenFlushing(false);
     if (isOpen === true) onClose();
-  }, [closedSnapIndex, onClose]);
+  }, [CLOSED_SNAP_INDEX, onClose]);
 
   return (
     <Sheet
@@ -55,7 +58,7 @@ export const StandardBottomSheet: React.FC<StandardBottomSheet> = ({
       onClose={handleClose}
       isOpen={isOpenFlushing === false ? true : false}
       snapPoints={snapPoints}
-      initialSnap={closedSnapIndex}
+      initialSnap={CLOSED_SNAP_INDEX}
       onSnap={handleSnap}
       {...restProps}
     />
