@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Routes, Route, Link } from 'react-router-dom';
 import { FaScroll as ScrollIcon, FaLock as LockIcon } from 'react-icons/fa';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
+import { BiDockBottom as DockBottomIcon } from 'react-icons/bi';
 
 import {
   AiOutlineColumnHeight as HeightIcon,
@@ -10,7 +11,6 @@ import {
   AiOutlineSlack as SlackIcon,
   AiOutlineControl as SnapIcon,
 } from 'react-icons/ai';
-
 import { Screen, DarkMode } from './common';
 import SnapPoints from './SnapPoints';
 import Scrollable from './Scrollable';
@@ -172,7 +172,7 @@ const ExampleSelector = () => {
 
       <li>
         <ExampleLink to="standard">
-          {/* TODO: add icon? */}
+          <DockBottomIcon size={48} />
           <span>Standard Bottom Sheet</span>
         </ExampleLink>
       </li>
