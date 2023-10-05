@@ -37,6 +37,7 @@ export type SheetProps = {
   initialSnap?: number; // index of snap points array
   tweenConfig?: SheetTweenConfig;
   disableDrag?: boolean;
+  disableScrollLocking?: boolean;
   prefersReducedMotion?: boolean;
 } & SheetEvents &
   React.ComponentPropsWithoutRef<typeof motion.div>;

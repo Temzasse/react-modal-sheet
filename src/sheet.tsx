@@ -43,6 +43,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       onCloseEnd,
       onSnap,
       children,
+      disableScrollLocking = false,
       isOpen,
       snapPoints,
       rootId,
@@ -207,7 +208,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     // Framer Motion should handle body scroll locking but it's not working
     // properly on iOS. Scroll locking from React Aria seems to work much better.
-    usePreventScroll({ isDisabled: !isOpen });
+    usePreventScroll({ isDisabled: disableScrollLocking === true || !isOpen });
 
     const dragProps = React.useMemo(() => {
       const dragProps: SheetContextType['dragProps'] = {
