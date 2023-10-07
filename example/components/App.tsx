@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Routes, Route, Link } from 'react-router-dom';
 import { FaScroll as ScrollIcon, FaLock as LockIcon } from 'react-icons/fa';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
+import { BiDockBottom as DockBottomIcon } from 'react-icons/bi';
 
 import {
   AiOutlineColumnHeight as HeightIcon,
@@ -10,7 +11,6 @@ import {
   AiOutlineSlack as SlackIcon,
   AiOutlineControl as SnapIcon,
 } from 'react-icons/ai';
-
 import { Screen, DarkMode } from './common';
 import SnapPoints from './SnapPoints';
 import Scrollable from './Scrollable';
@@ -20,6 +20,7 @@ import A11y from './a11y';
 import DisableDrag from './DisableDrag';
 import ScrollableSnapPoints from './ScrollableSnapPoints';
 import ContentHeight from './ContentHeight';
+import Standard from './standard';
 
 const App = () => {
   return (
@@ -98,6 +99,14 @@ const App = () => {
           </Screen>
         }
       />
+      <Route
+        path="standard/*"
+        element={
+          <Screen bg="light">
+            <Standard />
+          </Screen>
+        }
+      />
     </Routes>
   );
 };
@@ -158,6 +167,13 @@ const ExampleSelector = () => {
         <ExampleLink to="a11y">
           <A11yIcon size={48} />
           <span>Accessible Sheet</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="standard">
+          <DockBottomIcon size={48} />
+          <span>Standard Bottom Sheet</span>
         </ExampleLink>
       </li>
     </ExampleLinks>
