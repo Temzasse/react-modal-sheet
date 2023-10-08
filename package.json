@@ -34,7 +34,7 @@
     "format:write": "prettier . --write",
     "lint": "eslint src/* --fix --max-warnings=0",
     "link:self": "yalc publish && cd example && yalc add react-modal-sheet",
-    "test": "echo \"Todo fix tests...\"",
+    "test": "vitest run",
     "types:check": "tsc --noEmit --skipLibCheck",
     "types:analyze": "attw --pack .",
     "release": "npm run build && np"
@@ -51,6 +51,7 @@
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
     "@typescript-eslint/eslint-plugin": "6.6.0",
+    "@vitejs/plugin-react": "4.1.0",
     "csstype": "3.1.1",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
@@ -63,6 +64,7 @@
     "framer-motion": "10.16.4",
     "history": "5.0.0",
     "husky": "4.2.5",
+    "jsdom": "22.1.0",
     "parcel": "2.8.3",
     "prettier": "3.0.3",
     "react": "18.2.0",
@@ -74,7 +76,9 @@
     "react-stately": "3.23.0",
     "styled-components": "6.0.8",
     "tsup": "7.2.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "vite": "4.4.11",
+    "vitest": "0.34.6"
   },
   "engines": {
     "node": ">=16"
