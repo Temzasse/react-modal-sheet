@@ -11,14 +11,14 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: 'npm'
           node-version: 18
 
       - name: 📥 Install deps
-        run: yarn
+        run: npm ci
 
       - name: 🔬 Lint
-        run: yarn lint
+        run: npm run lint
 
   typecheck:
     name: ʦ TypeScript
@@ -30,16 +30,17 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: 'npm'
           node-version: 18
 
       - name: 📥 Install deps
-        run: yarn
+        run: npm ci
 
       - name: 🔎 Type check
-        run: yarn typecheck
+        run: npm run types:check
+
   test:
-    name: 🧪 Jest
+    name: 🧪 Test
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -48,11 +49,11 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: 'npm'
           node-version: 18
 
       - name: 📥 Install deps
-        run: yarn
+        run: npm ci
 
       - name: 🔬 Test
-        run: yarn test
+        run: npm run test
