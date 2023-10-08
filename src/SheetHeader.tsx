@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import { motion, useTransform } from 'framer-motion';
 
 import { type SheetDraggableProps } from './types';
@@ -15,12 +15,12 @@ const SheetHeader = forwardRef<any, SheetDraggableProps>(
 
     const indicator1Transform = useTransform(
       indicatorRotation,
-      r => `translateX(2px) rotate(${r}deg)`
+      (r) => `translateX(2px) rotate(${r}deg)`
     );
 
     const indicator2Transform = useTransform(
       indicatorRotation,
-      r => `translateX(-2px) rotate(${-1 * r}deg)`
+      (r) => `translateX(-2px) rotate(${-1 * r}deg)`
     );
 
     return (
@@ -48,5 +48,7 @@ const SheetHeader = forwardRef<any, SheetDraggableProps>(
     );
   }
 );
+
+SheetHeader.displayName = 'SheetHeader';
 
 export default SheetHeader;

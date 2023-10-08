@@ -55,4 +55,6 @@ const SheetContainer = forwardRef<any, SheetContainerProps>(
   }
 );
 
+SheetContainer.displayName = 'SheetContainer';
+
 export default SheetContainer;
