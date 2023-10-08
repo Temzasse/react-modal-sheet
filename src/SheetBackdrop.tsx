@@ -25,4 +25,6 @@ const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
   }
 );
 
+SheetBackdrop.displayName = 'SheetBackdrop';
+
 export default SheetBackdrop;

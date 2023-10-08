@@ -11,7 +11,8 @@ interface PreventScrollOptions {
   isDisabled?: boolean;
 }
 
-const visualViewport = typeof window !== 'undefined' && window.visualViewport;
+const visualViewport =
+  typeof window !== 'undefined' ? undefined : (window as any).visualViewport;
 
 // HTML input types that do not cause the software keyboard to appear.
 const nonTextInputTypes = new Set([
@@ -197,7 +198,9 @@ function preventScrollMobileSafari() {
             // measure the correct position to scroll to.
             visualViewport.addEventListener(
               'resize',
-              () => { scrollIntoView(target); },
+              () => {
+                scrollIntoView(target);
+              },
               { once: true }
             );
           }

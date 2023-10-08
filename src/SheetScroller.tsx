@@ -56,4 +56,6 @@ const SheetScroller = forwardRef<any, SheetScrollerProps>(
   }
 );
 
+SheetScroller.displayName = 'SheetScroller';
+
 export default SheetScroller;

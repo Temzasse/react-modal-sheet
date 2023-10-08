@@ -88,11 +88,11 @@ const Sheet = forwardRef<any, SheetProps>(
     // and after that it is driven by the gestures and/or snapping
     const y = useMotionValue(0);
 
-    const zIndex = useTransform(y, value =>
+    const zIndex = useTransform(y, (value) =>
       value >= windowHeight ? -1 : 9999999
     );
 
-    const visibility = useTransform(y, value =>
+    const visibility = useTransform(y, (value) =>
       value >= windowHeight ? 'hidden' : 'visible'
     );
 
@@ -116,7 +116,7 @@ const Sheet = forwardRef<any, SheetProps>(
 
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
-      snapPoints = snapPoints.map(point => {
+      snapPoints = snapPoints.map((point) => {
         // Percentage values e.g. between 0.0 and 1.0
         if (point > 0 && point <= 1) return Math.round(point * windowHeight);
         return point < 0 ? windowHeight + point : point; // negative values
@@ -124,7 +124,9 @@ const Sheet = forwardRef<any, SheetProps>(
 
       console.assert(
         inDescendingOrder(snapPoints) || windowHeight === 0,
-        `Snap points need to be in descending order got: [${snapPoints}]`
+        `Snap points need to be in descending order got: [${snapPoints.join(
+          ', '
+        )}]`
       );
     }
 
@@ -152,7 +154,7 @@ const Sheet = forwardRef<any, SheetProps>(
 
         if (snapPoints) {
           const snapToValues = snapPoints.map(
-            p => sheetHeight - Math.min(p, sheetHeight)
+            (p) => sheetHeight - Math.min(p, sheetHeight)
           );
 
           // Allow snapping to the top of the sheet if detent is set to `content-height`
@@ -170,7 +172,7 @@ const Sheet = forwardRef<any, SheetProps>(
         snapTo = validateSnapTo({ snapTo, sheetHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
-        animate(y, snapTo, animationOptions);
+        void animate(y, snapTo, animationOptions);
 
         if (snapPoints && onSnap) {
           const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
@@ -200,10 +202,7 @@ const Sheet = forwardRef<any, SheetProps>(
       snapTo: (snapIndex: number) => {
         const sheetEl = sheetRef.current as HTMLDivElement | null;
 
-        if (
-          snapPoints?.[snapIndex] !== undefined &&
-          sheetEl !== null
-        ) {
+        if (snapPoints?.[snapIndex] !== undefined && sheetEl !== null) {
           const sheetHeight = sheetEl.getBoundingClientRect().height;
           const snapPoint = snapPoints[snapIndex];
           const snapTo = validateSnapTo({
@@ -211,7 +210,7 @@ const Sheet = forwardRef<any, SheetProps>(
             sheetHeight,
           });
 
-          animate(y, snapTo, animationOptions);
+          void animate(y, snapTo, animationOptions);
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= sheetHeight) onClose();
         }
@@ -279,5 +278,7 @@ const Sheet = forwardRef<any, SheetProps>(
     return createPortal(sheet, mountPoint ?? document.body);
   }
 );
+
+Sheet.displayName = 'Sheet';
 
 export default Sheet;

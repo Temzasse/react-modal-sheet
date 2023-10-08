@@ -1,11 +1,14 @@
 import './index.css';
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { HashRouter as Router } from 'react-router-dom';
 import { OverlayProvider } from 'react-aria';
 
 import App from './components/App';
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.getElementById('root')!);
 
 const Root = () => {
   return (
@@ -17,4 +20,4 @@ const Root = () => {
   );
 };
 
-ReactDOM.render(<Root />, document.getElementById('root'));
+root.render(<Root />);

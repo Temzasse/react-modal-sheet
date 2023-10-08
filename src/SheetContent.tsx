@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 
 import { type SheetDraggableProps } from './types';
@@ -33,5 +33,7 @@ const SheetContent = forwardRef<any, SheetDraggableProps>(
     );
   }
 );
+
+SheetContent.displayName = 'SheetContent';
 
 export default SheetContent;
