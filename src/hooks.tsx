@@ -3,6 +3,7 @@ import * as React from 'react';
 import { IS_SSR } from './constants';
 import { SheetEvents } from './types';
 import { applyRootStyles, cleanupRootStyles } from './utils';
+import { BoundingBox } from 'framer-motion';
 
 export const useIsomorphicLayoutEffect = IS_SSR
   ? React.useEffect
@@ -95,4 +96,15 @@ export function useEvent<T extends (...args: any[]) => any>(handler: T) {
     const fn = handlerRef.current;
     return fn?.(...args);
   }, []) as T;
+}
+
+// This is a hacky way to fix a bug in framer-motion where the drag
+// constraints are not updated when window is resized.
+// https://github.com/framer/motion/issues/1659
+const constraints: BoundingBox = { bottom: 0, top: 0, left: 0, right: 0 };
+
+export function useDragConstraints() {
+  const constraintsRef = React.useRef<any>(null);
+  const onMeasureDragConstraints = React.useCallback(() => constraints, []);
+  return { constraintsRef, onMeasureDragConstraints };
 }

@@ -214,7 +214,6 @@ const Sheet = React.forwardRef<any, SheetProps>(
       const dragProps: SheetContextType['dragProps'] = {
         drag: 'y',
         dragElastic: 0,
-        dragConstraints: { top: 0, bottom: 0 },
         dragMomentum: false,
         dragPropagation: false,
         onDrag,

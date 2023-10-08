@@ -75,7 +75,6 @@ export type SheetScrollerProps = React.HTMLAttributes<HTMLDivElement> & {
 export type SheetDragProps = {
   drag: 'y';
   dragElastic: number;
-  dragConstraints: any;
   dragMomentum: boolean;
   dragPropagation: boolean;
   onDrag: DragHandlers['onDrag'];
