@@ -1,29 +1,27 @@
-import * as React from 'react';
-import { SheetScrollerContextType, SheetContextType } from './types';
+import React, { type ReactNode, createContext, useContext, useState } from 'react';
+import { type SheetScrollerContextType, type SheetContextType } from './types';
 
-export const SheetContext = React.createContext<SheetContextType | undefined>(
+export const SheetContext = createContext<SheetContextType | undefined>(
   undefined
 );
 
 export const useSheetContext = () => {
-  const context = React.useContext(SheetContext);
+  const context = useContext(SheetContext);
   if (!context) throw Error('Sheet context error');
   return context;
 };
 
-export const SheetScrollerContext = React.createContext<
+export const SheetScrollerContext = createContext<
   SheetScrollerContextType | undefined
 >(undefined);
 
 export function SheetScrollerContextProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const sheetContext = useSheetContext();
-  const [disableDrag, setDisableDrag] = React.useState(
-    !!sheetContext.disableDrag
-  );
+  const [disableDrag, setDisableDrag] = useState(!!sheetContext.disableDrag);
 
   function setDragEnabled() {
     if (!sheetContext.disableDrag) setDisableDrag(false);
@@ -43,7 +41,7 @@ export function SheetScrollerContextProvider({
 }
 
 export const useSheetScrollerContext = () => {
-  const context = React.useContext(SheetScrollerContext);
+  const context = useContext(SheetScrollerContext);
   if (!context) throw Error('Sheet scroller context error');
   return context;
 };

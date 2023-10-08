@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import Sheet, { SheetRef } from 'react-modal-sheet';
 
-import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
 
 const ContentHeight = () => {

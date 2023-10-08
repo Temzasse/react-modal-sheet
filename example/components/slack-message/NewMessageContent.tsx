@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
-import Sheet from '../../../src';
+import Sheet from 'react-modal-sheet';
 
 const people = [
   'john',

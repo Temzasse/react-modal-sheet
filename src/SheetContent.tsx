@@ -1,13 +1,13 @@
-import * as React from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-import { SheetDraggableProps } from './types';
+import { type SheetDraggableProps } from './types';
 import { useSheetScrollerContext, useSheetContext } from './context';
 import { useDragConstraints } from './hooks';
 import { mergeRefs } from './utils';
 import styles from './styles';
 
-const SheetContent = React.forwardRef<any, SheetDraggableProps>(
+const SheetContent = forwardRef<any, SheetDraggableProps>(
   ({ children, style, disableDrag, className = '', ...rest }, ref) => {
     const sheetContext = useSheetContext();
     const sheetScrollerContext = useSheetScrollerContext();

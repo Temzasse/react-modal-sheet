@@ -1,19 +1,25 @@
-import * as React from 'react';
+import {
+  type MutableRefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import { type BoundingBox } from 'framer-motion';
 
 import { IS_SSR } from './constants';
-import { SheetEvents } from './types';
+import { type SheetEvents } from './types';
 import { applyRootStyles, cleanupRootStyles } from './utils';
-import { BoundingBox } from 'framer-motion';
 
-export const useIsomorphicLayoutEffect = IS_SSR
-  ? React.useEffect
-  : React.useLayoutEffect;
+export const useIsomorphicLayoutEffect = IS_SSR ? useEffect : useLayoutEffect;
 
 export function useModalEffect(isOpen: boolean, rootId?: string) {
   const prevOpen = usePrevious(isOpen);
 
   // Automatically apply the iOS modal effect to the body when sheet opens/closes
-  React.useEffect(() => {
+  useEffect(() => {
     if (rootId && !prevOpen && isOpen) {
       applyRootStyles(rootId);
     } else if (rootId && !isOpen && prevOpen) {
@@ -22,7 +28,7 @@ export function useModalEffect(isOpen: boolean, rootId?: string) {
   }, [isOpen, prevOpen]); // eslint-disable-line
 
   // Make sure to cleanup modal styles on unmount
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (rootId && isOpen) cleanupRootStyles(rootId);
     };
@@ -31,15 +37,15 @@ export function useModalEffect(isOpen: boolean, rootId?: string) {
 
 export function useEventCallbacks(
   isOpen: boolean,
-  callbacks: React.MutableRefObject<SheetEvents>
+  callbacks: MutableRefObject<SheetEvents>
 ) {
   const prevOpen = usePrevious(isOpen);
-  const didOpen = React.useRef(false);
+  const didOpen = useRef(false);
 
   // Because of AnimatePrecence we don't have access to latest isOpen value
   // so we need to read and write to a ref to determine if we are
   // opening or closing the sheet
-  const handleAnimationComplete = React.useCallback(() => {
+  const handleAnimationComplete = useCallback(() => {
     if (!didOpen.current) {
       callbacks.current.onOpenEnd?.();
       didOpen.current = true;
@@ -49,7 +55,7 @@ export function useEventCallbacks(
     }
   }, [isOpen, prevOpen]); // eslint-disable-line
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!prevOpen && isOpen) {
       callbacks.current.onOpenStart?.();
     } else if (!isOpen && prevOpen) {
@@ -60,23 +66,24 @@ export function useEventCallbacks(
   return { handleAnimationComplete };
 }
 
-export function useWindowHeight() {
-  const [windowHeight, setWindowHeight] = React.useState(0);
+export function useDimensions() {
+  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
 
   useIsomorphicLayoutEffect(() => {
-    const updateHeight = () => setWindowHeight(window.innerHeight);
+    const updateHeight = () =>
+      { setDimensions({ height: window.innerHeight, width: window.innerWidth }); };
     window.addEventListener('resize', updateHeight);
     updateHeight();
-    return () => window.removeEventListener('resize', updateHeight);
+    return () => { window.removeEventListener('resize', updateHeight); };
   }, []);
 
-  return windowHeight;
+  return dimensions;
 }
 
 export function usePrevious<T>(state: T): T | undefined {
-  const ref = React.useRef<T>();
+  const ref = useRef<T>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     ref.current = state;
   });
 
@@ -86,13 +93,13 @@ export function usePrevious<T>(state: T): T | undefined {
 // Userland version of the `useEvent` React hook:
 // RFC: https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
 export function useEvent<T extends (...args: any[]) => any>(handler: T) {
-  const handlerRef = React.useRef<T>();
+  const handlerRef = useRef<T>();
 
   useIsomorphicLayoutEffect(() => {
     handlerRef.current = handler;
   });
 
-  return React.useCallback((...args: any[]) => {
+  return useCallback((...args: any[]) => {
     const fn = handlerRef.current;
     return fn?.(...args);
   }, []) as T;
@@ -104,7 +111,7 @@ export function useEvent<T extends (...args: any[]) => any>(handler: T) {
 const constraints: BoundingBox = { bottom: 0, top: 0, left: 0, right: 0 };
 
 export function useDragConstraints() {
-  const constraintsRef = React.useRef<any>(null);
-  const onMeasureDragConstraints = React.useCallback(() => constraints, []);
+  const constraintsRef = useRef<any>(null);
+  const onMeasureDragConstraints = useCallback(() => constraints, []);
   return { constraintsRef, onMeasureDragConstraints };
 }

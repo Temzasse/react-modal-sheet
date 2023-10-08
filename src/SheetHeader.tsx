@@ -1,13 +1,13 @@
-import * as React from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { motion, useTransform } from 'framer-motion';
 
-import { SheetDraggableProps } from './types';
+import { type SheetDraggableProps } from './types';
 import { useSheetContext } from './context';
 import { useDragConstraints } from './hooks';
 import { mergeRefs } from './utils';
 import styles from './styles';
 
-const SheetHeader = React.forwardRef<any, SheetDraggableProps>(
+const SheetHeader = forwardRef<any, SheetDraggableProps>(
   ({ children, style, disableDrag, ...rest }, ref) => {
     const { indicatorRotation, dragProps } = useSheetContext();
     const { constraintsRef, onMeasureDragConstraints } = useDragConstraints();

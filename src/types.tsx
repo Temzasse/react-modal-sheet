@@ -1,19 +1,28 @@
 import {
-  DragHandlers,
-  MotionValue,
-  MotionProps,
-  motion,
-  EasingDefinition,
-  Transition,
+  type ComponentPropsWithoutRef,
+  type ForwardRefExoticComponent,
+  type HTMLAttributes,
+  type MutableRefObject,
+  type ReactNode,
+  type RefAttributes,
+} from 'react';
+
+import {
+  type DragHandlers,
+  type MotionValue,
+  type MotionProps,
+  type motion,
+  type EasingDefinition,
+  type Transition,
 } from 'framer-motion';
 
-export type SheetEvents = {
+export interface SheetEvents {
   onOpenStart?: () => void;
   onOpenEnd?: () => void;
   onCloseStart?: () => void;
   onCloseEnd?: () => void;
   onSnap?: (index: number) => void;
-};
+}
 
 export type SheetDetent = 'full-height' | 'content-height';
 
@@ -21,14 +30,14 @@ type CommonProps = MotionProps & {
   className?: string;
 };
 
-export type SheetTweenConfig = {
+export interface SheetTweenConfig {
   ease: EasingDefinition;
   duration: number;
-};
+}
 
 export type SheetProps = {
   isOpen: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   onClose: () => void;
   rootId?: string;
   mountPoint?: Element;
@@ -40,13 +49,13 @@ export type SheetProps = {
   disableScrollLocking?: boolean;
   prefersReducedMotion?: boolean;
 } & SheetEvents &
-  React.ComponentPropsWithoutRef<typeof motion.div>;
+  ComponentPropsWithoutRef<typeof motion.div>;
 
 export type SheetContainerProps = Omit<
   CommonProps,
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
 > & {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export type SheetDraggableProps = Omit<
@@ -59,7 +68,7 @@ export type SheetDraggableProps = Omit<
   | 'onDragStart'
   | 'onDragEnd'
 > & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   disableDrag?: boolean;
 };
 
@@ -68,67 +77,67 @@ export type SheetBackdropProps = Omit<
   'initial' | 'animate' | 'exit'
 >;
 
-export type SheetScrollerProps = React.HTMLAttributes<HTMLDivElement> & {
+export type SheetScrollerProps = HTMLAttributes<HTMLDivElement> & {
   draggableAt?: 'top' | 'bottom' | 'both';
 };
 
-export type SheetDragProps = {
+export interface SheetDragProps {
   drag: 'y';
   dragElastic: number;
   dragMomentum: boolean;
   dragPropagation: boolean;
   onDrag: DragHandlers['onDrag'];
   onDragEnd: DragHandlers['onDragEnd'];
-};
+}
 
-export type SheetContextType = {
+export interface SheetContextType {
   y: MotionValue<any>;
-  sheetRef: React.MutableRefObject<any>;
+  sheetRef: MutableRefObject<any>;
   isOpen: boolean;
   snapPoints: SheetProps['snapPoints'];
   detent: SheetDetent;
   initialSnap: SheetProps['initialSnap'];
   indicatorRotation: MotionValue<number>;
-  callbacks: React.MutableRefObject<SheetEvents>;
+  callbacks: MutableRefObject<SheetEvents>;
   dragProps?: SheetDragProps;
   windowHeight: number;
   animationOptions: Transition;
   reduceMotion: boolean;
   disableDrag: boolean;
-};
+}
 
-export type SheetScrollerContextType = {
+export interface SheetScrollerContextType {
   disableDrag: boolean;
   setDragDisabled: () => void;
   setDragEnabled: () => void;
-};
+}
 
-type ContainerComponent = React.ForwardRefExoticComponent<
-  SheetContainerProps & React.RefAttributes<any>
+type ContainerComponent = ForwardRefExoticComponent<
+  SheetContainerProps & RefAttributes<any>
 >;
 
-type DraggableComponent = React.ForwardRefExoticComponent<
-  SheetDraggableProps & React.RefAttributes<any>
+type DraggableComponent = ForwardRefExoticComponent<
+  SheetDraggableProps & RefAttributes<any>
 >;
 
-type BackdropComponent = React.ForwardRefExoticComponent<
-  SheetBackdropProps & React.RefAttributes<any>
+type BackdropComponent = ForwardRefExoticComponent<
+  SheetBackdropProps & RefAttributes<any>
 >;
 
-type SheetComponent = React.ForwardRefExoticComponent<
-  SheetProps & React.RefAttributes<any>
+type SheetComponent = ForwardRefExoticComponent<
+  SheetProps & RefAttributes<any>
 >;
 
-type ScrollerComponent = React.ForwardRefExoticComponent<
-  SheetScrollerProps & React.RefAttributes<any>
+type ScrollerComponent = ForwardRefExoticComponent<
+  SheetScrollerProps & RefAttributes<any>
 >;
 
-type SheetCompoundComponent = {
+interface SheetCompoundComponent {
   Container: ContainerComponent;
   Header: DraggableComponent;
   Content: DraggableComponent;
   Backdrop: BackdropComponent;
   Scroller: ScrollerComponent;
-};
+}
 
 export type SheetCompound = SheetComponent & SheetCompoundComponent;

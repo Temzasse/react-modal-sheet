@@ -1,6 +1,6 @@
-import * as CSS from 'csstype';
+import { type Properties } from 'csstype';
 
-const styles: { [key: string]: CSS.Properties } = {
+const styles: Record<string, Properties> = {
   wrapper: {
     position: 'fixed',
     top: 0,
