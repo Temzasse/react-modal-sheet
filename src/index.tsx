@@ -1,6 +1,6 @@
 import { type MotionValue } from 'framer-motion';
 
-import Sheet from './sheet';
+import _Sheet from './sheet';
 import SheetContainer from './SheetContainer';
 import SheetContent from './SheetContent';
 import SheetHeader from './SheetHeader';
@@ -14,11 +14,11 @@ export interface SheetRef {
 }
 
 // HACK: this is needed to get the typing to work properly...
-const _SheetCompound: any = Sheet;
+const _SheetCompound: any = _Sheet;
 _SheetCompound.Container = SheetContainer;
 _SheetCompound.Header = SheetHeader;
 _SheetCompound.Content = SheetContent;
 _SheetCompound.Backdrop = SheetBackdrop;
 _SheetCompound.Scroller = SheetScroller;
 
-export default _SheetCompound as SheetCompound;
+export const Sheet = _SheetCompound as SheetCompound;

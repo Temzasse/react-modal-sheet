@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
 import { useOverlayTriggerState } from 'react-stately';
-import Sheet from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 
 import {
   useOverlay,

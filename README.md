@@ -41,7 +41,7 @@ npm install framer-motion
 ## Usage
 
 ```jsx
-import Sheet from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import { useState } from 'react';
 
 function Example() {
@@ -98,7 +98,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 Imperative method that can be accessed via a ref for snapping to a snap point in given index.
 
 ```tsx
-import Sheet, { SheetRef } from 'react-modal-sheet';
+import { Sheet, SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
 
 function Example() {
@@ -144,7 +144,7 @@ Similarly to the `snapTo` method the `y` value can be accessed via a ref.
 The `y` value can be useful for certain situtation eg. when you want to combine snap points with scrollable sheet content and ensure that the content stays properly scrollable in any snap point. Below you can see a simplified example of this situation and for a more detailed example take a look at the [ScrollableSnapPoints](example/components/ScrollableSnapPoints.tsx) component in the example app.
 
 ```tsx
-import Sheet, { SheetRef } from 'react-modal-sheet';
+import { Sheet, SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
 
 function Example() {
@@ -371,7 +371,7 @@ You can add your own styles or override the default sheet styles via the exposed
 #### CSS-in-JS
 
 ```jsx
-import Sheet from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import styled from 'styled-components';
 import { useState } from 'react';
 
@@ -421,7 +421,7 @@ The example below utilizes React Aria to achieve an accessible modal-like bottom
 > ℹ️ The example was built by following the React Aria's [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation.
 
 ```jsx
-import Sheet from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import { useRef } from 'react';
 import { useOverlayTriggerState } from 'react-stately';
 
