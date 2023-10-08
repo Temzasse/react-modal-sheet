@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Sheet } from 'react-modal-sheet';
 
-import Sheet from '../../src';
 import { Button } from './common';
 
 const DisableDrag = () => {

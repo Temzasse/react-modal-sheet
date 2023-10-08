@@ -1,12 +1,21 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React, {
+  Children,
+  cloneElement,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react';
+
+import { createPortal } from 'react-dom';
 
 import {
   animate,
   AnimatePresence,
   motion,
-  PanInfo,
-  Transition,
+  type PanInfo,
+  type Transition,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -14,7 +23,7 @@ import {
 
 import {
   useModalEffect,
-  useWindowHeight,
+  useDimensions,
   useIsomorphicLayoutEffect,
   useEvent,
 } from './hooks';
@@ -27,13 +36,18 @@ import {
   IS_SSR,
 } from './constants';
 
-import { SheetContextType, SheetProps } from './types';
+import { type SheetContextType, type SheetProps } from './types';
 import { SheetScrollerContextProvider, SheetContext } from './context';
-import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
+import {
+  getClosest,
+  inDescendingOrder,
+  mergeRefs,
+  validateSnapTo,
+} from './utils';
 import { usePreventScroll } from './use-prevent-scroll';
 import styles from './styles';
 
-const Sheet = React.forwardRef<any, SheetProps>(
+const Sheet = forwardRef<any, SheetProps>(
   (
     {
       onOpenStart,
@@ -58,9 +72,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
     },
     ref
   ) => {
-    const sheetRef = React.useRef<any>(null);
+    const sheetRef = useRef<any>(null);
+    const constraintsRef = useRef<any>(null);
     const indicatorRotation = useMotionValue(0);
-    const windowHeight = useWindowHeight();
+    const { height: windowHeight } = useDimensions();
     const shouldReduceMotion = useReducedMotion();
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
@@ -73,17 +88,17 @@ const Sheet = React.forwardRef<any, SheetProps>(
     // and after that it is driven by the gestures and/or snapping
     const y = useMotionValue(0);
 
-    const zIndex = useTransform(y, value =>
+    const zIndex = useTransform(y, (value) =>
       value >= windowHeight ? -1 : 9999999
     );
 
-    const visibility = useTransform(y, value =>
+    const visibility = useTransform(y, (value) =>
       value >= windowHeight ? 'hidden' : 'visible'
     );
 
     // Keep the callback fns up-to-date so that they can be accessed inside
     // the effect without including them to the dependencies array
-    const callbacks = React.useRef({
+    const callbacks = useRef({
       onOpenStart,
       onOpenEnd,
       onCloseStart,
@@ -101,7 +116,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
-      snapPoints = snapPoints.map(point => {
+      snapPoints = snapPoints.map((point) => {
         // Percentage values e.g. between 0.0 and 1.0
         if (point > 0 && point <= 1) return Math.round(point * windowHeight);
         return point < 0 ? windowHeight + point : point; // negative values
@@ -109,7 +124,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
       console.assert(
         inDescendingOrder(snapPoints) || windowHeight === 0,
-        `Snap points need to be in descending order got: [${snapPoints}]`
+        `Snap points need to be in descending order got: [${snapPoints.join(
+          ', '
+        )}]`
       );
     }
 
@@ -137,7 +154,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
         if (snapPoints) {
           const snapToValues = snapPoints.map(
-            p => sheetHeight - Math.min(p, sheetHeight)
+            (p) => sheetHeight - Math.min(p, sheetHeight)
           );
 
           // Allow snapping to the top of the sheet if detent is set to `content-height`
@@ -155,7 +172,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
         snapTo = validateSnapTo({ snapTo, sheetHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
-        animate(y, snapTo, animationOptions);
+        void animate(y, snapTo, animationOptions);
 
         if (snapPoints && onSnap) {
           const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
@@ -174,22 +191,18 @@ const Sheet = React.forwardRef<any, SheetProps>(
     });
 
     // Trigger onSnap callback when sheet is opened or closed
-    React.useEffect(() => {
+    useEffect(() => {
       if (!snapPoints || !onSnap) return;
       const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
       onSnap(snapIndex);
     }, [isOpen]); // eslint-disable-line
 
-    React.useImperativeHandle(ref, () => ({
+    useImperativeHandle(ref, () => ({
       y,
       snapTo: (snapIndex: number) => {
         const sheetEl = sheetRef.current as HTMLDivElement | null;
 
-        if (
-          snapPoints &&
-          snapPoints[snapIndex] !== undefined &&
-          sheetEl !== null
-        ) {
+        if (snapPoints?.[snapIndex] !== undefined && sheetEl !== null) {
           const sheetHeight = sheetEl.getBoundingClientRect().height;
           const snapPoint = snapPoints[snapIndex];
           const snapTo = validateSnapTo({
@@ -197,7 +210,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
             sheetHeight,
           });
 
-          animate(y, snapTo, animationOptions);
+          void animate(y, snapTo, animationOptions);
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= sheetHeight) onClose();
         }
@@ -208,9 +221,9 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     // Framer Motion should handle body scroll locking but it's not working
     // properly on iOS. Scroll locking from React Aria seems to work much better.
-    usePreventScroll({ isDisabled: disableScrollLocking === true || !isOpen });
+    usePreventScroll({ isDisabled: disableScrollLocking || !isOpen });
 
-    const dragProps = React.useMemo(() => {
+    const dragProps = useMemo(() => {
       const dragProps: SheetContextType['dragProps'] = {
         drag: 'y',
         dragElastic: 0,
@@ -221,7 +234,7 @@ const Sheet = React.forwardRef<any, SheetProps>(
       };
 
       return disableDrag ? undefined : dragProps;
-    }, [disableDrag]); // eslint-disable-line
+    }, [disableDrag, windowHeight]); // eslint-disable-line
 
     const context: SheetContextType = {
       y,
@@ -243,15 +256,15 @@ const Sheet = React.forwardRef<any, SheetProps>(
       <SheetContext.Provider value={context}>
         <motion.div
           {...rest}
-          ref={ref}
+          ref={mergeRefs([ref, constraintsRef])}
           style={{ ...styles.wrapper, zIndex, visibility, ...style }}
         >
           <AnimatePresence>
             {/* NOTE: AnimatePresence requires us to set keys to children */}
             {isOpen ? (
               <SheetScrollerContextProvider>
-                {React.Children.map(children, (child: any, i) =>
-                  React.cloneElement(child, { key: `sheet-child-${i}` })
+                {Children.map(children, (child: any, i) =>
+                  cloneElement(child, { key: `sheet-child-${i}` })
                 )}
               </SheetScrollerContextProvider>
             ) : null}
@@ -262,8 +275,10 @@ const Sheet = React.forwardRef<any, SheetProps>(
 
     if (IS_SSR) return sheet;
 
-    return ReactDOM.createPortal(sheet, mountPoint ?? document.body);
+    return createPortal(sheet, mountPoint ?? document.body);
   }
 );
+
+Sheet.displayName = 'Sheet';
 
 export default Sheet;

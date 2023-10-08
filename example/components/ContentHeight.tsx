@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Sheet, SheetRef } from 'react-modal-sheet';
 
-import Sheet, { SheetRef } from '../../src';
 import { Button } from './common';
 
 const ContentHeight = () => {
@@ -36,7 +36,7 @@ const ContentHeight = () => {
                 {boxes.map((_, i) => (
                   <Box
                     key={i}
-                    onClick={() => setBoxes(prev => [...prev, i + 1])}
+                    onClick={() => setBoxes((prev) => [...prev, i + 1])}
                   >
                     {i} (click to create new boxes )
                   </Box>
