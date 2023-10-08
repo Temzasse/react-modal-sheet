@@ -1,5 +1,5 @@
 {
-  "include": ["src", "types", "test", "vitest.config.js"],
+  "include": ["src", "types", "test"],
   "exclude": ["dist"],
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
