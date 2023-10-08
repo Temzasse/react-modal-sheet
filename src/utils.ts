@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { type ForwardedRef, type RefCallback } from 'react';
 
 export function getClosest(nums: number[], goal: number) {
   let closest = nums[0];
@@ -82,9 +82,7 @@ export function validateSnapTo({
   return Math.max(Math.round(snapTo), 0);
 }
 
-export function mergeRefs<T = any>(
-  refs: React.ForwardedRef<T>[]
-): React.RefCallback<T> {
+export function mergeRefs<T = any>(refs: Array<ForwardedRef<T>>): RefCallback<T> {
   return (value: any) => {
     refs.forEach((ref: any) => {
       if (typeof ref === 'function') {

@@ -1,14 +1,14 @@
-import * as React from 'react';
+import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 
-import { SheetContainerProps } from './types';
+import { type SheetContainerProps } from './types';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
 import { MAX_HEIGHT } from './constants';
 import { mergeRefs } from './utils';
 import styles from './styles';
 
-const SheetContainer = React.forwardRef<any, SheetContainerProps>(
+const SheetContainer = forwardRef<any, SheetContainerProps>(
   ({ children, style = {}, className = '', ...rest }, ref) => {
     const {
       y,

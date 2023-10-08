@@ -4,27 +4,25 @@
   "license": "MIT",
   "homepage": "https://temzasse.github.io/react-modal-sheet",
   "scripts": {
-    "start": "parcel index.html",
+    "dev": "parcel index.html --no-cache",
     "build": "rm -rf dist && parcel build index.html --public-url /react-modal-sheet/",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "framer-motion": "10.12.16",
+    "framer-motion": "10.16.4",
     "history": "5.0.0",
+    "react": "18.2.0",
     "react-aria": "3.25.0",
+    "react-dom": "18.2.0",
     "react-icons": "4.2.0",
+    "react-modal-sheet": "file:.yalc/react-modal-sheet",
     "react-router": "6.0.0-beta.0",
     "react-router-dom": "6.0.0-beta.0",
     "react-stately": "3.23.0",
     "react-use": "17.1.1",
     "styled-components": "6.0.0-rc.3"
-  },
-  "alias": {
-    "react": "../node_modules/react",
-    "react-dom": "../node_modules/react-dom/profiling",
-    "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
     "@types/react": "18.2.12",

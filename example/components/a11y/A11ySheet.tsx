@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { OverlayTriggerState } from 'react-stately';
+import Sheet from 'react-modal-sheet';
 
 import {
   FocusScope,
@@ -8,8 +9,6 @@ import {
   useModal,
   OverlayProvider,
 } from 'react-aria';
-
-import Sheet from '../../../src';
 
 type SheetProps = {
   state: OverlayTriggerState;
