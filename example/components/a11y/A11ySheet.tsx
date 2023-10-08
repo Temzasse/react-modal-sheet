@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { OverlayTriggerState } from 'react-stately';
-import Sheet from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 
 import {
   FocusScope,
