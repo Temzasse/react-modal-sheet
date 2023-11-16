@@ -1,4 +1,6 @@
-export const MAX_HEIGHT = 'calc(100% - env(safe-area-inset-top) - 34px)';
+export const SAFE_AREA_TOP_OFFSET = 34;
+
+export const MAX_HEIGHT = `calc(100% - env(safe-area-inset-top) - ${SAFE_AREA_TOP_OFFSET}px)`;
 
 export const IS_SSR = typeof window === 'undefined';
 
