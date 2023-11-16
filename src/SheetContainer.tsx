@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { SheetContainerProps } from './types';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
-import { MAX_HEIGHT } from './constants';
+import { MAX_HEIGHT, SAFE_AREA_TOP_OFFSET } from './constants';
 import { mergeRefs } from './utils';
 import styles from './styles';
 
@@ -24,7 +24,9 @@ const SheetContainer = React.forwardRef<any, SheetContainerProps>(
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
-    const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
+    const initialY = snapPoints
+      ? snapPoints[0] - snapPoints[initialSnap] - SAFE_AREA_TOP_OFFSET
+      : 0;
     const maxSnapHeight = snapPoints ? snapPoints[0] : null;
 
     const height =
