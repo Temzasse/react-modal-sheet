@@ -102,7 +102,7 @@ function preventScrollStandard() {
 // 6. As a last resort, handle window scroll events, and scroll back to the top. This can happen when attempting
 //    to navigate to an input with the next/previous buttons that's outside a modal.
 function preventScrollMobileSafari() {
-  let scrollable: Element;
+  let scrollable: Element | undefined;
   let lastY = 0;
   let onTouchStart = (e: TouchEvent) => {
     // Store the nearest scrollable parent element from the element that the user touched.
@@ -118,6 +118,13 @@ function preventScrollMobileSafari() {
   };
 
   let onTouchMove = (e: TouchEvent) => {
+    // In special situations, `onTouchStart` may be called without `onTouchStart` being called.
+    // (e.g. when the user places a finger on the screen before the <Sheet> is mounted and then moves the finger after it is mounted).
+    // If `onTouchStart` is not called, `scrollable` is `undefined`. Therefore, such cases are ignored.
+    if (scrollable === undefined) {
+      return;
+    }
+
     // Prevent scrolling the window.
     if (
       scrollable === document.documentElement ||
