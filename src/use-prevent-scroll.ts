@@ -118,6 +118,13 @@ function preventScrollMobileSafari() {
   };
 
   let onTouchMove = (e: TouchEvent) => {
+    // In special situations, `onTouchStart` may be called without `onTouchStart` being called.
+    // (e.g. when the user places a finger on the screen before the <Sheet> is mounted and then moves the finger after it is mounted).
+    // If `onTouchStart` is not called, `scrollable` is `undefined`. Therefore, such cases are ignored.
+    if (scrollable === undefined) {
+      return;
+    }
+
     // Prevent scrolling the window.
     if (
       scrollable === document.documentElement ||
