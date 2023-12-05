@@ -20,6 +20,7 @@ import A11y from './a11y';
 import DisableDrag from './DisableDrag';
 import ScrollableSnapPoints from './ScrollableSnapPoints';
 import ContentHeight from './ContentHeight';
+import ReproduceBug from './ReproduceBug';
 
 const App = () => {
   return (
@@ -29,6 +30,14 @@ const App = () => {
         element={
           <Screen bg="light">
             <ExampleSelector />
+          </Screen>
+        }
+      />
+      <Route
+        path="reproduce-bug/*"
+        element={
+          <Screen bg="light">
+            <ReproduceBug />
           </Screen>
         }
       />
@@ -105,6 +114,13 @@ const App = () => {
 const ExampleSelector = () => {
   return (
     <ExampleLinks>
+      <li>
+        <ExampleLink to="reproduce-bug">
+          <SnapIcon size={48} />
+          <span>Reproduce #151</span>
+        </ExampleLink>
+      </li>
+
       <li>
         <ExampleLink to="snap-points">
           <SnapIcon size={48} />
