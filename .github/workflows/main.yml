@@ -39,6 +39,9 @@ jobs:
       - name: 🔎 Type check
         run: npm run types:check
 
+      - name: 🔬 Analyze types
+        run: npm run types:analyze
+
   test:
     name: 🧪 Test
     runs-on: ubuntu-latest
