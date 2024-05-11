@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   lint:
-    name: ⬣ ESLint
+    name: 🧶 Lint
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -12,7 +12,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          node-version: 18
+          node-version: 20
 
       - name: 📥 Install deps
         run: npm ci
@@ -21,7 +21,7 @@ jobs:
         run: npm run lint
 
   typecheck:
-    name: ʦ TypeScript
+    name: 👮🏻‍♂️ Typecheck
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -31,16 +31,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          node-version: 18
+          node-version: 20
 
       - name: 📥 Install deps
         run: npm ci
 
       - name: 🔎 Type check
-        run: npm run types:check
-
-      - name: 🔬 Analyze types
-        run: npm run types:analyze
+        run: npm run typecheck
 
   test:
     name: 🧪 Test
@@ -53,10 +50,32 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          node-version: 18
+          node-version: 20
 
       - name: 📥 Install deps
         run: npm ci
 
       - name: 🔬 Test
         run: npm run test
+
+  build:
+    name: 📦 Build and verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version: 20
+
+      - name: 📥 Install deps
+        run: npm ci
+
+      - name: 🏗️ Build library
+        run: npm run build
+
+      - name: 🔬 Verify build
+        run: npm run build:verify

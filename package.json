@@ -30,6 +30,7 @@
   "scripts": {
     "dev": "tsup --watch --onSuccess \"npm run link:self\"",
     "build": "tsup",
+    "build:verify": "attw --pack .",
     "format:check": "prettier . --check",
     "format:write": "prettier . --write",
     "lint": "eslint src/* --fix --max-warnings=0",
@@ -37,8 +38,7 @@
     "link:example": "cd example && yalc add react-modal-sheet",
     "link:example-ssr": "cd example-ssr && yalc add react-modal-sheet",
     "test": "vitest run",
-    "types:check": "tsc --noEmit --skipLibCheck",
-    "types:analyze": "attw --pack .",
+    "typecheck": "tsc --noEmit --skipLibCheck",
     "release": "npm run build && types:analyze && np"
   },
   "dependencies": {
