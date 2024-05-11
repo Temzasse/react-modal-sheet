@@ -5,3 +5,5 @@ node_modules
 dist
 .parcel-cache
 .vscode
+.yalc
+yalc.lock

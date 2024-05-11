@@ -1,15 +1,15 @@
-import * as React from 'react';
+'use client';
+
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Sheet, SheetRef } from 'react-modal-sheet';
-
-import { Button } from './common';
 
 const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1;
 
-const ScrollableSnapPoints = () => {
-  const ref = React.useRef<SheetRef>();
-  const [isOpen, setOpen] = React.useState(false);
+export function SheetExample() {
+  const ref = useRef<SheetRef>();
+  const [isOpen, setOpen] = useState(false);
 
   const snapTo = (i: number) => ref.current?.snapTo(i);
   const open = () => setOpen(true);
@@ -17,7 +17,7 @@ const ScrollableSnapPoints = () => {
 
   return (
     <>
-      <Button onClick={open}>Scrollable + Snap points</Button>
+      <Button onClick={open}>Open sheet</Button>
 
       <Sheet
         ref={ref}
@@ -25,6 +25,7 @@ const ScrollableSnapPoints = () => {
         onClose={close}
         snapPoints={snapPoints}
         initialSnap={initialSnap}
+        rootId="root"
       >
         <Sheet.Container>
           <Sheet.Header />
@@ -51,11 +52,21 @@ const ScrollableSnapPoints = () => {
           </Sheet.Content>
         </Sheet.Container>
 
-        <Sheet.Backdrop />
+        <Sheet.Backdrop onTap={() => setOpen(false)} />
       </Sheet>
     </>
   );
-};
+}
+
+const Button = styled.button`
+  padding: 8px 16px;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+`;
 
 const BoxList = styled.div`
   display: flex;
@@ -74,6 +85,7 @@ const Box = styled.div`
   justify-content: center;
   font-weight: 700;
   font-size: 24px;
+  color: #000;
 
   &:last-of-type {
     margin-bottom: 0px;
@@ -85,6 +97,5 @@ const Controls = styled.div`
   flex-direction: column;
   align-items: center;
   padding-bottom: 24px;
+  gap: 16px;
 `;
-
-export default ScrollableSnapPoints;

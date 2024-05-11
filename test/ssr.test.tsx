@@ -1,24 +1,21 @@
-/**
- * @jest-environment node
- */
+// @vitest-environment node
 
-import * as React from 'react';
+import { test, expect } from 'vitest';
 import { renderToString } from 'react-dom/server';
-import Sheet from '../src';
+import React from 'react';
 
-describe('SSR', () => {
-  it('renders <Sheet.Content> in html output', () => {
-    const content = 'Hello world';
-    const markup = renderToString(
-      <Sheet isOpen onClose={() => {}}>
-        <Sheet.Container>
-          <Sheet.Header />
-          <Sheet.Content>{content}</Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop />
-      </Sheet>
-    );
+import { Sheet } from '../src';
 
-    expect(markup).toContain(content);
-  });
+test('renders Sheet in HTML output', () => {
+  const content = 'Hello world';
+  const markup = renderToString(
+    <Sheet isOpen onClose={() => {}}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>{content}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+  expect(markup).toContain(content);
 });

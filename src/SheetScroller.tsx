@@ -1,11 +1,11 @@
-import * as React from 'react';
+import React, { type TouchEvent, type UIEvent, forwardRef } from 'react';
 
 import { useSheetScrollerContext } from './context';
-import { SheetScrollerProps } from './types';
+import { type SheetScrollerProps } from './types';
 import { isTouchDevice } from './utils';
 import styles from './styles';
 
-const SheetScroller = React.forwardRef<any, SheetScrollerProps>(
+const SheetScroller = forwardRef<any, SheetScrollerProps>(
   ({ draggableAt = 'top', children, style, className = '', ...rest }, ref) => {
     const sheetScrollerContext = useSheetScrollerContext();
 
@@ -30,11 +30,11 @@ const SheetScroller = React.forwardRef<any, SheetScrollerProps>(
       }
     }
 
-    function onScroll(e: React.UIEvent<HTMLDivElement>) {
+    function onScroll(e: UIEvent<HTMLDivElement>) {
       determineDragState(e.currentTarget);
     }
 
-    function onTouchStart(e: React.TouchEvent<HTMLDivElement>) {
+    function onTouchStart(e: TouchEvent<HTMLDivElement>) {
       determineDragState(e.currentTarget);
     }
 
@@ -55,5 +55,7 @@ const SheetScroller = React.forwardRef<any, SheetScrollerProps>(
     );
   }
 );
+
+SheetScroller.displayName = 'SheetScroller';
 
 export default SheetScroller;

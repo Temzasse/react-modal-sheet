@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   lint:
-    name: ⬣ ESLint
+    name: 🧶 Lint
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -11,17 +11,17 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
-          node-version: 18
+          cache: 'npm'
+          node-version: 20
 
       - name: 📥 Install deps
-        run: yarn
+        run: npm ci
 
       - name: 🔬 Lint
-        run: yarn lint
+        run: npm run lint
 
   typecheck:
-    name: ʦ TypeScript
+    name: 👮🏻‍♂️ Typecheck
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -30,16 +30,17 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
-          node-version: 18
+          cache: 'npm'
+          node-version: 20
 
       - name: 📥 Install deps
-        run: yarn
+        run: npm ci
 
       - name: 🔎 Type check
-        run: yarn typecheck
+        run: npm run typecheck
+
   test:
-    name: 🧪 Jest
+    name: 🧪 Test
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -48,11 +49,33 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
-          node-version: 18
+          cache: 'npm'
+          node-version: 20
 
       - name: 📥 Install deps
-        run: yarn
+        run: npm ci
 
       - name: 🔬 Test
-        run: yarn test
+        run: npm run test
+
+  build:
+    name: 📦 Build and verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version: 20
+
+      - name: 📥 Install deps
+        run: npm ci
+
+      - name: 🏗️ Build library
+        run: npm run build
+
+      - name: 🔬 Verify build
+        run: npm run build:verify
