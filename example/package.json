@@ -4,14 +4,14 @@
   "license": "MIT",
   "homepage": "https://temzasse.github.io/react-modal-sheet",
   "scripts": {
-    "dev": "parcel index.html --no-cache",
+    "dev": "parcel index.html",
     "build": "rm -rf dist && parcel build index.html --public-url /react-modal-sheet/",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "framer-motion": "10.16.4",
+    "framer-motion": "11.1.9",
     "history": "5.0.0",
     "react": "18.2.0",
     "react-aria": "3.25.0",

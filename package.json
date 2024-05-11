@@ -33,21 +33,23 @@
     "format:check": "prettier . --check",
     "format:write": "prettier . --write",
     "lint": "eslint src/* --fix --max-warnings=0",
-    "link:self": "yalc publish && cd example && yalc add react-modal-sheet",
+    "link:self": "yalc publish && npm run link:example && npm run link:example-ssr",
+    "link:example": "cd example && yalc add react-modal-sheet",
+    "link:example-ssr": "cd example-ssr && yalc add react-modal-sheet",
     "test": "vitest run",
     "types:check": "tsc --noEmit --skipLibCheck",
     "types:analyze": "attw --pack .",
-    "release": "npm run build && np"
+    "release": "npm run build && types:analyze && np"
   },
   "dependencies": {
-    "@react-aria/utils": "3.17.0"
+    "@react-aria/utils": "3.24.0"
   },
   "peerDependencies": {
-    "framer-motion": ">=6",
+    "framer-motion": ">=8",
     "react": ">=16"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.12.1",
+    "@arethetypeswrong/cli": "0.15.3",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
     "@typescript-eslint/eslint-plugin": "6.6.0",
@@ -61,11 +63,11 @@
     "eslint-plugin-promise": "6.1.1",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "framer-motion": "10.16.4",
+    "framer-motion": "11.1.9",
     "history": "5.0.0",
     "husky": "4.2.5",
     "jsdom": "22.1.0",
-    "parcel": "2.8.3",
+    "parcel": "2.12.0",
     "prettier": "3.0.3",
     "react": "18.2.0",
     "react-aria": "3.25.0",
@@ -75,8 +77,8 @@
     "react-router-dom": "6.0.0-beta.0",
     "react-stately": "3.23.0",
     "styled-components": "6.0.8",
-    "tsup": "7.2.0",
-    "typescript": "5.2.2",
+    "tsup": "8.0.2",
+    "typescript": "5.4.5",
     "vite": "4.4.11",
     "vitest": "0.34.6"
   },
