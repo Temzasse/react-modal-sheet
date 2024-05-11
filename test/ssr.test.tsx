@@ -4,7 +4,7 @@ import { test, expect } from 'vitest';
 import { renderToString } from 'react-dom/server';
 import React from 'react';
 
-import Sheet from '../src';
+import { Sheet } from '../src';
 
 test('renders Sheet in HTML output', () => {
   const content = 'Hello world';
