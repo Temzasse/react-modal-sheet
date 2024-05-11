@@ -39,7 +39,7 @@
     "link:example-ssr": "cd example-ssr && yalc add react-modal-sheet",
     "test": "vitest run",
     "typecheck": "tsc --noEmit --skipLibCheck",
-    "release": "npm run build && types:analyze && np"
+    "release": "npm run build && npm run build:verify && np"
   },
   "dependencies": {
     "@react-aria/utils": "3.24.0"
