@@ -28,15 +28,15 @@
     "src"
   ],
   "scripts": {
-    "dev": "tsup --watch --onSuccess \"npm run link:self\"",
+    "dev": "tsup --watch --onSuccess \"yalc publish --push\"",
     "build": "tsup",
     "build:verify": "attw --pack .",
     "format:check": "prettier . --check",
     "format:write": "prettier . --write",
     "lint": "eslint src/* --fix --max-warnings=0",
-    "link:self": "yalc publish && npm run link:example && npm run link:example-ssr",
-    "link:example": "cd example && yalc add react-modal-sheet",
-    "link:example-ssr": "cd example-ssr && yalc add react-modal-sheet",
+    "link": "yalc publish && npm run link:example && npm run link:example-ssr",
+    "link:example": "cd example && yalc add react-modal-sheet && npm i",
+    "link:example-ssr": "cd example-ssr && yalc add react-modal-sheet && npm i",
     "test": "vitest run",
     "typecheck": "tsc --noEmit --skipLibCheck",
     "release": "npm run build && npm run build:verify && np"
