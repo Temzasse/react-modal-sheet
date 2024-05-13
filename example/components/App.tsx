@@ -24,6 +24,7 @@ import { A11y } from './a11y';
 import { DisableDrag } from './DisableDrag';
 import { ScrollableSnapPoints } from './ScrollableSnapPoints';
 import { ContentHeight } from './ContentHeight';
+import { AvoidKeyboard } from './AvoidKeyboard';
 
 export function App() {
   return (
@@ -57,6 +58,14 @@ export function App() {
         element={
           <Screen bg="light">
             <Scrollable />
+          </Screen>
+        }
+      />
+      <Route
+        path="avoid-keyboard/*"
+        element={
+          <Screen bg="light">
+            <AvoidKeyboard />
           </Screen>
         }
       />
@@ -127,6 +136,13 @@ const ExampleSelector = () => {
         <ExampleLink to="scrollable">
           <ScrollIcon size={48} />
           <span>Scrollable</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="avoid-keyboard">
+          <KeyboardIcon size={48} />
+          <span>Avoid keyboard</span>
         </ExampleLink>
       </li>
 
