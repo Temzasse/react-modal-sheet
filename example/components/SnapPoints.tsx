@@ -1,6 +1,6 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Sheet, SheetRef } from 'react-modal-sheet';
+import { useState, useRef, useEffect } from 'react';
+import { styled } from 'styled-components';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { Button } from './common';
 import { useMetaThemeColor } from './hooks';
@@ -8,16 +8,16 @@ import { useMetaThemeColor } from './hooks';
 const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1; // Initial snap point when sheet is opened
 
-const SnapPoints = () => {
-  const ref = React.useRef<SheetRef>();
-  const [isOpen, setOpen] = React.useState(false);
-  const [snapPoint, setSnapPoint] = React.useState(initialSnap);
+export function SnapPoints() {
+  const ref = useRef<SheetRef>();
+  const [isOpen, setOpen] = useState(false);
+  const [snapPoint, setSnapPoint] = useState(initialSnap);
 
   const snapTo = (i: number) => ref.current?.snapTo(i);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('> Current snap point', snapPoint);
   }, [snapPoint]);
 
@@ -59,7 +59,7 @@ const SnapPoints = () => {
       </Sheet>
     </>
   );
-};
+}
 
 const SheetContentWrapper = styled.div`
   height: 100%;
@@ -73,5 +73,3 @@ const Controls = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-
-export default SnapPoints;

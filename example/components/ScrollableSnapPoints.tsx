@@ -1,15 +1,15 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Sheet, SheetRef } from 'react-modal-sheet';
+import { useState, useRef } from 'react';
+import { styled } from 'styled-components';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { Button } from './common';
 
 const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1;
 
-const ScrollableSnapPoints = () => {
-  const ref = React.useRef<SheetRef>();
-  const [isOpen, setOpen] = React.useState(false);
+export function ScrollableSnapPoints() {
+  const ref = useRef<SheetRef>();
+  const [isOpen, setOpen] = useState(false);
 
   const snapTo = (i: number) => ref.current?.snapTo(i);
   const open = () => setOpen(true);
@@ -55,7 +55,7 @@ const ScrollableSnapPoints = () => {
       </Sheet>
     </>
   );
-};
+}
 
 const BoxList = styled.div`
   display: flex;
@@ -86,5 +86,3 @@ const Controls = styled.div`
   align-items: center;
   padding-bottom: 24px;
 `;
-
-export default ScrollableSnapPoints;

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { useRef } from 'react';
+import { styled } from 'styled-components';
 import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
 import { useOverlayTriggerState } from 'react-stately';
 import { Sheet } from 'react-modal-sheet';
@@ -13,16 +13,16 @@ import {
   useDialog,
 } from 'react-aria';
 
-import NewMessageHeader from './NewMessageHeader';
-import NewMessageContent from './NewMessageContent';
+import { NewMessageHeader } from './NewMessageHeader';
+import { NewMessageContent } from './NewMessageContent';
 import { useMetaThemeColor } from 'components/hooks';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
-const SlackMessage = () => {
+export function SlackMessage() {
   const sheetState = useOverlayTriggerState({});
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const openButtonRef = React.useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
   const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
   const focusInput = () => inputRef.current?.focus();
 
@@ -57,7 +57,7 @@ const SlackMessage = () => {
       </MessageSheet>
     </Wrapper>
   );
-};
+}
 
 const MessageSheetComp = ({
   sheetState,
@@ -66,7 +66,7 @@ const MessageSheetComp = ({
   sheetState: any;
   inputRef: any;
 }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const dialog = useDialog({}, ref);
   const overlay = useOverlay({ onClose: sheetState.close, isOpen: true, isDismissable: true }, ref); // prettier-ignore
 
@@ -170,5 +170,3 @@ const MessageSheet = styled(Sheet)`
     background-color: #666 !important;
   }
 `;
-
-export default SlackMessage;

@@ -1,14 +1,14 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { useRef } from 'react';
+import { styled } from 'styled-components';
 import { useButton } from 'react-aria';
 import { useOverlayTriggerState } from 'react-stately';
 
 import { Button } from '../common';
-import A11ySheetBase from './A11ySheet';
+import { A11ySheet as A11ySheetBase } from './A11ySheet';
 
-const A11yExample = () => {
+export function A11y() {
   const sheetState = useOverlayTriggerState({});
-  const openButtonRef = React.useRef<HTMLButtonElement>(null);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
   const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
 
   return (
@@ -25,7 +25,7 @@ const A11yExample = () => {
       </A11ySheet>
     </>
   );
-};
+}
 
 const A11ySheet = styled(A11ySheetBase)`
   margin: 0 auto;
@@ -36,5 +36,3 @@ const SheetContent = styled.div`
   text-align: center;
   padding-top: 24px;
 `;
-
-export default A11yExample;

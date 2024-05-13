@@ -1,5 +1,5 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { type RefObject } from 'react';
+import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
 
 const people = [
@@ -19,14 +19,14 @@ const people = [
   id: i,
   name,
   // Use index to randomize the returned image
-  image: (i: number) => `https://source.unsplash.com/collection/1602384/${100 + i}x${100 + i}?crop=faces` // prettier-ignore
+  image: (i: number) => `https://source.unsplash.com/collection/1602384/${100 + i}x${100 + i}?crop=faces`, // prettier-ignore
 }));
 
-const NewMessageContent = ({
+export function NewMessageContent({
   inputRef,
 }: {
-  inputRef: React.RefObject<HTMLInputElement>;
-}) => {
+  inputRef: RefObject<HTMLInputElement>;
+}) {
   return (
     <Wrapper>
       <Search>
@@ -54,7 +54,7 @@ const NewMessageContent = ({
       </Sheet.Scroller>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -120,16 +120,14 @@ const PersonImage = styled.img`
 `;
 
 const PersonName = styled.span<{ dimmed?: boolean }>`
-  color: ${p => (p.dimmed ? '#888' : '#fff')};
-  font-weight: ${p => (p.dimmed ? 400 : 600)};
+  color: ${(p) => (p.dimmed ? '#888' : '#fff')};
+  font-weight: ${(p) => (p.dimmed ? 400 : 600)};
 `;
 
 const PersonStatus = styled.div<{ online?: boolean }>`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 1px solid ${p => (p.online ? 'green' : '#888')};
-  background-color: ${p => (p.online ? 'green' : 'transparent')};
+  border: 1px solid ${(p) => (p.online ? 'green' : '#888')};
+  background-color: ${(p) => (p.online ? 'green' : 'transparent')};
 `;
-
-export default NewMessageContent;

@@ -17,7 +17,7 @@ export const Screen = styled.div<{ bg: 'light' | 'dark' }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${p => (p.bg === 'dark' ? '#000' : '#fff')};
+  background-color: ${(p) => (p.bg === 'dark' ? '#000' : '#fff')};
   ${minFullHeight}
 
   & > button {

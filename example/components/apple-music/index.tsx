@@ -1,15 +1,15 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { useState } from 'react';
+import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
 
 import { useMetaThemeColor } from '../hooks';
 import { album } from './data';
-import Album from './Album';
-import Player from './Player';
+import { Album } from './Album';
+import { Player } from './Player';
 
-const IOSMusicPlayer = () => {
-  const [isPlayerOpen, setPlayerOpen] = React.useState(false);
-  const [currentSong, setCurrentSong] = React.useState<string>(album.songs[0]);
+export function AppleMusic() {
+  const [isPlayerOpen, setPlayerOpen] = useState(false);
+  const [currentSong, setCurrentSong] = useState(album.songs[0]!);
 
   const openPlayer = () => setPlayerOpen(true);
   const closePlayer = () => setPlayerOpen(false);
@@ -40,7 +40,7 @@ const IOSMusicPlayer = () => {
       </PlayerSheet>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -64,5 +64,3 @@ const PlayerSheet = styled(Sheet)`
     background-color: #666 !important;
   }
 `;
-
-export default IOSMusicPlayer;

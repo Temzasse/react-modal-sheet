@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { OverlayTriggerState } from 'react-stately';
+import { useRef, type PropsWithChildren } from 'react';
+import { type OverlayTriggerState } from 'react-stately';
 import { Sheet } from 'react-modal-sheet';
 
 import {
@@ -15,12 +15,9 @@ type SheetProps = {
   label: string;
 };
 
-const A11ySheet = ({
-  state,
-  label,
-  children,
-  ...rest
-}: React.PropsWithChildren<SheetProps>) => {
+export function A11ySheet({
+  state, label, children, ...rest
+}: PropsWithChildren<SheetProps>) {
   return (
     <Sheet {...rest} isOpen={state.isOpen} onClose={state.close}>
       <OverlayProvider>
@@ -32,13 +29,13 @@ const A11ySheet = ({
       </OverlayProvider>
     </Sheet>
   );
-};
+}
 
 const A11ySheetContent = ({
   state,
   label,
   children,
-}: React.PropsWithChildren<SheetProps>) => {
+}: PropsWithChildren<SheetProps>) => {
   const a11yProps = useA11ySheet(state, label);
 
   return (
@@ -53,7 +50,7 @@ const A11ySheetContent = ({
 };
 
 const useA11ySheet = (state: OverlayTriggerState, label: string) => {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const dialog = useDialog({ 'aria-label': label }, ref);
   const overlay = useOverlay(
     { onClose: state.close, isOpen: true, isDismissable: true },
@@ -69,4 +66,4 @@ const useA11ySheet = (state: OverlayTriggerState, label: string) => {
   } as any; // HACK: fix type conflicts with Framer Motion
 };
 
-export default A11ySheet;
+

@@ -1,12 +1,11 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { FaPlay, FaForward, FaRandom } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
-import { Album as AlbumType } from './data';
+import { type Album as AlbumType } from './data';
 import { MoreButton } from './common';
 
-const Album = ({
+export function Album({
   album,
   currentSong,
   isPlayerOpen,
@@ -18,7 +17,7 @@ const Album = ({
   isPlayerOpen: boolean;
   onSongClick: (song: string) => void;
   onMiniPlayerClick: () => void;
-}) => {
+}) {
   return (
     <Wrapper>
       <Content>
@@ -62,12 +61,7 @@ const Album = ({
 
       {!isPlayerOpen && (
         <MiniPlayer>
-          <MiniPlayerButton
-            onClick={onMiniPlayerClick}
-            // initial={{ translateY: '100%' }}
-            // animate={{ translateY: '0px' }}
-            // transition={{ duration: 0.4 }}
-          >
+          <MiniPlayerButton onClick={onMiniPlayerClick}>
             <MiniImage src={album.image} />
             <MiniSongName>{currentSong}</MiniSongName>
             <FaPlay size={20} />
@@ -78,7 +72,7 @@ const Album = ({
       )}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   position: relative;
@@ -252,5 +246,3 @@ const MiniSongName = styled.div`
   font-size: 14px;
   text-align: left;
 `;
-
-export default Album;

@@ -1,13 +1,13 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Sheet, SheetRef } from 'react-modal-sheet';
+import { useState, useRef } from 'react';
+import { styled } from 'styled-components';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { Button } from './common';
 
-const ContentHeight = () => {
-  const [isOpen, setOpen] = React.useState(false);
-  const [boxes, setBoxes] = React.useState([0, 1]);
-  const ref = React.useRef<SheetRef>();
+export function ContentHeight() {
+  const [isOpen, setOpen] = useState(false);
+  const [boxes, setBoxes] = useState([0, 1]);
+  const ref = useRef<SheetRef>();
   const open = () => setOpen(true);
   const close = () => setOpen(false);
   const snapTo = (i: number) => ref.current?.snapTo(i);
@@ -50,7 +50,7 @@ const ContentHeight = () => {
       </Sheet>
     </>
   );
-};
+}
 
 const BoxList = styled.div`
   display: flex;
@@ -70,5 +70,3 @@ const Box = styled.div`
   font-weight: 700;
   font-size: 16px;
 `;
-
-export default ContentHeight;

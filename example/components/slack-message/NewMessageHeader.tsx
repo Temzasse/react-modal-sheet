@@ -1,16 +1,16 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { useRef } from 'react';
+import { styled } from 'styled-components';
 import { FiX as CloseIcon } from 'react-icons/fi';
 import { useButton } from 'react-aria';
 
-const NewMessageHeader = ({
+export function NewMessageHeader({
   sheetState,
   titleProps,
 }: {
   sheetState: any;
   titleProps: any;
-}) => {
-  const ref = React.useRef<HTMLButtonElement>(null);
+}) {
+  const ref = useRef<HTMLButtonElement>(null);
   const closeButton = useButton({ onPress: sheetState.close, 'aria-label': 'Close bottom sheet' }, ref); // prettier-ignore
 
   return (
@@ -22,7 +22,7 @@ const NewMessageHeader = ({
       <Title {...titleProps}>New Message</Title>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   width: 100%;
@@ -45,5 +45,3 @@ const Title = styled.span`
   font-weight: 600;
   font-size: 16px;
 `;
-
-export default NewMessageHeader;

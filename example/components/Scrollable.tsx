@@ -1,11 +1,11 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { useState } from 'react';
+import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
 
 import { Button } from './common';
 
-const Scrollable = () => {
-  const [isOpen, setOpen] = React.useState(false);
+export function Scrollable() {
+  const [isOpen, setOpen] = useState(false);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
@@ -34,7 +34,7 @@ const Scrollable = () => {
       </Sheet>
     </>
   );
-};
+}
 
 const BoxList = styled.div`
   display: flex;
@@ -54,5 +54,3 @@ const Box = styled.div`
   font-weight: 700;
   font-size: 24px;
 `;
-
-export default Scrollable;

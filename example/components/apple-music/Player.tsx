@@ -1,5 +1,4 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import {
   FaPlay,
@@ -12,10 +11,10 @@ import {
   FaFire,
 } from 'react-icons/fa';
 
-import { Album as AlbumType } from './data';
+import { type Album as AlbumType } from './data';
 import { MoreButton } from './common';
 
-const Player = ({ song, album }: { song: string; album: AlbumType }) => {
+export function Player({ song, album }: { song: string; album: AlbumType }) {
   return (
     <Wrapper>
       <AlbumImage>
@@ -67,7 +66,7 @@ const Player = ({ song, album }: { song: string; album: AlbumType }) => {
       </MainContent>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -237,5 +236,3 @@ const IconButtons = styled.div`
   justify-content: space-around;
   padding: 16px;
 `;
-
-export default Player;

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { useRef, useState } from 'react';
+import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
 
 import { Button } from './common';
 
-const DisableDrag = () => {
+export function DisableDrag() {
   const { isScrolling, onScroll } = useScrolling();
-  const [isOpen, setOpen] = React.useState(false);
+  const [isOpen, setOpen] = useState(false);
   const open = () => setOpen(true);
   const close = () => setOpen(false);
 
@@ -39,11 +39,11 @@ const DisableDrag = () => {
       </Sheet>
     </>
   );
-};
+}
 
 const useScrolling = () => {
-  const [isScrolling, setScrolling] = React.useState<boolean>(false);
-  const timeout = React.useRef<any>();
+  const [isScrolling, setScrolling] = useState<boolean>(false);
+  const timeout = useRef<any>();
 
   const onScroll = () => {
     setScrolling(true);
@@ -78,5 +78,3 @@ const Box = styled.div`
   font-weight: 700;
   font-size: 24px;
 `;
-
-export default DisableDrag;

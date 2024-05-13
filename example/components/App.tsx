@@ -1,8 +1,12 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { Routes, Route, Link } from 'react-router-dom';
-import { FaScroll as ScrollIcon, FaLock as LockIcon } from 'react-icons/fa';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
+
+import {
+  FaScroll as ScrollIcon,
+  FaLock as LockIcon,
+  FaKeyboard as KeyboardIcon,
+} from 'react-icons/fa';
 
 import {
   AiOutlineColumnHeight as HeightIcon,
@@ -12,16 +16,16 @@ import {
 } from 'react-icons/ai';
 
 import { Screen, DarkMode } from './common';
-import SnapPoints from './SnapPoints';
-import Scrollable from './Scrollable';
-import AppleMusic from './apple-music';
-import SlackMessage from './slack-message';
-import A11y from './a11y';
-import DisableDrag from './DisableDrag';
-import ScrollableSnapPoints from './ScrollableSnapPoints';
-import ContentHeight from './ContentHeight';
+import { SnapPoints } from './SnapPoints';
+import { Scrollable } from './Scrollable';
+import { AppleMusic } from './apple-music';
+import { SlackMessage } from './slack-message';
+import { A11y } from './a11y';
+import { DisableDrag } from './DisableDrag';
+import { ScrollableSnapPoints } from './ScrollableSnapPoints';
+import { ContentHeight } from './ContentHeight';
 
-const App = () => {
+export function App() {
   return (
     <Routes>
       <Route
@@ -100,7 +104,7 @@ const App = () => {
       />
     </Routes>
   );
-};
+}
 
 const ExampleSelector = () => {
   return (
@@ -195,5 +199,3 @@ const ExampleLink = styled(Link)`
     margin-top: 16px;
   }
 `;
-
-export default App;

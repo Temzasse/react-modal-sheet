@@ -1,14 +1,13 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { FaEllipsisH } from 'react-icons/fa';
 
-export const MoreButton = () => {
+export function MoreButton() {
   return (
     <AlbumMoreButton>
       <FaEllipsisH size={16} />
     </AlbumMoreButton>
   );
-};
+}
 
 const AlbumMoreButton = styled.div`
   width: 24px;

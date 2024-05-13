@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 export function useMetaThemeColor({
   when = true,
@@ -9,7 +9,7 @@ export function useMetaThemeColor({
   from?: string;
   to: string;
 }) {
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
 
@@ -22,5 +22,7 @@ export function useMetaThemeColor({
         meta.setAttribute('content', current);
       };
     }
-  }, [when]);
+  }, [when]); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
 }

@@ -1,0 +1,4 @@
+.parcel-cache
+.yalc
+dist
+node_modules

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { Sheet, SheetRef } from 'react-modal-sheet';
 
 const snapPoints = [-50, 0.5, 200, 0];
