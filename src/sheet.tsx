@@ -82,12 +82,12 @@ const Sheet = forwardRef<any, SheetProps>(
     // and after that it is driven by the gestures and/or snapping
     const y = useMotionValue(0);
 
+    // +2 for tolerance in case the animated value is slightly off
     const zIndex = useTransform(y, (value) =>
-      value >= windowHeight ? -1 : 9999999
+      value + 2 >= windowHeight ? -1 : 9999999
     );
-
     const visibility = useTransform(y, (value) =>
-      value >= windowHeight ? 'hidden' : 'visible'
+      value + 2 >= windowHeight ? 'hidden' : 'visible'
     );
 
     // Keep the callback fns up-to-date so that they can be accessed inside
@@ -175,7 +175,7 @@ const Sheet = forwardRef<any, SheetProps>(
         }
 
         const roundedSheetHeight = Math.round(sheetHeight);
-        const shouldClose = snapTo >= roundedSheetHeight;
+        const shouldClose = snapTo + 2 >= roundedSheetHeight; // 2px tolerance
 
         if (shouldClose) onClose();
       }
