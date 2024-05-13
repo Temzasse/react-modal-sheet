@@ -74,15 +74,18 @@ export function validateSnapTo({
 }) {
   if (snapTo < 0) {
     console.warn(
-      `Snap point is out of bounds. Sheet height is ${sheetHeight} but snap point is ${sheetHeight +
-        Math.abs(snapTo)}.`
+      `Snap point is out of bounds. Sheet height is ${sheetHeight} but snap point is ${
+        sheetHeight + Math.abs(snapTo)
+      }.`
     );
   }
 
   return Math.max(Math.round(snapTo), 0);
 }
 
-export function mergeRefs<T = any>(refs: Array<ForwardedRef<T>>): RefCallback<T> {
+export function mergeRefs<T = any>(
+  refs: Array<ForwardedRef<T>>
+): RefCallback<T> {
   return (value: any) => {
     refs.forEach((ref: any) => {
       if (typeof ref === 'function') {

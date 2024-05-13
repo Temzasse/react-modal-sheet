@@ -372,7 +372,7 @@ You can add your own styles or override the default sheet styles via the exposed
 
 ```jsx
 import { Sheet } from 'react-modal-sheet';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { useState } from 'react';
 
 const CustomSheet = styled(Sheet)`

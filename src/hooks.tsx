@@ -70,11 +70,20 @@ export function useDimensions() {
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
 
   useIsomorphicLayoutEffect(() => {
-    const updateHeight = () =>
-      { setDimensions({ height: window.innerHeight, width: window.innerWidth }); };
-    window.addEventListener('resize', updateHeight);
-    updateHeight();
-    return () => { window.removeEventListener('resize', updateHeight); };
+    function handler() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth,
+      });
+    }
+
+    handler();
+
+    window.addEventListener('resize', handler);
+
+    return () => {
+      window.removeEventListener('resize', handler);
+    };
   }, []);
 
   return dimensions;
@@ -90,9 +99,9 @@ export function usePrevious<T>(state: T): T | undefined {
   return ref.current;
 }
 
-// Userland version of the `useEvent` React hook:
-// RFC: https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
-export function useEvent<T extends (...args: any[]) => any>(handler: T) {
+// Userland version of the `useEffectEvent` React hook:
+// RFC: https://react.dev/reference/react/experimental_useEffectEvent
+export function useEffectEvent<T extends (...args: any[]) => any>(handler: T) {
   const handlerRef = useRef<T>();
 
   useIsomorphicLayoutEffect(() => {

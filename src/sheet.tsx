@@ -25,7 +25,7 @@ import {
   useModalEffect,
   useDimensions,
   useIsomorphicLayoutEffect,
-  useEvent,
+  useEffectEvent,
 } from './hooks';
 
 import {
@@ -38,12 +38,7 @@ import {
 
 import { type SheetContextType, type SheetProps } from './types';
 import { SheetScrollerContextProvider, SheetContext } from './context';
-import {
-  getClosest,
-  inDescendingOrder,
-  mergeRefs,
-  validateSnapTo,
-} from './utils';
+import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
 import { usePreventScroll } from './use-prevent-scroll';
 import styles from './styles';
 
@@ -72,8 +67,7 @@ const Sheet = forwardRef<any, SheetProps>(
     },
     ref
   ) => {
-    const sheetRef = useRef<any>(null);
-    const constraintsRef = useRef<any>(null);
+    const sheetRef = useRef<HTMLDivElement>(null);
     const indicatorRotation = useMotionValue(0);
     const { height: windowHeight } = useDimensions();
     const shouldReduceMotion = useReducedMotion();
@@ -130,7 +124,7 @@ const Sheet = forwardRef<any, SheetProps>(
       );
     }
 
-    const onDrag = useEvent((_, { delta }: PanInfo) => {
+    const onDrag = useEffectEvent((_, { delta }: PanInfo) => {
       // Update drag indicator rotation based on drag velocity
       const velocity = y.getVelocity();
 
@@ -141,13 +135,13 @@ const Sheet = forwardRef<any, SheetProps>(
       y.set(Math.max(y.get() + delta.y, 0));
     });
 
-    const onDragEnd = useEvent((_, { velocity }: PanInfo) => {
+    const onDragEnd = useEffectEvent((_, { velocity }: PanInfo) => {
       if (velocity.y > DRAG_VELOCITY_THRESHOLD) {
         // User flicked the sheet down
         onClose();
       } else {
-        const sheetEl = sheetRef.current as HTMLDivElement;
-        const sheetHeight = sheetEl.getBoundingClientRect().height;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const sheetHeight = sheetRef.current!.getBoundingClientRect().height;
         const currentY = y.get();
 
         let snapTo = 0;
@@ -200,9 +194,9 @@ const Sheet = forwardRef<any, SheetProps>(
     useImperativeHandle(ref, () => ({
       y,
       snapTo: (snapIndex: number) => {
-        const sheetEl = sheetRef.current as HTMLDivElement | null;
+        const sheetEl = sheetRef.current;
 
-        if (snapPoints?.[snapIndex] !== undefined && sheetEl !== null) {
+        if (snapPoints?.[snapIndex] !== undefined && sheetEl) {
           const sheetHeight = sheetEl.getBoundingClientRect().height;
           const snapPoint = snapPoints[snapIndex];
           const snapTo = validateSnapTo({
@@ -256,7 +250,7 @@ const Sheet = forwardRef<any, SheetProps>(
       <SheetContext.Provider value={context}>
         <motion.div
           {...rest}
-          ref={mergeRefs([ref, constraintsRef])}
+          ref={ref}
           style={{ ...styles.wrapper, zIndex, visibility, ...style }}
         >
           <AnimatePresence>
