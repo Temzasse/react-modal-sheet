@@ -17,8 +17,7 @@
 | ![](media/1.gif) | ![](media/2.gif) | ![](media/3.gif) | ![](media/4.gif) |
 | :--------------: | :--------------: | :--------------: | :--------------: |
 
-
-## Installation
+## 📦 Installation
 
 ```sh
 npm install react-modal-sheet
@@ -38,7 +37,7 @@ The gestures and animations are handled by the excellent [Framer Motion](https:/
 npm install framer-motion
 ```
 
-## Usage
+## 💻 Usage
 
 ```jsx
 import { Sheet } from 'react-modal-sheet';
@@ -69,29 +68,29 @@ Since the final bottom sheet is composed from smaller building blocks (`Containe
 
 Also, by constructing the sheet from smaller pieces makes it easier to apply any necessary accessibility related properties to the right components without requiring the main sheet component to be aware of them. You can read more about accessibility in the [Accessibility](#Accessibility) section.
 
-## Props
+## 🎛️ Props
 
-| Name                   | Required | Default                              | Description                                                                                                                                                                                                                                     |
-| ---------------------- | -------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `children`             | yes      |                                      | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                                                                                                                                     |
-| `isOpen`               | yes      |                                      | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                                        |
-| `onClose`              | yes      |                                      | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                                |
-| `disableDrag`          | no       | false                                | Disable drag for the whole sheet.                                                                                                                                                                                                               |
+| Name                   | Required | Default                              | Description                                                                                                                                                                                                                          |
+| ---------------------- | -------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `children`             | yes      |                                      | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                                                                                                                          |
+| `isOpen`               | yes      |                                      | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                             |
+| `onClose`              | yes      |                                      | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                     |
+| `disableDrag`          | no       | false                                | Disable drag for the whole sheet.                                                                                                                                                                                                    |
 | `disableScrollLocking` | no       | false                                | Disable scroll locking for the `body` element while sheet is open. Can be useful if you face issues with input elements and the iOS virtual keyboard. See related [issue](https://github.com/Temzasse/react-modal-sheet/issues/135). |
-| `detent`               | no       | `'full-height'`                      | The [detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados) in which the sheet should be in when opened. Available values: `'full-height'` or `'content-height'`.                     |
-| `onOpenStart`          | no       |                                      | Callback fn that is called when the sheet opening animation starts.                                                                                                                                                                             |
-| `onOpenEnd`            | no       |                                      | Callback fn that is called when the sheet opening animation is completed.                                                                                                                                                                       |
-| `onCloseStart`         | no       |                                      | Callback fn that is called when the sheet closing animation starts.                                                                                                                                                                             |
-| `onCloseEnd`           | no       |                                      | Callback fn that is called when the sheet closing animation is completed.                                                                                                                                                                       |
-| `onSnap`               | no       |                                      | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop.                                                                                                              |
-| `snapPoints`           | no       |                                      | Eg. `[-50, 0.5, 100, 0]` - where positive values are pixels from the bottom of the screen and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of window height from the bottom of the sceen.               |
-| `initialSnap`          | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                              |
-| `rootId`               | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                                                                                                                                      |
-| `tweenConfig`          | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://www.framer.com/motion/transition/#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                                 |
-| `mountPoint`           | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                              |
-| `prefersReducedMotion` | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                              |
+| `detent`               | no       | `'full-height'`                      | The [detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados) in which the sheet should be in when opened. Available values: `'full-height'` or `'content-height'`.          |
+| `onOpenStart`          | no       |                                      | Callback fn that is called when the sheet opening animation starts.                                                                                                                                                                  |
+| `onOpenEnd`            | no       |                                      | Callback fn that is called when the sheet opening animation is completed.                                                                                                                                                            |
+| `onCloseStart`         | no       |                                      | Callback fn that is called when the sheet closing animation starts.                                                                                                                                                                  |
+| `onCloseEnd`           | no       |                                      | Callback fn that is called when the sheet closing animation is completed.                                                                                                                                                            |
+| `onSnap`               | no       |                                      | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop.                                                                                                   |
+| `snapPoints`           | no       |                                      | Eg. `[-50, 0.5, 100, 0]` - where positive values are pixels from the bottom of the screen and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of window height from the bottom of the sceen.    |
+| `initialSnap`          | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                   |
+| `rootId`               | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                                                                                                                           |
+| `tweenConfig`          | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://www.framer.com/motion/transition/#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                      |
+| `mountPoint`           | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                   |
+| `prefersReducedMotion` | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                   |
 
-## Methods and properties
+## ⚙️ Methods and properties
 
 ### `snapTo(index)`
 
@@ -117,7 +116,7 @@ function Example() {
         onClose={() => setOpen(false)}
         snapPoints={[600, 400, 100, 0]}
         initialSnap={1}
-        onSnap={snapIndex =>
+        onSnap={(snapIndex) =>
           console.log('> Current snap point index:', snapIndex)
         }
       >
@@ -214,7 +213,7 @@ It is possible to use snap points with `detent="content-height"` **but** the sna
 
 > ℹ️ If you are wondering where the term `detent` comes from it's from Apple's [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados).
 
-## Compound Components
+## 🧩 Compound Components
 
 ### `Sheet`
 
@@ -268,13 +267,31 @@ Sheet scroller can be used to make the whole sheet content or parts of it scroll
 
 Sheet backdrop is a translucent overlay that helps to separate the sheet from it's background. By default the backdrop doesn't have any interaction attached to it but if you, for example, want to close the sheet when the backdrop is clicked you can provide tap handler to it which will change the rendered element from `div` to `button`.
 
-⚠️ **Note:** as the element is a motion component you need to use [`onTap`](https://www.framer.com/motion/gestures/#tap) instead of `onClick` if you want to add a click handler to it.
+**⚠️ Note:** as the element is a motion component you need to use [`onTap`](https://www.framer.com/motion/gestures/#tap) instead of `onClick` if you want to add a click handler to it.
 
 > 🖥 Rendered element: `motion.div` or `motion.button`.
 
-## Advanced usage
+## ✨ Advanced usage
 
-### Scrolling on touch devices
+### ⌨️ Virtual keyboard avoidance
+
+A common problem with React Modal Sheet is that since the sheet is rendered as a fixed positioned element it doesn't move when the virtual keyboard is opened which can lead to the keyboard covering the input elements.
+
+Handling the virtual keyboard on mobile devices can be quite tricky. It doesn't help that the Web doesn't yet have widely supported APIs for working with the virtual keyboard.
+
+**⚠️ Note: This library does not provide any official built-in solution for keyboard avoidance!**
+
+This is because it is not possible for the library to know how your sheet content is structured and how the sheet should behave when the keyboard is opened.
+
+However, there are some strategies that you can use to handle the virtual keyboard:
+
+1. Design your sheet content in a way that the input elements are positioned at the top of the sheet so that they are not covered by the keyboard. This is the easiest solution and if you look at popular mobile apps you can see that they often have input elements at the top of the screen exactly for this reason.
+
+2. Listen to changes in the `visualViewport`, see [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API), and change styles like padding on the sheet content to move the input up when the keyboard is opened. See the `AvoidKeyboard` component [code](example/components/AvoidKeyboard.tsx) and [demo](https://temzasse.github.io/react-modal-sheet/#/avoid-keyboard) in the example app for a simple example of this. The example is based on a custom `useAnimatedVirtualKeyboard` hook which you can copy to your project at your own risk. **Note that at least on iOS there is a noticeable delay when the keyboard is opened and when the `resize` event is fired for the `visualViewport`**.
+
+3. Use the experimental [VirtualKeyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) to detect when the virtual keyboard is opened and adjust the sheet content accordingly. **Note that this API is not yet widely supported in browsers, but it will most likely produce the best result.**
+
+### 📱 Scrolling on touch devices
 
 Scrolling and dragging are **the same** gesture on touch devices which can create problems when you want to have scrollable content inside the sheet. React Modal Sheet provides a `Sheet.Scroller` component that is able to automatically disable and enable dragging inside the `Sheet.Content` component based on the scroll state. There are three modes for the `Sheet.Scroller` reflected in the `draggableAt` prop:
 
@@ -302,13 +319,12 @@ function ScrollableExample() {
 }
 ```
 
-### iOS Modal View effect
+### 🪟 iOS Modal View effect
 
 In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to the main app element to highlight the modality of the bottom sheet. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
 
 | ![](media/3.gif) | ![](media/4.gif) |
 | :--------------: | :--------------: |
-
 
 To enable this effect you can provide the id of the root element where your application is mounted:
 
@@ -320,7 +336,7 @@ function Example() {
 
 > ⚠️ **Limitations**: Since the effect is applied to the root element it will NOT work as desired if the HTML body element is scrolled down at all. One way to avoid this is to use something like `height: 100vh;` and `overflow: auto;` on the root element to make it fill the whole screen and be scrollable instead of the body element.
 
-## Customization
+## 🎨 Customization
 
 The default styles for the `Sheet` component somewhat follows the styles of the previously mentioned iOS Modal View. However, if these default styles are not to your liking it's easy to make changes to them: you can provide a custom header or you can overwrite any style with CSS via the exposed class names.
 
@@ -412,7 +428,7 @@ function Example() {
 }
 ```
 
-## Accessibility
+## ♿️ Accessibility
 
 By default, react-modal-sheet doesn't include any built-in accessibility properties in order to not make any assumptions and to support a wide range of use cases. Additionally, not including 3rd party libraries for features like focus trapping or screen reader support makes it possible to utilize any accessibility libraries that your project may already use, eg. [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html). This also helps to reduce JS bloat by not including similar libraries multiple times in your app bundle.
 
@@ -434,7 +450,7 @@ import {
   useDialog,
 } from 'react-aria';
 
-const A11yExample = () => {
+function A11yExample() {
   const sheetState = useOverlayTriggerState({});
   const openButtonRef = useRef(null);
   const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
@@ -454,9 +470,9 @@ const A11yExample = () => {
       </Sheet>
     </div>
   );
-};
+}
 
-const SheetComp = ({ sheetState }) => {
+function SheetComp({ sheetState }) {
   const containerRef = useRef(null);
   const dialog = useDialog({}, containerRef);
   const overlay = useOverlay(
@@ -493,11 +509,11 @@ const SheetComp = ({ sheetState }) => {
       <Sheet.Backdrop />
     </>
   );
-};
+}
 ```
 
 If you want to see a more real-world-like implementation you can take a look at the [Slack example](example/components/slack-message/index.tsx) and try out the related [demo](https://temzasse.github.io/react-modal-sheet/#/slack-message) (optimized for mobile).
 
-### Building a reusable sheet
+### 🔩 Building a reusable sheet
 
 In your projects it might make sense to build a reusable bottom sheet that has all the accessibility features included and can then be easily used in various places in the project. Take a look at the [A11ySheet](example/components/a11y/A11ySheet.tsx) example to get some insight on how to build such a component. By incorporating all the accessibility features inside your own reusable component you don't need to repeat them every time you want to use a bottom sheet in your app.
