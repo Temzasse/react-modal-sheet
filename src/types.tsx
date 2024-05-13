@@ -87,6 +87,7 @@ export interface SheetDragProps {
   dragMomentum: boolean;
   dragPropagation: boolean;
   onDrag: DragHandlers['onDrag'];
+  onDragStart: DragHandlers['onDragStart'];
   onDragEnd: DragHandlers['onDragEnd'];
 }
 

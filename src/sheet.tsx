@@ -135,6 +135,22 @@ const Sheet = forwardRef<any, SheetProps>(
       y.set(Math.max(y.get() + delta.y, 0));
     });
 
+    const onDragStart = useEffectEvent(() => {
+      // Find focused input inside the sheet and blur it when dragging starts
+      // to prevent a weird ghost caret "bug" on mobile
+      const focusedElement = document.activeElement as HTMLElement | null;
+      if (!focusedElement || !sheetRef.current) return;
+
+      const isInput =
+        focusedElement.tagName === 'INPUT' ||
+        focusedElement.tagName === 'TEXTAREA';
+
+      // Only blur the focused element if it's inside the sheet
+      if (isInput && sheetRef.current.contains(focusedElement)) {
+        focusedElement.blur();
+      }
+    });
+
     const onDragEnd = useEffectEvent((_, { velocity }: PanInfo) => {
       if (velocity.y > DRAG_VELOCITY_THRESHOLD) {
         // User flicked the sheet down
@@ -224,6 +240,7 @@ const Sheet = forwardRef<any, SheetProps>(
         dragMomentum: false,
         dragPropagation: false,
         onDrag,
+        onDragStart,
         onDragEnd,
       };
 
