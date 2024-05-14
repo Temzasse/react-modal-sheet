@@ -29,9 +29,6 @@ export function useMetaThemeColor({
 export function useVirtualKeyboard() {
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(() =>
-    typeof window !== 'undefined' ? window.innerHeight : 0
-  );
 
   useEffect(() => {
     const visualViewport = window.visualViewport;
@@ -48,9 +45,9 @@ export function useVirtualKeyboard() {
           focusedElement.tagName === 'TEXTAREA';
 
         // Virtual keyboard should only be visible if an input is focused
-        if (isInputFocused && visualViewport.height < windowHeight) {
+        if (isInputFocused && visualViewport.height < window.innerHeight) {
           setKeyboardOpen(true);
-          setKeyboardHeight(Math.max(0, windowHeight - visualViewport.height));
+          setKeyboardHeight(window.innerHeight - visualViewport.height);
         } else if (isKeyboardOpen) {
           // Reset keyboard height if it was open
           setKeyboardOpen(false);
@@ -64,18 +61,7 @@ export function useVirtualKeyboard() {
         visualViewport.removeEventListener('resize', onResize);
       };
     }
-  }, [windowHeight, isKeyboardOpen]);
-
-  // Keep track of the window height
-  useEffect(() => {
-    const onResize = () => setWindowHeight(window.innerHeight);
-
-    window.addEventListener('resize', onResize);
-
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, []);
+  }, [isKeyboardOpen]);
 
   return { keyboardHeight, isKeyboardOpen };
 }
