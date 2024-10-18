@@ -12,6 +12,6 @@ export const REDUCED_MOTION_TWEEN_CONFIG = {
   duration: 0.01,
 };
 
-export const DRAG_CLOSE_THRESHOLD = 0.6;
+export const DEFAULT_DRAG_CLOSE_THRESHOLD = 0.6;
 
-export const DRAG_VELOCITY_THRESHOLD = 500;
+export const DEFAULT_DRAG_VELOCITY_THRESHOLD = 500;
