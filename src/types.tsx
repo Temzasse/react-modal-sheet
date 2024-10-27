@@ -48,6 +48,8 @@ export type SheetProps = {
   disableDrag?: boolean;
   disableScrollLocking?: boolean;
   prefersReducedMotion?: boolean;
+  dragVelocityThreshold?: number;
+  dragCloseThreshold?: number;
 } & SheetEvents &
   ComponentPropsWithoutRef<typeof motion.div>;
 
