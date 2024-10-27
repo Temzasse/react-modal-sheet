@@ -41,9 +41,6 @@
     "typecheck": "tsc --noEmit --skipLibCheck",
     "release": "npm run build && npm run build:verify && np"
   },
-  "dependencies": {
-    "@react-aria/utils": "3.25.3"
-  },
   "peerDependencies": {
     "framer-motion": ">=10",
     "react": ">=16"

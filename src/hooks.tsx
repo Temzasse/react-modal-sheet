@@ -68,8 +68,8 @@ export function useEventCallbacks(
 
 export function useDimensions() {
   const [dimensions, setDimensions] = useState({
-    height: isBrowser ? window.innerHeight : 0,
-    width: isBrowser ? window.innerWidth : 0,
+    height: !IS_SSR ? window.innerHeight : 0,
+    width: !IS_SSR ? window.innerWidth : 0,
   });
 
   useIsomorphicLayoutEffect(() => {

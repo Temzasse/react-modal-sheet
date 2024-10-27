@@ -101,3 +101,44 @@ export function isTouchDevice() {
   if (typeof window === 'undefined') return false;
   return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 }
+
+function testPlatform(re: RegExp) {
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+  return typeof window !== 'undefined' && window.navigator != null
+    ? re.test(
+        // @ts-expect-error
+        // eslint-disable-next-line @typescript-eslint/dot-notation
+        window.navigator['userAgentData']?.platform || window.navigator.platform
+      )
+    : false;
+}
+
+function cached(fn: () => boolean) {
+  let res: boolean | null = null;
+  return () => {
+    if (res == null) {
+      res = fn();
+    }
+    return res;
+  };
+}
+
+const isMac = cached(function () {
+  return testPlatform(/^Mac/i);
+});
+
+const isIPhone = cached(function () {
+  return testPlatform(/^iPhone/i);
+});
+
+const isIPad = cached(function () {
+  return (
+    testPlatform(/^iPad/i) ||
+    // iPadOS 13 lies and says it's a Mac, but we can distinguish by detecting touch support.
+    (isMac() && navigator.maxTouchPoints > 1)
+  );
+});
+
+export const isIOS = cached(function () {
+  return isIPhone() || isIPad();
+});

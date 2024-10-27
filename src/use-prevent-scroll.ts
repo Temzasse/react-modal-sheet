@@ -1,18 +1,69 @@
-// Source: https://github.com/adobe/react-spectrum/blob/main/packages/@react-aria/overlays/src/usePreventScroll.ts
-import {
-  chain,
-  getScrollParent,
-  isIOS,
-  useLayoutEffect,
-} from '@react-aria/utils';
+// This code originates from https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/overlays/src/usePreventScroll.ts
+
+import { useIsomorphicLayoutEffect } from './hooks';
+import { isIOS } from './utils';
+
+const KEYBOARD_BUFFER = 24;
 
 interface PreventScrollOptions {
   /** Whether the scroll lock is disabled. */
   isDisabled?: boolean;
 }
 
-const visualViewport =
-  typeof window !== 'undefined' ? (window as any).visualViewport : undefined;
+function chain(...callbacks: any[]): (...args: any[]) => void {
+  return (...args: any[]) => {
+    for (const callback of callbacks) {
+      if (typeof callback === 'function') {
+        // eslint-disable-next-line n/no-callback-literal
+        callback(...args);
+      }
+    }
+  };
+}
+
+const visualViewport = typeof document !== 'undefined' && window.visualViewport;
+
+export function isScrollable(
+  node: Element | null,
+  checkForOverflow?: boolean
+): boolean {
+  if (!node) {
+    return false;
+  }
+
+  const style = window.getComputedStyle(node);
+
+  let isScrollable = /(auto|scroll)/.test(
+    style.overflow + style.overflowX + style.overflowY
+  );
+
+  if (isScrollable && checkForOverflow) {
+    isScrollable =
+      node.scrollHeight !== node.clientHeight ||
+      node.scrollWidth !== node.clientWidth;
+  }
+
+  return isScrollable;
+}
+
+export function getScrollParent(
+  node: Element,
+  checkForOverflow?: boolean
+): Element {
+  let scrollableNode: Element | null = node;
+
+  if (isScrollable(scrollableNode, checkForOverflow)) {
+    scrollableNode = scrollableNode.parentElement;
+  }
+
+  while (scrollableNode && !isScrollable(scrollableNode, checkForOverflow)) {
+    scrollableNode = scrollableNode.parentElement;
+  }
+
+  return (
+    scrollableNode || document.scrollingElement || document.documentElement
+  );
+}
 
 // HTML input types that do not cause the software keyboard to appear.
 const nonTextInputTypes = new Set([
@@ -29,7 +80,7 @@ const nonTextInputTypes = new Set([
 
 // The number of active usePreventScroll calls. Used to determine whether to revert back to the original page style/scroll position
 let preventScrollCount = 0;
-let restore: any;
+let restore: () => void;
 
 /**
  * Prevents scrolling on the document body on mount, and
@@ -39,7 +90,7 @@ let restore: any;
 export function usePreventScroll(options: PreventScrollOptions = {}) {
   const { isDisabled } = options;
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isDisabled) {
       return;
     }
@@ -56,7 +107,7 @@ export function usePreventScroll(options: PreventScrollOptions = {}) {
     return () => {
       preventScrollCount--;
       if (preventScrollCount === 0) {
-        restore();
+        restore?.();
       }
     };
   }, [isDisabled]);
@@ -107,7 +158,7 @@ function preventScrollMobileSafari() {
 
   const onTouchStart = (e: TouchEvent) => {
     // Store the nearest scrollable parent element from the element that the user touched.
-    scrollable = getScrollParent(e.target as Element);
+    scrollable = getScrollParent(e.target as Element, true);
     if (
       scrollable === document.documentElement &&
       scrollable === document.body
@@ -128,6 +179,7 @@ function preventScrollMobileSafari() {
 
     // Prevent scrolling the window.
     if (
+      !scrollable ||
       scrollable === document.documentElement ||
       scrollable === document.body
     ) {
@@ -143,7 +195,6 @@ function preventScrollMobileSafari() {
     const scrollTop = scrollable.scrollTop;
     const bottom = scrollable.scrollHeight - scrollable.clientHeight;
 
-    // Fix for: https://github.com/adobe/react-spectrum/pull/3780/files
     if (bottom === 0) {
       return;
     }
@@ -198,9 +249,7 @@ function preventScrollMobileSafari() {
             // measure the correct position to scroll to.
             visualViewport.addEventListener(
               'resize',
-              () => {
-                scrollIntoView(target);
-              },
+              () => scrollIntoView(target),
               { once: true }
             );
           }
@@ -261,6 +310,7 @@ function preventScrollMobileSafari() {
 
 // Sets a CSS property on an element, and returns a function to revert it to the previous value.
 function setStyle(element: any, style: string, value: string) {
+  // https://github.com/microsoft/TypeScript/issues/17827#issuecomment-391663310
   const cur = element.style[style];
   element.style[style] = value;
 
@@ -276,9 +326,12 @@ function addEvent<K extends keyof GlobalEventHandlersEventMap>(
   handler: (this: Document, ev: GlobalEventHandlersEventMap[K]) => any,
   options?: boolean | AddEventListenerOptions
 ) {
-  target.addEventListener(event, handler as any, options);
+  // @ts-expect-error
+  target.addEventListener(event, handler, options);
+
   return () => {
-    target.removeEventListener(event, handler as any, options);
+    // @ts-expect-error
+    target.removeEventListener(event, handler, options);
   };
 }
 
@@ -294,12 +347,18 @@ function scrollIntoView(target: Element) {
     ) {
       const scrollableTop = scrollable.getBoundingClientRect().top;
       const targetTop = target.getBoundingClientRect().top;
-      if (targetTop > scrollableTop + target.clientHeight) {
+      const targetBottom = target.getBoundingClientRect().bottom;
+      // Buffer is needed for some edge cases
+      const keyboardHeight =
+        scrollable.getBoundingClientRect().bottom + KEYBOARD_BUFFER;
+
+      if (targetBottom > keyboardHeight) {
         scrollable.scrollTop += targetTop - scrollableTop;
       }
     }
 
-    target = scrollable.parentElement as any;
+    // @ts-expect-error
+    target = scrollable.parentElement;
   }
 }
 
