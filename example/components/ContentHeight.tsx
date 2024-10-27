@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { styled } from 'styled-components';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { motion } from 'framer-motion';
 
 import { Button } from './common';
 
