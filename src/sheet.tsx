@@ -54,7 +54,7 @@ const Sheet = forwardRef<any, SheetProps>(
       children,
       disableScrollLocking = false,
       isOpen,
-      snapPoints,
+      snapPoints: snapPointsProp,
       rootId,
       mountPoint,
       style,
@@ -82,7 +82,7 @@ const Sheet = forwardRef<any, SheetProps>(
     // NOTE: the inital value for `y` doesn't matter since it is overwritten by
     // the value driven by the `AnimatePresence` component when the sheet is opened
     // and after that it is driven by the gestures and/or snapping
-    const y = useMotionValue(0);
+    const y = useMotionValue(windowHeight);
 
     // +2 for tolerance in case the animated value is slightly off
     const zIndex = useTransform(y, (value) =>
@@ -109,6 +109,8 @@ const Sheet = forwardRef<any, SheetProps>(
         onCloseEnd,
       };
     });
+
+    let snapPoints: number[] | undefined = snapPointsProp;
 
     if (snapPoints) {
       // Convert negative / percentage snap points to absolute values
