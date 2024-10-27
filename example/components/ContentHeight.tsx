@@ -28,26 +28,24 @@ export function ContentHeight() {
         <Sheet.Container layout>
           <Sheet.Header />
 
-          <Sheet.Content>
+          <Sheet.Content layout="position">
             <Sheet.Scroller>
-              <motion.div layout="position">
-                <BoxList>
-                  <Button onClick={() => snapTo(0)}>Snap to top</Button>
-                  <Button onClick={() => snapTo(1)}>Snap to bottom</Button>
-                  <Button onClick={() => setBoxes((prev) => prev + 1)}>
-                    Add box
-                  </Button>
-                  <Button
-                    onClick={() => setBoxes((prev) => Math.max(0, prev - 1))}
-                  >
-                    Remove box
-                  </Button>
+              <BoxList>
+                <Button onClick={() => snapTo(0)}>Snap to top</Button>
+                <Button onClick={() => snapTo(1)}>Snap to bottom</Button>
+                <Button onClick={() => setBoxes((prev) => prev + 1)}>
+                  Add box
+                </Button>
+                <Button
+                  onClick={() => setBoxes((prev) => Math.max(0, prev - 1))}
+                >
+                  Remove box
+                </Button>
 
-                  {Array.from({ length: boxes }).map((_, i) => (
-                    <Box key={i}>{i}</Box>
-                  ))}
-                </BoxList>
-              </motion.div>
+                {Array.from({ length: boxes }).map((_, i) => (
+                  <Box key={i}>{i}</Box>
+                ))}
+              </BoxList>
             </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>
