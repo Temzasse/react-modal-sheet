@@ -18,7 +18,7 @@ export function SnapPoints() {
   const close = () => setOpen(false);
 
   useEffect(() => {
-    console.log('> Current snap point', snapPoint);
+    console.log('> Current snap point is', snapPoint);
   }, [snapPoint]);
 
   useMetaThemeColor({

@@ -15,7 +15,7 @@ import {
 
 import { NewMessageHeader } from './NewMessageHeader';
 import { NewMessageContent } from './NewMessageContent';
-import { useMetaThemeColor } from 'components/hooks';
+import { useMetaThemeColor } from '../hooks';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
