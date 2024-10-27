@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import { type BoundingBox } from 'framer-motion';
+import { isBrowser, type BoundingBox } from 'framer-motion';
 
 import { IS_SSR } from './constants';
 import { type SheetEvents } from './types';
@@ -67,7 +67,10 @@ export function useEventCallbacks(
 }
 
 export function useDimensions() {
-  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
+  const [dimensions, setDimensions] = useState({
+    height: isBrowser ? window.innerHeight : 0,
+    width: isBrowser ? window.innerWidth : 0,
+  });
 
   useIsomorphicLayoutEffect(() => {
     function handler() {
