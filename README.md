@@ -23,12 +23,6 @@
 npm install react-modal-sheet
 ```
 
-or if you use `yarn`:
-
-```sh
-yarn add react-modal-sheet
-```
-
 ### Peer dependencies
 
 The gestures and animations are handled by the excellent [Motion](https://motion.dev/) library so before you can start using this library you need to install `motion`:
@@ -37,9 +31,29 @@ The gestures and animations are handled by the excellent [Motion](https://motion
 npm install motion
 ```
 
+> [!IMPORTANT]
+> If you are still using the old `framer-motion` package you need to upgrade to `motion` as `react-modal-sheet` is now built on top of the new `motion` package. **Version `v3.4.0` and older are compatible with `framer-motion`**.
+
+---
+
+<details>
+  <summary><strong>📚 Table of contents</strong></summary>
+  
+  - [Usage](#-usage)
+  - [Props](#%EF%B8%8F-props)
+  - [Methods and properties](#%EF%B8%8F-methods-and-properties)
+  - [Compound Components](#-compound-components)
+  - [Advanced usage](#-advanced-usage)
+  - [Customization](#-customization)
+  - [Accessibility](#%EF%B8%8F-accessibility)
+  - [Troubleshooting](#-troubleshooting)
+</details>
+
+---
+
 ## 💻 Usage
 
-```jsx
+```tsx
 import { Sheet } from 'react-modal-sheet';
 import { useState } from 'react';
 
@@ -305,7 +319,7 @@ The scroller component is in-between these states when the user has scrolled onl
 
 The default value for the `draggableAt` prop is `top` which should be a good default for most use cases. You shouldn't need `bottom` or `both` unless you have scrollable content inside a sheet that also has snap points.
 
-```jsx
+```tsx
 function ScrollableExample() {
   return (
     <Sheet>
@@ -330,7 +344,7 @@ In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to t
 
 To enable this effect you can provide the id of the root element where your application is mounted:
 
-```jsx
+```tsx
 function Example() {
   return <Sheet rootId="root">{/*...*/}</Sheet>;
 }
@@ -346,7 +360,7 @@ The default styles for the `Sheet` component somewhat follows the styles of the 
 
 Adding a custom header is as simple as providing your own header as the child component to `Sheet.Header`:
 
-```jsx
+```tsx
 function Example() {
   return (
     <Sheet>
@@ -388,7 +402,7 @@ You can add your own styles or override the default sheet styles via the exposed
 
 #### CSS-in-JS
 
-```jsx
+```tsx
 import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 import { useState } from 'react';
@@ -438,7 +452,7 @@ The example below utilizes React Aria to achieve an accessible modal-like bottom
 
 > ℹ️ The example was built by following the React Aria's [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation.
 
-```jsx
+```tsx
 import { Sheet } from 'react-modal-sheet';
 import { useRef } from 'react';
 import { useOverlayTriggerState } from 'react-stately';
@@ -519,3 +533,9 @@ If you want to see a more real-world-like implementation you can take a look at 
 ### 🔩 Building a reusable sheet
 
 In your projects it might make sense to build a reusable bottom sheet that has all the accessibility features included and can then be easily used in various places in the project. Take a look at the [A11ySheet](example/components/a11y/A11ySheet.tsx) example to get some insight on how to build such a component. By incorporating all the accessibility features inside your own reusable component you don't need to repeat them every time you want to use a bottom sheet in your app.
+
+## 🐛 Troubleshooting
+
+### The sheet doesn't open when using `StrictMode`
+
+If you are using React [StrictMode](https://react.dev/reference/react/StrictMode) the sheet animations might not work as expected. This seems to be an issue in the `motion` library and I haven't been able to find a good solution for it yet. You see all `motion` issues related to the `StrictMode` [here](https://github.com/motiondivision/motion/issues?q=is%3Aissue+StrictMode). Easiest solution is to just not to use `StrictMode` 🤷‍♂️
