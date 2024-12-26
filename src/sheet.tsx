@@ -160,7 +160,7 @@ const Sheet = forwardRef<any, SheetProps>(
         // User flicked the sheet down
         onClose();
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: ref should be defined here
         const sheetHeight = sheetRef.current!.getBoundingClientRect().height;
         const currentY = y.get();
 
@@ -186,11 +186,13 @@ const Sheet = forwardRef<any, SheetProps>(
         snapTo = validateSnapTo({ snapTo, sheetHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
-        void animate(y, snapTo, animationOptions);
+        animate(y, snapTo, animationOptions);
 
         if (snapPoints && onSnap) {
           const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
-          const snapIndex = snapPoints.indexOf(getClosest(snapPoints, snapValue)); // prettier-ignore
+          const snapIndex = snapPoints.indexOf(
+            getClosest(snapPoints, snapValue)
+          );
           onSnap(snapIndex);
         }
 
@@ -209,7 +211,7 @@ const Sheet = forwardRef<any, SheetProps>(
       if (!snapPoints || !onSnap) return;
       const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
       onSnap(snapIndex);
-    }, [isOpen]); // eslint-disable-line
+    }, [isOpen]);
 
     useImperativeHandle(ref, () => ({
       y,
@@ -224,7 +226,7 @@ const Sheet = forwardRef<any, SheetProps>(
             sheetHeight,
           });
 
-          void animate(y, snapTo, animationOptions);
+          animate(y, snapTo, animationOptions);
           if (onSnap) onSnap(snapIndex);
           if (snapTo >= sheetHeight) onClose();
         }
@@ -253,7 +255,7 @@ const Sheet = forwardRef<any, SheetProps>(
       };
 
       return disableDrag ? undefined : dragProps;
-    }, [disableDrag, windowHeight]); // eslint-disable-line
+    }, [disableDrag, windowHeight]);
 
     const context: SheetContextType = {
       y,

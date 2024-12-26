@@ -1,4 +1,9 @@
-import React, { type ReactNode, createContext, useContext, useState } from 'react';
+import React, {
+  type ReactNode,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
 import { type SheetScrollerContextType, type SheetContextType } from './types';
 
 export const SheetContext = createContext<SheetContextType | undefined>(
@@ -7,7 +12,7 @@ export const SheetContext = createContext<SheetContextType | undefined>(
 
 export const useSheetContext = () => {
   const context = useContext(SheetContext);
-  if (!context) throw Error('Sheet context error');
+  if (!context) throw new Error('Sheet context error');
   return context;
 };
 
@@ -42,6 +47,6 @@ export function SheetScrollerContextProvider({
 
 export const useSheetScrollerContext = () => {
   const context = useContext(SheetScrollerContext);
-  if (!context) throw Error('Sheet scroller context error');
+  if (!context) throw new Error('Sheet scroller context error');
   return context;
 };

@@ -1,5 +1,4 @@
 import {
-  type MutableRefObject,
   type RefObject,
   useCallback,
   useEffect,
@@ -22,7 +21,7 @@ export function useModalEffect({
 }: {
   y: MotionValue<number>;
   rootId?: string;
-  sheetRef: RefObject<HTMLDivElement>;
+  sheetRef: RefObject<HTMLDivElement | null>;
 }) {
   const heightRef = useRef(IS_SSR ? 0 : window.innerHeight);
 
@@ -61,7 +60,7 @@ export function useModalEffect({
     return () => {
       if (rootId) cleanup();
     };
-  }, []); // eslint-disable-line
+  }, []);
 
   useEffect(() => {
     const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
@@ -101,12 +100,12 @@ export function useModalEffect({
       removeCompleteListener();
       removeCancelListener();
     };
-  }, [y, rootId]); // eslint-disable-line
+  }, [y, rootId]);
 }
 
 export function useEventCallbacks(
   isOpen: boolean,
-  callbacks: MutableRefObject<SheetEvents>
+  callbacks: RefObject<SheetEvents>
 ) {
   const prevOpen = usePrevious(isOpen);
   const didOpen = useRef(false);
@@ -122,7 +121,7 @@ export function useEventCallbacks(
       callbacks.current.onCloseEnd?.();
       didOpen.current = false;
     }
-  }, [isOpen, prevOpen]); // eslint-disable-line
+  }, [isOpen, prevOpen]);
 
   useEffect(() => {
     if (!prevOpen && isOpen) {
@@ -130,7 +129,7 @@ export function useEventCallbacks(
     } else if (!isOpen && prevOpen) {
       callbacks.current.onCloseStart?.();
     }
-  }, [isOpen, prevOpen]); // eslint-disable-line
+  }, [isOpen, prevOpen]);
 
   return { handleAnimationComplete };
 }
@@ -162,7 +161,7 @@ export function useDimensions() {
 }
 
 export function usePrevious<T>(state: T): T | undefined {
-  const ref = useRef<T>();
+  const ref = useRef<T>(undefined);
 
   useEffect(() => {
     ref.current = state;
@@ -174,7 +173,7 @@ export function usePrevious<T>(state: T): T | undefined {
 // Userland version of the `useEffectEvent` React hook:
 // RFC: https://react.dev/reference/react/experimental_useEffectEvent
 export function useEffectEvent<T extends (...args: any[]) => any>(handler: T) {
-  const handlerRef = useRef<T>();
+  const handlerRef = useRef<T>(undefined);
 
   useIsomorphicLayoutEffect(() => {
     handlerRef.current = handler;
