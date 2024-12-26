@@ -16,7 +16,10 @@ type SheetProps = {
 };
 
 export function A11ySheet({
-  state, label, children, ...rest
+  state,
+  label,
+  children,
+  ...rest
 }: PropsWithChildren<SheetProps>) {
   return (
     <Sheet {...rest} isOpen={state.isOpen} onClose={state.close}>
@@ -53,7 +56,11 @@ const useA11ySheet = (state: OverlayTriggerState, label: string) => {
   const ref = useRef<HTMLDivElement>(null);
   const dialog = useDialog({ 'aria-label': label }, ref);
   const overlay = useOverlay(
-    { onClose: state.close, isOpen: true, isDismissable: true },
+    {
+      onClose: state.close,
+      isOpen: true,
+      isDismissable: true,
+    },
     ref
   );
 
@@ -65,5 +72,3 @@ const useA11ySheet = (state: OverlayTriggerState, label: string) => {
     ...dialog.dialogProps,
   } as any; // HACK: fix type conflicts with Framer Motion
 };
-
-

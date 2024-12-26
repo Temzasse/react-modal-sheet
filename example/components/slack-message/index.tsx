@@ -16,6 +16,7 @@ import {
 import { NewMessageHeader } from './NewMessageHeader';
 import { NewMessageContent } from './NewMessageContent';
 import { useMetaThemeColor } from '../hooks';
+import { ScrollView } from '../common';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
@@ -30,32 +31,34 @@ export function SlackMessage() {
   useMetaThemeColor({ to: '#111' });
 
   return (
-    <Wrapper>
-      <Topbar>
-        <Logo />
-        <WorkspaceTitle>A11y Workspace</WorkspaceTitle>
-        <SearchIcon size={20} />
-      </Topbar>
+    <ScrollView>
+      <Wrapper>
+        <Topbar>
+          <Logo />
+          <WorkspaceTitle>A11y Workspace</WorkspaceTitle>
+          <SearchIcon size={20} />
+        </Topbar>
 
-      <Content>
-        <Fab {...openButton.buttonProps} ref={openButtonRef}>
-          <MessageIcon size={20} color="#fff" />
-        </Fab>
-      </Content>
+        <Content>
+          <Fab {...openButton.buttonProps} ref={openButtonRef}>
+            <MessageIcon size={20} color="#fff" />
+          </Fab>
+        </Content>
 
-      <MessageSheet
-        isOpen={sheetState.isOpen}
-        onOpenEnd={focusInput}
-        onClose={sheetState.close}
-        rootId="root"
-      >
-        <OverlayProvider>
-          <FocusScope contain autoFocus={false} restoreFocus>
-            <MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
-          </FocusScope>
-        </OverlayProvider>
-      </MessageSheet>
-    </Wrapper>
+        <MessageSheet
+          isOpen={sheetState.isOpen}
+          onOpenEnd={focusInput}
+          onClose={sheetState.close}
+          rootId="root"
+        >
+          <OverlayProvider>
+            <FocusScope contain autoFocus={false} restoreFocus>
+              <MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
+            </FocusScope>
+          </OverlayProvider>
+        </MessageSheet>
+      </Wrapper>
+    </ScrollView>
   );
 }
 
@@ -87,12 +90,10 @@ const MessageSheetComp = ({
             titleProps={dialog.titleProps}
           />
         </Sheet.Header>
-
         <Sheet.Content>
           <NewMessageContent inputRef={inputRef} />
         </Sheet.Content>
       </Sheet.Container>
-
       <Sheet.Backdrop />
     </>
   );
@@ -103,8 +104,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   margin: 0 auto;
   width: 100%;
-  flex: 1;
-  max-width: 680px;
+  height: 100%;
 `;
 
 const Content = styled.div`

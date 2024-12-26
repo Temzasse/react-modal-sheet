@@ -15,7 +15,7 @@ import {
   AiOutlineControl as SnapIcon,
 } from 'react-icons/ai';
 
-import { Screen, DarkMode } from './common';
+import { Screen, DarkMode, ScrollView } from './common';
 import { SnapPoints } from './SnapPoints';
 import { Scrollable } from './Scrollable';
 import { AppleMusic } from './apple-music';
@@ -28,90 +28,92 @@ import { AvoidKeyboard } from './AvoidKeyboard';
 
 export function App() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Screen bg="light">
-            <ExampleSelector />
-          </Screen>
-        }
-      />
-      <Route
-        path="snap-points/*"
-        element={
-          <Screen bg="light">
-            <SnapPoints />
-          </Screen>
-        }
-      />
-      <Route
-        path="scrollable-snap-points/*"
-        element={
-          <Screen bg="light">
-            <ScrollableSnapPoints />
-          </Screen>
-        }
-      />
-      <Route
-        path="scrollable/*"
-        element={
-          <Screen bg="light">
-            <Scrollable />
-          </Screen>
-        }
-      />
-      <Route
-        path="avoid-keyboard/*"
-        element={
-          <Screen bg="light">
-            <AvoidKeyboard />
-          </Screen>
-        }
-      />
-      <Route
-        path="content-height/*"
-        element={
-          <Screen bg="light">
-            <ContentHeight />
-          </Screen>
-        }
-      />
-      <Route
-        path="apple-music/*"
-        element={
-          <Screen bg="light">
-            <AppleMusic />
-            <DarkMode />
-          </Screen>
-        }
-      />
-      <Route
-        path="slack-message/*"
-        element={
-          <Screen bg="light">
-            <SlackMessage />
-            <DarkMode />
-          </Screen>
-        }
-      />
-      <Route
-        path="a11y/*"
-        element={
-          <Screen bg="light">
-            <A11y />
-          </Screen>
-        }
-      />
-      <Route
-        path="disable-drag/*"
-        element={
-          <Screen bg="light">
-            <DisableDrag />
-          </Screen>
-        }
-      />
-    </Routes>
+    <ScrollView>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Screen bg="light">
+              <ExampleSelector />
+            </Screen>
+          }
+        />
+        <Route
+          path="snap-points/*"
+          element={
+            <Screen bg="light">
+              <SnapPoints />
+            </Screen>
+          }
+        />
+        <Route
+          path="scrollable-snap-points/*"
+          element={
+            <Screen bg="light">
+              <ScrollableSnapPoints />
+            </Screen>
+          }
+        />
+        <Route
+          path="scrollable/*"
+          element={
+            <Screen bg="light">
+              <Scrollable />
+            </Screen>
+          }
+        />
+        <Route
+          path="avoid-keyboard/*"
+          element={
+            <Screen bg="light">
+              <AvoidKeyboard />
+            </Screen>
+          }
+        />
+        <Route
+          path="content-height/*"
+          element={
+            <Screen bg="light">
+              <ContentHeight />
+            </Screen>
+          }
+        />
+        <Route
+          path="apple-music/*"
+          element={
+            <Screen bg="light">
+              <AppleMusic />
+              <DarkMode />
+            </Screen>
+          }
+        />
+        <Route
+          path="slack-message/*"
+          element={
+            <Screen bg="light">
+              <SlackMessage />
+              <DarkMode />
+            </Screen>
+          }
+        />
+        <Route
+          path="a11y/*"
+          element={
+            <Screen bg="light">
+              <A11y />
+            </Screen>
+          }
+        />
+        <Route
+          path="disable-drag/*"
+          element={
+            <Screen bg="light">
+              <DisableDrag />
+            </Screen>
+          }
+        />
+      </Routes>
+    </ScrollView>
   );
 }
 
@@ -191,6 +193,7 @@ const ExampleLinks = styled.ul`
   grid-template-rows: auto;
   width: 100%;
   max-width: 800px;
+  margin: 0 auto;
   padding: 16px;
 `;
 
@@ -199,19 +202,21 @@ const ExampleLink = styled(Link)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   padding: 32px 48px;
   text-align: center;
-  background-color: aliceblue;
-  color: mediumslateblue;
-  border: 1px solid mediumslateblue;
-  border-radius: 12px;
+  background-color: #f5f5f5;
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #eee;
+  }
 
   span {
     font-weight: 500;
     font-size: 18px;
-  }
-
-  & > * + * {
-    margin-top: 16px;
   }
 `;

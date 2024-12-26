@@ -18,7 +18,7 @@ export function AppleMusic() {
   useMetaThemeColor({ to: '#111' });
 
   return (
-    <Wrapper>
+    <>
       <Album
         album={album}
         currentSong={currentSong}
@@ -30,23 +30,15 @@ export function AppleMusic() {
       <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
         <Sheet.Container>
           <Sheet.Header />
-
           <Sheet.Content>
             <Player album={album} song={currentSong} />
           </Sheet.Content>
         </Sheet.Container>
-
         <Sheet.Backdrop />
       </PlayerSheet>
-    </Wrapper>
+    </>
   );
 }
-
-const Wrapper = styled.div`
-  margin: 0 auto;
-  width: 100%;
-  max-width: 680px;
-`;
 
 const PlayerSheet = styled(Sheet)`
   margin: 0 auto;

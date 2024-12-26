@@ -1,28 +1,45 @@
+import { useRef } from 'react';
+import { useButton, type AriaButtonProps } from 'react-aria';
 import styled, { createGlobalStyle } from 'styled-components';
-import { minFullHeight } from './styled.utils';
 
-export const Button = styled.button`
-  padding: 6px 16px;
-  background-color: aliceblue;
-  color: mediumslateblue;
+export function Button({ children, ...rest }: AriaButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const { buttonProps } = useButton(rest, buttonRef);
+
+  return (
+    <ButtonBase {...buttonProps} ref={buttonRef}>
+      {children}
+    </ButtonBase>
+  );
+}
+
+const ButtonBase = styled.button`
+  cursor: pointer;
+  padding: 12px 16px;
+  background-color: #000;
+  color: #fff;
   border: none;
   font-weight: 500;
   border-radius: 999px;
   text-align: center;
-  margin: 8px 0px;
+  line-height: 1;
+  transition: opacity 0.1s ease-out;
+
+  &:active {
+    opacity: 0.8;
+  }
 `;
 
 export const Screen = styled.div<{ bg: 'light' | 'dark' }>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   background-color: ${(p) => (p.bg === 'dark' ? '#000' : '#fff')};
-  ${minFullHeight}
+  width: 100%;
+  min-height: 100%;
+`;
 
-  & > button {
-    margin: 16px 0px;
-  }
+export const ScrollView = styled.div`
+  overflow-y: auto;
+  height: 100vh;
+  height: 100dvh;
 `;
 
 export const DarkMode = createGlobalStyle`

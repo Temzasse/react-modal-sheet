@@ -18,8 +18,7 @@ const people = [
 ].map((name, i) => ({
   id: i,
   name,
-  // Use index to randomize the returned image
-  image: (i: number) => `https://source.unsplash.com/collection/1602384/${100 + i}x${100 + i}?crop=faces`, // prettier-ignore
+  image: (i: number) => `https://picsum.photos/${i}/200`,
 }));
 
 export function NewMessageContent({

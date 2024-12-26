@@ -1,38 +1,34 @@
-import { useState } from 'react';
 import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
 
-import { Button } from './common';
+import { ExampleLayout } from './ExampleLayout';
 
 export function Scrollable() {
-  const [isOpen, setOpen] = useState(false);
-  const open = () => setOpen(true);
-  const close = () => setOpen(false);
-
   return (
-    <>
-      <Button onClick={open}>Scrollable Bottom Sheet</Button>
-
-      <Sheet isOpen={isOpen} onClose={close}>
-        <Sheet.Container>
-          <Sheet.Header />
-
-          <Sheet.Content>
-            <Sheet.Scroller>
-              <BoxList>
-                {Array.from({ length: 50 })
-                  .fill(1)
-                  .map((_, i) => (
-                    <Box key={i}>{i}</Box>
-                  ))}
-              </BoxList>
-            </Sheet.Scroller>
-          </Sheet.Content>
-        </Sheet.Container>
-
-        <Sheet.Backdrop />
-      </Sheet>
-    </>
+    <ExampleLayout
+      title="Scrollable"
+      description="Sheet that has scrollable content inside it."
+    >
+      {({ isOpen, close }) => (
+        <Sheet isOpen={isOpen} onClose={close}>
+          <Sheet.Container>
+            <Sheet.Header />
+            <Sheet.Content>
+              <Sheet.Scroller>
+                <BoxList>
+                  {Array.from({ length: 50 })
+                    .fill(1)
+                    .map((_, i) => (
+                      <Box key={i}>{i}</Box>
+                    ))}
+                </BoxList>
+              </Sheet.Scroller>
+            </Sheet.Content>
+          </Sheet.Container>
+          <Sheet.Backdrop />
+        </Sheet>
+      )}
+    </ExampleLayout>
   );
 }
 

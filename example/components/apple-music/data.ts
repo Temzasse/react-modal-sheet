@@ -12,7 +12,7 @@ export const album: Album = {
   year: '2020',
   artist: 'Niche Market',
   genre: 'Indie Techno',
-  image: 'https://source.unsplash.com/WDuVbCMMlSg/400x400',
+  image: 'https://picsum.photos/400',
   songs: [
     'Gamification investor seed money',
     'Gen-z iPad',

@@ -1,67 +1,52 @@
 import { styled } from 'styled-components';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { Button } from './common';
 import { useAnimatedVirtualKeyboard } from './hooks';
+import { ExampleLayout } from './ExampleLayout';
 
 export function AvoidKeyboard() {
-  const [isOpen, setOpen] = useState(false);
   const sheetRef = useRef<SheetRef>();
   const inputRef = useRef<HTMLInputElement>(null);
-
   const { keyboardHeight, isKeyboardOpen } = useAnimatedVirtualKeyboard();
 
-  const open = () => setOpen(true);
-  const close = () => setOpen(false);
-
   return (
-    <>
-      <Button onClick={open}>Avoid Keyboard</Button>
+    <ExampleLayout
+      title="Avoid keyboard"
+      description="Note that keyboard avoidance only works on mobile devices!"
+    >
+      {({ isOpen, close }) => (
+        <Sheet
+          ref={sheetRef}
+          isOpen={isOpen}
+          onClose={close}
+          detent="content-height"
+        >
+          <Sheet.Container>
+            <Sheet.Header />
+            <Sheet.Content style={{ paddingBottom: keyboardHeight }}>
+              <Sheet.Scroller>
+                <Content>
+                  <p>Focus input to show virtual keyboard</p>
 
-      <NoteText>
-        Note that keyboard avoidance only works on mobile devices!
-      </NoteText>
+                  <Input ref={inputRef} />
 
-      <Sheet
-        ref={sheetRef}
-        isOpen={isOpen}
-        onClose={close}
-        detent="content-height"
-      >
-        <Sheet.Container>
-          <Sheet.Header />
-
-          <Sheet.Content style={{ paddingBottom: keyboardHeight }}>
-            <Sheet.Scroller>
-              <Content>
-                <p>Focus input to show virtual keyboard</p>
-
-                <Input ref={inputRef} />
-
-                {isKeyboardOpen ? (
-                  <strong>Virtual keyboard is open!</strong>
-                ) : (
-                  <Button onClick={close}>Close</Button>
-                )}
-              </Content>
-            </Sheet.Scroller>
-          </Sheet.Content>
-        </Sheet.Container>
-
-        <Sheet.Backdrop />
-      </Sheet>
-    </>
+                  {isKeyboardOpen ? (
+                    <strong>Virtual keyboard is open!</strong>
+                  ) : (
+                    <Button onPress={close}>Close</Button>
+                  )}
+                </Content>
+              </Sheet.Scroller>
+            </Sheet.Content>
+          </Sheet.Container>
+          <Sheet.Backdrop />
+        </Sheet>
+      )}
+    </ExampleLayout>
   );
 }
-
-const NoteText = styled.strong`
-  text-align: center;
-  padding: 32px;
-  line-height: 1.5;
-  font-size: 14px;
-`;
-
 const Content = styled.div`
   display: flex;
   flex-direction: column;
