@@ -231,7 +231,11 @@ const Sheet = forwardRef<any, SheetProps>(
       },
     }));
 
-    useModalEffect(isOpen, rootId);
+    useModalEffect({
+      y,
+      rootId,
+      sheetRef,
+    });
 
     // Framer Motion should handle body scroll locking but it's not working
     // properly on iOS. Scroll locking from React Aria seems to work much better.

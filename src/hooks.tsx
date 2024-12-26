@@ -1,5 +1,6 @@
 import {
   type MutableRefObject,
+  type RefObject,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -7,32 +8,100 @@ import {
   useState,
 } from 'react';
 
-import { isBrowser, type BoundingBox } from 'framer-motion';
+import { type MotionValue, type BoundingBox, transform } from 'framer-motion';
 
 import { IS_SSR } from './constants';
 import { type SheetEvents } from './types';
-import { applyRootStyles, cleanupRootStyles } from './utils';
 
 export const useIsomorphicLayoutEffect = IS_SSR ? useEffect : useLayoutEffect;
 
-export function useModalEffect(isOpen: boolean, rootId?: string) {
-  const prevOpen = usePrevious(isOpen);
+export function useModalEffect({
+  y,
+  rootId,
+  sheetRef,
+}: {
+  y: MotionValue<number>;
+  rootId?: string;
+  sheetRef: RefObject<HTMLDivElement>;
+}) {
+  const heightRef = useRef(window.innerHeight);
 
-  // Automatically apply the iOS modal effect to the body when sheet opens/closes
-  useEffect(() => {
-    if (rootId && !prevOpen && isOpen) {
-      applyRootStyles(rootId);
-    } else if (rootId && !isOpen && prevOpen) {
-      cleanupRootStyles(rootId);
-    }
-  }, [isOpen, prevOpen]); // eslint-disable-line
+  function setup() {
+    const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
+    const body = document.querySelector('body') as HTMLBodyElement;
+    if (!root) return;
 
-  // Make sure to cleanup modal styles on unmount
-  useEffect(() => {
+    body.style.backgroundColor = '#000';
+    root.style.overflow = 'hidden';
+    root.style.transitionTimingFunction = 'cubic-bezier(0.32, 0.72, 0, 1)';
+    root.style.transitionProperty = 'transform, border-radius';
+    root.style.transitionDuration = '0.5s';
+    root.style.transformOrigin = 'center top';
+  }
+
+  function cleanup() {
+    const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
+    const body = document.querySelector('body') as HTMLBodyElement;
+    if (!root) return;
+
+    setTimeout(() => {
+      body.style.removeProperty('background-color');
+      root.style.removeProperty('overflow');
+      root.style.removeProperty('transition-timing-function');
+      root.style.removeProperty('transition-property');
+      root.style.removeProperty('transition-duration');
+      root.style.removeProperty('transform-origin');
+      root.style.removeProperty('transform');
+      root.style.removeProperty('border-top-right-radius');
+      root.style.removeProperty('border-top-left-radius');
+    }, 100);
+  }
+
+  useIsomorphicLayoutEffect(() => {
     return () => {
-      if (rootId && isOpen) cleanupRootStyles(rootId);
+      if (rootId) cleanup();
     };
-  }, [isOpen]); // eslint-disable-line
+  }, []); // eslint-disable-line
+
+  useEffect(() => {
+    const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
+    if (!root) return;
+
+    function onCompleted() {
+      if (y.get() - 10 >= heightRef.current) cleanup();
+    }
+
+    const removeStartListener = y.on('animationStart', () => {
+      heightRef.current = sheetRef.current?.offsetHeight || window.innerHeight;
+      setup();
+    });
+
+    const removeChangeListener = y.on('change', (value) => {
+      if (root) {
+        const progress = Math.max(0, 1 - value / heightRef.current);
+        const pageWidth = window.innerWidth;
+        const scale = (pageWidth - 16) / pageWidth;
+        const ty = transform(progress, [0, 1], [0, 24]);
+        const s = transform(progress, [0, 1], [1, scale]);
+        const borderRadius = transform(progress, [0, 1], [0, 10]);
+        const inset = 'env(safe-area-inset-top)';
+
+        root.style.transform = `scale(${s}) translate3d(0, calc(${inset} + ${ty}px), 0)`; // prettier-ignore
+        root.style.borderTopRightRadius = `${borderRadius}px`;
+        root.style.borderTopLeftRadius = `${borderRadius}px`;
+      }
+    });
+
+    const removeCompleteListener = y.on('animationComplete', onCompleted);
+    const removeCancelListener = y.on('animationCancel', onCompleted);
+
+    return () => {
+      removeStartListener();
+      removeChangeListener();
+      removeCompleteListener();
+      removeCancelListener();
+    };
+  }, [y, rootId]); // eslint-disable-line
 }
 
 export function useEventCallbacks(
