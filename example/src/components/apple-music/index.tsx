@@ -9,6 +9,7 @@ import { Player } from './Player';
 
 export function AppleMusic() {
   const [isPlayerOpen, setPlayerOpen] = useState(false);
+  // biome-ignore lint/style/noNonNullAssertion: songs are static
   const [currentSong, setCurrentSong] = useState(album.songs[0]!);
 
   const openPlayer = () => setPlayerOpen(true);

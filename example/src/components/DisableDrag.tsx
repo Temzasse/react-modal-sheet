@@ -43,7 +43,7 @@ export function DisableDrag() {
 
 function useScrolling() {
   const [isScrolling, setScrolling] = useState<boolean>(false);
-  const timeout = useRef<any>();
+  const timeout = useRef<any>(undefined);
 
   const onScroll = () => {
     setScrolling(true);

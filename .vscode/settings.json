@@ -2,6 +2,9 @@
   "[html]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },

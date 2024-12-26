@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 import { FaPlay, FaForward, FaRandom } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 import { type Album as AlbumType } from './data';
 import { MoreButton } from './common';

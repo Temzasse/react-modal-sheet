@@ -7,7 +7,7 @@ import { ExampleLayout } from './ExampleLayout';
 
 export function ContentHeight() {
   const [boxes, setBoxes] = useState(2);
-  const sheetRef = useRef<SheetRef>();
+  const sheetRef = useRef<SheetRef>(null);
   const snapTo = (i: number) => sheetRef.current?.snapTo(i);
 
   return (

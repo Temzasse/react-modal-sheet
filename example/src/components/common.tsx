@@ -30,8 +30,8 @@ const ButtonBase = styled.button`
   }
 `;
 
-export const Screen = styled.div<{ bg: 'light' | 'dark' }>`
-  background-color: ${(p) => (p.bg === 'dark' ? '#000' : '#fff')};
+export const Screen = styled.div`
+  background-color: #fff;
   width: 100%;
   min-height: 100%;
 `;

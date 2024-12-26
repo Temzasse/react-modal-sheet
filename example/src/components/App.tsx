@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
 
 import {
@@ -35,7 +35,7 @@ export function App() {
         <Route
           path="/"
           element={
-            <Screen bg="light">
+            <Screen>
               <ExampleSelector />
             </Screen>
           }
@@ -43,7 +43,7 @@ export function App() {
         <Route
           path="snap-points/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <SnapPoints />
             </Screen>
           }
@@ -51,7 +51,7 @@ export function App() {
         <Route
           path="scrollable-snap-points/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <ScrollableSnapPoints />
             </Screen>
           }
@@ -59,7 +59,7 @@ export function App() {
         <Route
           path="scrollable/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <Scrollable />
             </Screen>
           }
@@ -67,7 +67,7 @@ export function App() {
         <Route
           path="avoid-keyboard/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <AvoidKeyboard />
             </Screen>
           }
@@ -75,7 +75,7 @@ export function App() {
         <Route
           path="content-height/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <ContentHeight />
             </Screen>
           }
@@ -83,7 +83,7 @@ export function App() {
         <Route
           path="apple-music/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <AppleMusic />
               <DarkMode />
             </Screen>
@@ -92,7 +92,7 @@ export function App() {
         <Route
           path="slack-message/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <SlackMessage />
               <DarkMode />
             </Screen>
@@ -101,7 +101,7 @@ export function App() {
         <Route
           path="a11y/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <A11y />
             </Screen>
           }
@@ -109,7 +109,7 @@ export function App() {
         <Route
           path="disable-drag/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <DisableDrag />
             </Screen>
           }
