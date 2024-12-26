@@ -86,7 +86,7 @@ const Sheet = forwardRef<any, SheetProps>(
 
     // +2 for tolerance in case the animated value is slightly off
     const zIndex = useTransform(y, (value) =>
-      value + 2 >= windowHeight ? -1 : 9999999
+      value + 2 >= windowHeight ? -1 : (style?.zIndex ?? 9999)
     );
     const visibility = useTransform(y, (value) =>
       value + 2 >= windowHeight ? 'hidden' : 'visible'
