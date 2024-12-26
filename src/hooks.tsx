@@ -24,7 +24,7 @@ export function useModalEffect({
   rootId?: string;
   sheetRef: RefObject<HTMLDivElement>;
 }) {
-  const heightRef = useRef(window.innerHeight);
+  const heightRef = useRef(IS_SSR ? 0 : window.innerHeight);
 
   function setup() {
     const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
