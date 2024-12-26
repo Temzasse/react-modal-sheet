@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 import { type SheetBackdropProps } from './types';
 import styles from './styles';

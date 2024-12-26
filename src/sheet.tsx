@@ -19,7 +19,7 @@ import {
   useMotionValue,
   useReducedMotion,
   useTransform,
-} from 'framer-motion';
+} from 'motion/react';
 
 import {
   useModalEffect,

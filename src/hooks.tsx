@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import { type MotionValue, type BoundingBox, transform } from 'framer-motion';
+import { type MotionValue, type BoundingBox, transform } from 'motion/react';
 
 import { IS_SSR } from './constants';
 import { type SheetEvents } from './types';
@@ -185,7 +185,7 @@ export function useEffectEvent<T extends (...args: any[]) => any>(handler: T) {
   }, []) as T;
 }
 
-// This is a hacky way to fix a bug in framer-motion where the drag
+// This is a hacky way to fix a bug in motion/react where the drag
 // constraints are not updated when window is resized.
 // https://github.com/framer/motion/issues/1659
 const constraints: BoundingBox = { bottom: 0, top: 0, left: 0, right: 0 };

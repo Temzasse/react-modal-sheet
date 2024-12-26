@@ -1,4 +1,4 @@
-import { type MotionValue } from 'framer-motion';
+import { type MotionValue } from 'motion/react';
 
 import _Sheet from './sheet';
 import SheetContainer from './SheetContainer';

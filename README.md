@@ -31,10 +31,10 @@ yarn add react-modal-sheet
 
 ### Peer dependencies
 
-The gestures and animations are handled by the excellent [Framer Motion](https://github.com/framer/motion) library so before you can start using this library you need to install `framer-motion`:
+The gestures and animations are handled by the excellent [Motion](https://motion.dev/) library so before you can start using this library you need to install `motion`:
 
 ```sh
-npm install framer-motion
+npm install motion
 ```
 
 ## 💻 Usage
@@ -86,7 +86,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `snapPoints`            | no       |                                      | Eg. `[-50, 0.5, 100, 0]` - where positive values are pixels from the bottom of the screen and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of window height from the bottom of the sceen.    |
 | `initialSnap`           | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                   |
 | `rootId`                | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables iOS modal effect.                                                                                                                                           |
-| `tweenConfig`           | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://www.framer.com/motion/transition/#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                      |
+| `tweenConfig`           | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://motion.dev/docs/react-transitions#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                      |
 | `mountPoint`            | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                   |
 | `prefersReducedMotion`  | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                   |
 | `dragVelocityThreshold` | no       | 500                                  | How fast the sheet must be flicked down to close. Higher values make the sheet harder to close.                                                                                                                                      |
@@ -104,7 +104,7 @@ import { useState, useRef } from 'react';
 
 function Example() {
   const [isOpen, setOpen] = useState(false);
-  const ref = useRef<SheetRef>();
+  const ref = useRef<SheetRef>(null);
   const snapTo = (i: number) => ref.current?.snapTo(i);
 
   return (
@@ -150,7 +150,7 @@ import { useState, useRef } from 'react';
 
 function Example() {
   const [isOpen, setOpen] = useState(false);
-  const ref = useRef<SheetRef>();
+  const ref = useRef<SheetRef>(null);
 
   return (
     <>
@@ -269,7 +269,7 @@ Sheet scroller can be used to make the whole sheet content or parts of it scroll
 
 Sheet backdrop is a translucent overlay that helps to separate the sheet from it's background. By default the backdrop doesn't have any interaction attached to it but if you, for example, want to close the sheet when the backdrop is clicked you can provide tap handler to it which will change the rendered element from `div` to `button`.
 
-**⚠️ Note:** as the element is a motion component you need to use [`onTap`](https://www.framer.com/motion/gestures/#tap) instead of `onClick` if you want to add a click handler to it.
+**⚠️ Note:** as the element is a motion component you need to use [`onTap`](https://motion.dev/docs/react-gestures#tap) instead of `onClick` if you want to add a click handler to it.
 
 > 🖥 Rendered element: `motion.div` or `motion.button`.
 

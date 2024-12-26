@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { motion, useTransform } from 'framer-motion';
+import { motion, useTransform } from 'motion/react';
 
 import { type SheetDraggableProps } from './types';
 import { useSheetContext } from './context';
