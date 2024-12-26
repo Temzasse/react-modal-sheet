@@ -1,78 +1,38 @@
 name: CI
-on: [push]
+
+on:
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  lint:
-    name: 🧶 Lint
+  checks:
+    name: ✅ PR checks
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
+      - name: 🎛️ Setup node
+        uses: actions/setup-node@v4
         with:
           cache: 'npm'
-          node-version: 20
+          node-version: 22
 
       - name: 📥 Install deps
         run: npm ci
 
       - name: 🔬 Lint
-        run: npm run lint
+        run: npm run lint:check
 
-  typecheck:
-    name: 👮🏻‍♂️ Typecheck
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+      - name: 🧮 Format
+        run: npm run format:check
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-          node-version: 20
-
-      - name: 📥 Install deps
-        run: npm ci
-
-      - name: 🔎 Type check
+      - name: 🔎 Typecheck
         run: npm run typecheck
-
-  test:
-    name: 🧪 Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-          node-version: 20
-
-      - name: 📥 Install deps
-        run: npm ci
 
       - name: 🔬 Test
         run: npm run test
-
-  build:
-    name: 📦 Build and verify
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-          node-version: 20
-
-      - name: 📥 Install deps
-        run: npm ci
 
       - name: 🏗️ Build library
         run: npm run build
