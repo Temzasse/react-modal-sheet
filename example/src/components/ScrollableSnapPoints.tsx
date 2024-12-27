@@ -9,7 +9,7 @@ const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1;
 
 export function ScrollableSnapPoints() {
-  const sheetRef = useRef<SheetRef>();
+  const sheetRef = useRef<SheetRef>(null);
   const snapTo = (i: number) => sheetRef.current?.snapTo(i);
 
   return (

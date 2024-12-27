@@ -4,7 +4,7 @@ export default defineConfig({
   outDir: 'dist',
   entry: ['src/index.tsx'],
   format: ['cjs', 'esm'],
-  external: ['react', 'react-dom', 'framer-motion'],
+  external: ['react', 'react-dom', 'motion'],
   splitting: false,
   treeshake: true,
   sourcemap: true,

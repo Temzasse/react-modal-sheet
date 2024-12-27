@@ -1,21 +1,21 @@
 import './index.css';
 
 import { createRoot } from 'react-dom/client';
-import { HashRouter as Router } from 'react-router-dom';
+import { HashRouter } from 'react-router';
 import { OverlayProvider } from 'react-aria';
 
 import { App } from './components/App';
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+// biome-ignore lint/style/noNonNullAssertion: root is always defined
 const root = createRoot(document.getElementById('root')!);
 
 function Root() {
   return (
-    <Router>
+    <HashRouter>
       <OverlayProvider>
         <App />
       </OverlayProvider>
-    </Router>
+    </HashRouter>
   );
 }
 

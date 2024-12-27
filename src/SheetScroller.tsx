@@ -3,9 +3,9 @@ import React, { type TouchEvent, type UIEvent, forwardRef } from 'react';
 import { useSheetScrollerContext } from './context';
 import { type SheetScrollerProps } from './types';
 import { isTouchDevice } from './utils';
-import styles from './styles';
+import { styles } from './styles';
 
-const SheetScroller = forwardRef<any, SheetScrollerProps>(
+export const SheetScroller = forwardRef<any, SheetScrollerProps>(
   ({ draggableAt = 'top', children, style, className = '', ...rest }, ref) => {
     const sheetScrollerContext = useSheetScrollerContext();
 
@@ -63,5 +63,3 @@ const SheetScroller = forwardRef<any, SheetScrollerProps>(
 );
 
 SheetScroller.displayName = 'SheetScroller';
-
-export default SheetScroller;

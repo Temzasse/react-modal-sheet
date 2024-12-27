@@ -14,7 +14,7 @@ import {
   type motion,
   type EasingDefinition,
   type Transition,
-} from 'framer-motion';
+} from 'motion/react';
 
 export interface SheetEvents {
   onOpenStart?: () => void;

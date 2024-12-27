@@ -11,7 +11,10 @@ export function NewMessageHeader({
   titleProps: any;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
-  const closeButton = useButton({ onPress: sheetState.close, 'aria-label': 'Close bottom sheet' }, ref); // prettier-ignore
+  const closeButton = useButton(
+    { onPress: sheetState.close, 'aria-label': 'Close bottom sheet' },
+    ref
+  ); // prettier-ignore
 
   return (
     <Wrapper>

@@ -71,12 +71,15 @@ const MessageSheetComp = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const dialog = useDialog({}, ref);
-  const overlay = useOverlay({ onClose: sheetState.close, isOpen: true, isDismissable: true }, ref); // prettier-ignore
+  const overlay = useOverlay(
+    { onClose: sheetState.close, isOpen: true, isDismissable: true },
+    ref
+  );
 
   useModal();
 
   // HACK: some props from React Aria need to be cast to `any`
-  // since they conflict with the Framer Motion props
+  // since they conflict with the Motion props
   return (
     <>
       <Sheet.Container

@@ -1,13 +1,13 @@
 import React, { forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 import { type SheetDraggableProps } from './types';
 import { useSheetScrollerContext, useSheetContext } from './context';
 import { useDragConstraints } from './hooks';
 import { mergeRefs } from './utils';
-import styles from './styles';
+import { styles } from './styles';
 
-const SheetContent = forwardRef<any, SheetDraggableProps>(
+export const SheetContent = forwardRef<any, SheetDraggableProps>(
   ({ children, style, disableDrag, className = '', ...rest }, ref) => {
     const sheetContext = useSheetContext();
     const sheetScrollerContext = useSheetScrollerContext();
@@ -35,5 +35,3 @@ const SheetContent = forwardRef<any, SheetDraggableProps>(
 );
 
 SheetContent.displayName = 'SheetContent';
-
-export default SheetContent;

@@ -1,4 +1,4 @@
-import { animate, useMotionValue } from 'framer-motion';
+import { animate, useMotionValue } from 'motion/react';
 import { useEffect, useLayoutEffect, useState } from 'react';
 
 export function useMetaThemeColor({
@@ -72,9 +72,9 @@ export function useAnimatedVirtualKeyboard() {
 
   useEffect(() => {
     if (isKeyboardOpen) {
-      void animate(animatedKeyboardHeight, keyboardHeight);
+      animate(animatedKeyboardHeight, keyboardHeight);
     } else {
-      void animate(animatedKeyboardHeight, 0);
+      animate(animatedKeyboardHeight, 0);
     }
   }, [isKeyboardOpen, keyboardHeight]); // eslint-disable-line react-hooks/exhaustive-deps
 

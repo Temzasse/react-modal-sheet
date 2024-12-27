@@ -3,24 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.3",
-    "react": "^18",
-    "react-dom": "^18",
+    "motion": "11.15.0",
+    "next": "15.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-modal-sheet": "file:.yalc/react-modal-sheet",
     "styled-components": "6.1.11"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "3.2.0",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.3",
-    "typescript": "^5"
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "9.17.0",
+    "eslint-config-next": "15.1.2",
+    "typescript": "5.7.2"
   }
 }

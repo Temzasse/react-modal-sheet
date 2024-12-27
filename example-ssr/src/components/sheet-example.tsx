@@ -8,7 +8,7 @@ const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1;
 
 export function SheetExample() {
-  const ref = useRef<SheetRef>();
+  const ref = useRef<SheetRef>(null);
   const [isOpen, setOpen] = useState(false);
 
   const snapTo = (i: number) => ref.current?.snapTo(i);

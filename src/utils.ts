@@ -41,9 +41,7 @@ export function validateSnapTo({
   return Math.max(Math.round(snapTo), 0);
 }
 
-export function mergeRefs<T = any>(
-  refs: Array<ForwardedRef<T>>
-): RefCallback<T> {
+export function mergeRefs<T = any>(refs: ForwardedRef<T>[]): RefCallback<T> {
   return (value: any) => {
     refs.forEach((ref: any) => {
       if (typeof ref === 'function') {
@@ -61,12 +59,10 @@ export function isTouchDevice() {
 }
 
 function testPlatform(re: RegExp) {
-  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
   return typeof window !== 'undefined' && window.navigator != null
     ? re.test(
         // @ts-expect-error
-        // eslint-disable-next-line @typescript-eslint/dot-notation
-        window.navigator['userAgentData']?.platform || window.navigator.platform
+        window.navigator.userAgentData?.platform || window.navigator.platform
       )
     : false;
 }

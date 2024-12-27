@@ -9,7 +9,7 @@ const snapPoints = [1, 0.5, 200, 0];
 const initialSnap = 1; // Initial snap point when sheet is opened
 
 export function SnapPoints() {
-  const sheetRef = useRef<SheetRef>();
+  const sheetRef = useRef<SheetRef>(null);
   const [snapPoint, setSnapPoint] = useState(initialSnap);
   const snapTo = (i: number) => sheetRef.current?.snapTo(i);
 

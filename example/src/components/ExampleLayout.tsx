@@ -1,8 +1,8 @@
 import { useRef, type ReactNode } from 'react';
 import { createGlobalStyle, styled } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { FiChevronLeft } from 'react-icons/fi';
-import { useScroll, motion, useTransform } from 'framer-motion';
+import { useScroll, motion, useTransform } from 'motion/react';
 import {
   useOverlayTriggerState,
   type OverlayTriggerState,

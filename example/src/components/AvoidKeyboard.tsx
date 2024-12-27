@@ -7,7 +7,7 @@ import { useAnimatedVirtualKeyboard } from './hooks';
 import { ExampleLayout } from './ExampleLayout';
 
 export function AvoidKeyboard() {
-  const sheetRef = useRef<SheetRef>();
+  const sheetRef = useRef<SheetRef>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { keyboardHeight, isKeyboardOpen } = useAnimatedVirtualKeyboard();
 

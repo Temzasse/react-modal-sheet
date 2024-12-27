@@ -1,6 +1,6 @@
 import { type Properties } from 'csstype';
 
-const styles: Record<string, Properties> = {
+export const styles: Record<string, Properties> = {
   wrapper: {
     position: 'fixed',
     top: 0,
@@ -20,6 +20,7 @@ const styles: Record<string, Properties> = {
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     touchAction: 'none', // Disable iOS body scrolling
     border: 'none',
+    WebkitTapHighlightColor: 'transparent',
   },
   container: {
     zIndex: 2,
@@ -64,5 +65,3 @@ const styles: Record<string, Properties> = {
     overflowY: 'auto',
   },
 };
-
-export default styles;
