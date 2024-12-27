@@ -157,8 +157,12 @@ function preventScrollMobileSafari() {
   let lastY = 0;
 
   const onTouchStart = (e: TouchEvent) => {
+    // Use `composedPath` to support shadow DOM.
+    const target = e.composedPath()?.[0] as HTMLElement;
+
     // Store the nearest scrollable parent element from the element that the user touched.
-    scrollable = getScrollParent(e.target as Element, true);
+    scrollable = getScrollParent(target, true);
+
     if (
       scrollable === document.documentElement &&
       scrollable === document.body
@@ -207,7 +211,8 @@ function preventScrollMobileSafari() {
   };
 
   const onTouchEnd = (e: TouchEvent) => {
-    const target = e.target as HTMLElement;
+    // Use `composedPath` to support shadow DOM.
+    const target = e.composedPath()?.[0] as HTMLElement;
 
     // Apply this change if we're not already focused on the target element
     if (willOpenKeyboard(target) && target !== document.activeElement) {
@@ -225,7 +230,9 @@ function preventScrollMobileSafari() {
   };
 
   const onFocus = (e: FocusEvent) => {
-    const target = e.target as HTMLElement;
+    // Use `composedPath` to support shadow DOM.
+    const target = e.composedPath()?.[0] as HTMLElement;
+
     if (willOpenKeyboard(target)) {
       // Transform also needs to be applied in the focus event in cases where focus moves
       // other than tapping on an input directly, e.g. the next/previous buttons in the
