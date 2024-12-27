@@ -1,6 +1,6 @@
 import { type Properties } from 'csstype';
 
-const styles: Record<string, Properties> = {
+export const styles: Record<string, Properties> = {
   wrapper: {
     position: 'fixed',
     top: 0,
@@ -65,5 +65,3 @@ const styles: Record<string, Properties> = {
     overflowY: 'auto',
   },
 };
-
-export default styles;

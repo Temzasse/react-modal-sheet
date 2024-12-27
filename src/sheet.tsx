@@ -40,9 +40,9 @@ import { type SheetContextType, type SheetProps } from './types';
 import { SheetScrollerContextProvider, SheetContext } from './context';
 import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
 import { usePreventScroll } from './use-prevent-scroll';
-import styles from './styles';
+import { styles } from './styles';
 
-const Sheet = forwardRef<any, SheetProps>(
+export const Sheet = forwardRef<any, SheetProps>(
   (
     {
       onOpenStart,
@@ -301,5 +301,3 @@ const Sheet = forwardRef<any, SheetProps>(
 );
 
 Sheet.displayName = 'Sheet';
-
-export default Sheet;

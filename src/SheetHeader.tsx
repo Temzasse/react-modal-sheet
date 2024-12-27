@@ -5,9 +5,9 @@ import { type SheetDraggableProps } from './types';
 import { useSheetContext } from './context';
 import { useDragConstraints } from './hooks';
 import { mergeRefs } from './utils';
-import styles from './styles';
+import { styles } from './styles';
 
-const SheetHeader = forwardRef<any, SheetDraggableProps>(
+export const SheetHeader = forwardRef<any, SheetDraggableProps>(
   ({ children, style, disableDrag, ...rest }, ref) => {
     const { indicatorRotation, dragProps } = useSheetContext();
     const { constraintsRef, onMeasureDragConstraints } = useDragConstraints();
@@ -50,5 +50,3 @@ const SheetHeader = forwardRef<any, SheetDraggableProps>(
 );
 
 SheetHeader.displayName = 'SheetHeader';
-
-export default SheetHeader;

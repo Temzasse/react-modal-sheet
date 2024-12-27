@@ -6,9 +6,9 @@ import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
 import { MAX_HEIGHT } from './constants';
 import { mergeRefs } from './utils';
-import styles from './styles';
+import { styles } from './styles';
 
-const SheetContainer = forwardRef<any, SheetContainerProps>(
+export const SheetContainer = forwardRef<any, SheetContainerProps>(
   ({ children, style = {}, className = '', ...rest }, ref) => {
     const {
       y,
@@ -56,5 +56,3 @@ const SheetContainer = forwardRef<any, SheetContainerProps>(
 );
 
 SheetContainer.displayName = 'SheetContainer';
-
-export default SheetContainer;
