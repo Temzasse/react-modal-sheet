@@ -117,7 +117,7 @@ export function App() {
         <Route
           path="shadow-dom/*"
           element={
-            <Screen bg="light">
+            <Screen>
               <ShadowDOM />
             </Screen>
           }

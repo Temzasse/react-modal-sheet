@@ -32,7 +32,7 @@ npm install motion
 ```
 
 > [!IMPORTANT]
-> If you are still using the old `framer-motion` package you need to upgrade to `motion` as `react-modal-sheet` is now built on top of the new `motion` package. **Version `v3.4.0` and older are compatible with `framer-motion`**.
+> If you are still using the old `framer-motion` package you need to upgrade to `motion` as `react-modal-sheet` is now built on top of the new `motion` package. **Version `v3.5.0` and older are compatible with `framer-motion`**.
 
 ---
 
