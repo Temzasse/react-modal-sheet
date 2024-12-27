@@ -32,10 +32,16 @@ const SheetScroller = forwardRef<any, SheetScrollerProps>(
 
     function onScroll(e: UIEvent<HTMLDivElement>) {
       determineDragState(e.currentTarget);
+      if (rest.onScroll) {
+        rest.onScroll(e);
+      }
     }
 
     function onTouchStart(e: TouchEvent<HTMLDivElement>) {
       determineDragState(e.currentTarget);
+      if (rest.onTouchStart) {
+        rest.onTouchStart(e);
+      }
     }
 
     const scrollProps = isTouchDevice()
