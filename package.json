@@ -34,7 +34,7 @@
     "src"
   ],
   "scripts": {
-    "dev": "tsup --watch --onSuccess \"yalc push --replace\"",
+    "dev": "tsup --watch --onSuccess \"npm run link:update\"",
     "build": "tsup",
     "build:verify": "attw --pack .",
     "format:check": "biome format ./src",
@@ -44,6 +44,7 @@
     "link": "yalc publish && npm run link:example && npm run link:example-ssr",
     "link:example": "cd example && yalc add react-modal-sheet && npm i",
     "link:example-ssr": "cd example-ssr && yalc add react-modal-sheet && npm i",
+    "link:update": "tsup --dts-only && yalc push --replace",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "verify": "run-p format:check lint:check typecheck",
