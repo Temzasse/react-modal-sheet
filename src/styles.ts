@@ -20,6 +20,7 @@ const styles: Record<string, Properties> = {
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     touchAction: 'none', // Disable iOS body scrolling
     border: 'none',
+    WebkitTapHighlightColor: 'transparent',
   },
   container: {
     zIndex: 2,
