@@ -6,6 +6,7 @@ import {
   FaScroll as ScrollIcon,
   FaLock as LockIcon,
   FaKeyboard as KeyboardIcon,
+  FaMoon as MoonIcon,
 } from 'react-icons/fa';
 
 import {
@@ -25,6 +26,7 @@ import { DisableDrag } from './DisableDrag';
 import { ScrollableSnapPoints } from './ScrollableSnapPoints';
 import { ContentHeight } from './ContentHeight';
 import { AvoidKeyboard } from './AvoidKeyboard';
+import { ShadowDOM } from './ShadowDOM';
 
 export function App() {
   return (
@@ -112,6 +114,14 @@ export function App() {
             </Screen>
           }
         />
+        <Route
+          path="shadow-dom/*"
+          element={
+            <Screen bg="light">
+              <ShadowDOM />
+            </Screen>
+          }
+        />
       </Routes>
     </ScrollView>
   );
@@ -180,6 +190,13 @@ const ExampleSelector = () => {
         <ExampleLink to="a11y">
           <A11yIcon size={48} />
           <span>Accessible Sheet</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="shadow-dom">
+          <MoonIcon size={48} />
+          <span>Shadow DOM</span>
         </ExampleLink>
       </li>
     </ExampleLinks>
