@@ -539,3 +539,22 @@ In your projects it might make sense to build a reusable bottom sheet that has a
 ### The sheet doesn't open when using `StrictMode`
 
 If you are using React [StrictMode](https://react.dev/reference/react/StrictMode) the sheet animations might not work as expected. This seems to be an issue in the `motion` library and I haven't been able to find a good solution for it yet. You see all `motion` issues related to the `StrictMode` [here](https://github.com/motiondivision/motion/issues?q=is%3Aissue+StrictMode). Easiest solution is to just not to use `StrictMode` 🤷‍♂️
+
+## 🤝 Contributing
+
+```bash
+
+# yalc allows us to depend on local packages
+npm i yalc -g
+
+# Install deps + configure yalc + run dev for package
+npm i
+npm run link
+npm run dev
+
+# Run dev for the example (do this in another terminal)
+cd example
+npm run dev
+
+# Open http://localhost:5173/ to see the examples. Add a console.log("hello world") in a file and see it in the console!
+```
