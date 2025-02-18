@@ -18,10 +18,12 @@ export function useModalEffect({
   y,
   rootId,
   sheetRef,
+  useInset = true,
 }: {
   y: MotionValue<number>;
   rootId?: string;
   sheetRef: RefObject<HTMLDivElement | null>;
+  useInset?: boolean
 }) {
   const heightRef = useRef(IS_SSR ? 0 : window.innerHeight);
 
@@ -83,7 +85,7 @@ export function useModalEffect({
         const ty = transform(progress, [0, 1], [0, 24]);
         const s = transform(progress, [0, 1], [1, scale]);
         const borderRadius = transform(progress, [0, 1], [0, 10]);
-        const inset = 'env(safe-area-inset-top)';
+        const inset = useInset ? `env(safe-area-inset-top) * ${progress}` : '0px';
 
         root.style.transform = `scale(${s}) translate3d(0, calc(${inset} + ${ty}px), 0)`; // prettier-ignore
         root.style.borderTopRightRadius = `${borderRadius}px`;

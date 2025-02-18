@@ -50,6 +50,7 @@ export type SheetProps = {
   prefersReducedMotion?: boolean;
   dragVelocityThreshold?: number;
   dragCloseThreshold?: number;
+  useInset?: boolean;
 } & SheetEvents &
   ComponentPropsWithoutRef<typeof motion.div>;
 

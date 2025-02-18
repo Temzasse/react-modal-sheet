@@ -65,6 +65,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       tweenConfig = DEFAULT_TWEEN_CONFIG,
       dragVelocityThreshold = DEFAULT_DRAG_VELOCITY_THRESHOLD,
       dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
+      useInset,
       ...rest
     },
     ref
@@ -237,6 +238,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       y,
       rootId,
       sheetRef,
+      useInset,
     });
 
     // Framer Motion should handle body scroll locking but it's not working
