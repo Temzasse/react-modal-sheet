@@ -4,12 +4,11 @@ import { motion } from 'motion/react';
 import { type SheetContainerProps } from './types';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
-import { MAX_HEIGHT } from './constants';
-import { mergeRefs } from './utils';
+import { getMaxHeightConstraint, mergeRefs } from './utils';
 import { styles } from './styles';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
-  ({ children, style = {}, className = '', ...rest }, ref) => {
+  ({ children, style = {}, className = '', forcedInset, ...rest }, ref) => {
     const {
       y,
       isOpen,
@@ -27,10 +26,12 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
     const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
     const maxSnapHeight = snapPoints ? snapPoints[0] : null;
 
+    const maxHeightConstraint = getMaxHeightConstraint(forcedInset);
+
     const height =
       maxSnapHeight !== null
-        ? `min(${maxSnapHeight}px, ${MAX_HEIGHT})`
-        : MAX_HEIGHT;
+        ? `min(${maxSnapHeight}px, ${maxHeightConstraint})`
+        : maxHeightConstraint;
 
     return (
       <motion.div

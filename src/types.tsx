@@ -58,6 +58,7 @@ export type SheetContainerProps = Omit<
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
 > & {
   children: ReactNode;
+  forcedInset?: number;
 };
 
 export type SheetDraggableProps = Omit<

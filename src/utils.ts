@@ -96,3 +96,11 @@ const isIPad = cached(function () {
 export const isIOS = cached(function () {
   return isIPhone() || isIPad();
 });
+
+export function getMaxHeightConstraint(inset?: number) {
+  if (inset != null) {
+    return `calc(100% - ${inset}px)`;
+  }
+
+  return `calc(100% - env(safe-area-inset-top) - 34px)`;
+}
