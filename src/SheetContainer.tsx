@@ -7,7 +7,7 @@ import { useEventCallbacks } from './hooks';
 import {
   MAX_HEIGHT,
   SHEET_POSITIONS,
-  REDUCED_MOTION_TRANSITION_CONFIG 
+  REDUCED_MOTION_TRANSITION_CONFIG,
 } from './constants';
 import { mergeRefs } from './utils';
 import { styles } from './styles';
@@ -53,10 +53,15 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
         // Sử dụng transition phù hợp với trạng thái reduced motion
         animate={{
           y: initialY,
-          transition: reduceMotion ? REDUCED_MOTION_TRANSITION_CONFIG : animationOptions
+          transition: reduceMotion 
+            ? REDUCED_MOTION_TRANSITION_CONFIG 
+            : animationOptions,
         }}
         // Giữ exit animation bình thường
-        exit={{ ...SHEET_POSITIONS.EXIT(windowHeight), transition: animationOptions }}
+        exit={{
+          ...SHEET_POSITIONS.EXIT(windowHeight),
+          transition: animationOptions,
+        }}
         onAnimationComplete={handleAnimationComplete}
       >
         {children}

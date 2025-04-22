@@ -15,7 +15,7 @@ export const REDUCED_MOTION_TWEEN_CONFIG = {
 
 // Cấu hình transition cho component khi reduced motion được bật
 export const REDUCED_MOTION_TRANSITION_CONFIG = {
-  duration: 0.01
+  duration: 0.01,
 };
 
 // Cấu hình positions cho sheet
