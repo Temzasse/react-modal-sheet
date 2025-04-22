@@ -4,7 +4,11 @@ import { motion } from 'motion/react';
 import { type SheetContainerProps } from './types';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks';
-import { MAX_HEIGHT } from './constants';
+import {
+  MAX_HEIGHT,
+  SHEET_POSITIONS,
+  REDUCED_MOTION_TRANSITION_CONFIG 
+} from './constants';
 import { mergeRefs } from './utils';
 import { styles } from './styles';
 
@@ -44,9 +48,15 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
           ...(detent === 'content-height' && { maxHeight: height }),
           y,
         }}
-        initial={reduceMotion ? false : { y: windowHeight }}
-        animate={{ y: initialY, transition: animationOptions }}
-        exit={{ y: windowHeight, transition: animationOptions }}
+        // Sử dụng các hằng số để đảm bảo sheet luôn xuất hiện từ dưới lên
+        initial={SHEET_POSITIONS.INITIAL(windowHeight)}
+        // Sử dụng transition phù hợp với trạng thái reduced motion
+        animate={{
+          y: initialY,
+          transition: reduceMotion ? REDUCED_MOTION_TRANSITION_CONFIG : animationOptions
+        }}
+        // Giữ exit animation bình thường
+        exit={{ ...SHEET_POSITIONS.EXIT(windowHeight), transition: animationOptions }}
         onAnimationComplete={handleAnimationComplete}
       >
         {children}
