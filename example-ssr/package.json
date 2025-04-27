@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "motion": "11.15.0",
+    "motion": "12.9.2",
     "next": "15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-modal-sheet": "file:.yalc/react-modal-sheet",
-    "styled-components": "6.1.11"
+    "styled-components": "6.1.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.2.0",
@@ -23,6 +23,6 @@
     "@types/react-dom": "^19",
     "eslint": "9.17.0",
     "eslint-config-next": "15.1.2",
-    "typescript": "5.7.2"
+    "typescript": "5.8.3"
   }
 }
