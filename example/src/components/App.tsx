@@ -7,6 +7,7 @@ import {
   FaLock as LockIcon,
   FaKeyboard as KeyboardIcon,
   FaMoon as MoonIcon,
+  FaWalking,
 } from 'react-icons/fa';
 
 import {
@@ -27,6 +28,7 @@ import { ScrollableSnapPoints } from './ScrollableSnapPoints';
 import { ContentHeight } from './ContentHeight';
 import { AvoidKeyboard } from './AvoidKeyboard';
 import { ShadowDOM } from './ShadowDOM';
+import { ReducedMotion } from './ReducedMotion';
 
 export function App() {
   return (
@@ -115,6 +117,14 @@ export function App() {
           }
         />
         <Route
+          path="reduced-motion/*"
+          element={
+            <Screen>
+              <ReducedMotion />
+            </Screen>
+          }
+        />
+        <Route
           path="shadow-dom/*"
           element={
             <Screen>
@@ -190,6 +200,13 @@ const ExampleSelector = () => {
         <ExampleLink to="a11y">
           <A11yIcon size={48} />
           <span>Accessible Sheet</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="reduced-motion">
+          <FaWalking size={48} />
+          <span>Reduced Motion</span>
         </ExampleLink>
       </li>
 

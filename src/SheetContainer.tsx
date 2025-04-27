@@ -20,7 +20,6 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
       windowHeight,
       detent,
       animationOptions,
-      reduceMotion,
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
@@ -44,7 +43,7 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
           ...(detent === 'content-height' && { maxHeight: height }),
           y,
         }}
-        initial={reduceMotion ? false : { y: windowHeight }}
+        initial={{ y: windowHeight }}
         animate={{ y: initialY, transition: animationOptions }}
         exit={{ y: windowHeight, transition: animationOptions }}
         onAnimationComplete={handleAnimationComplete}
