@@ -2,6 +2,6 @@
   "extends": ["../biome.json"],
   "files": {
     "ignore": ["dist"],
-    "include": ["src"]
+    "include": ["src", "index.html", "vite.config.mts"]
   }
 }

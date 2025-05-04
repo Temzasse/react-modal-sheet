@@ -13,7 +13,8 @@
     "format:check": "biome format ./src",
     "format:write": "biome format --write ./src",
     "lint:check": "biome lint --error-on-warnings ./src",
-    "lint:write": "biome lint --error-on-warnings  --write ./src"
+    "lint:write": "biome lint --error-on-warnings  --write ./src",
+    "generate:pwa": "pwa-assets-generator --preset minimal public/favicon.svg"
   },
   "dependencies": {
     "motion": "12.9.2",
@@ -29,10 +30,12 @@
   "devDependencies": {
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
+    "@vite-pwa/assets-generator": "1.0.0",
     "@vitejs/plugin-react": "4.4.1",
     "gh-pages": "6.3.0",
     "typescript": "5.8.3",
     "vite": "6.3.3",
+    "vite-plugin-pwa": "1.0.0",
     "vite-plugin-restart": "0.4.2"
   }
 }

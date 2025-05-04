@@ -1,5 +1,24 @@
+:root {
+  --vh: 1vh;
+}
+
+/* Support the new `dvh` unit so that dynamically shrinking iOS Safari UI works */
+@supports (height: 1dvh) {
+  :root {
+    --vh: 1dvh;
+  }
+}
+
+/* However when the app is installed as PWA use the `vh` unit to avoid weird layout issues */
+@media all and (display-mode: standalone) {
+  :root {
+    --vh: 1vh;
+  }
+}
+
 html {
   background-color: #fff;
+  height: 100%;
 }
 
 body {
@@ -12,18 +31,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   overflow: hidden;
   background-color: #000;
-
-  @supports (-webkit-touch-callout: none) {
-    height: -webkit-fill-available;
-  }
+  height: 100%;
+  min-height: calc(100 * var(--vh));
 }
 
 button,

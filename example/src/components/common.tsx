@@ -34,6 +34,7 @@ export const Screen = styled.div`
   background-color: #fff;
   width: 100%;
   min-height: 100%;
+  padding-top: env(safe-area-inset-top);
 `;
 
 export const ScrollView = styled.div`
