@@ -22,18 +22,15 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
 
+    const height = detent === 'full-height' ? MAX_HEIGHT : undefined;
+    const maxHeight = detent === 'content-height' ? MAX_HEIGHT : undefined;
+
     return (
       <motion.div
         {...rest}
         ref={mergeRefs([sheetRef, ref])}
         className={`react-modal-sheet-container ${className}`}
-        style={{
-          ...styles.container,
-          ...style,
-          ...(detent === 'full-height' && { height: MAX_HEIGHT }),
-          ...(detent === 'content-height' && { maxHeight: MAX_HEIGHT }),
-          y,
-        }}
+        style={{ ...styles.container, height, maxHeight, ...style, y }}
         initial={{ y: windowHeight }}
         exit={{ y: windowHeight, transition: animationOptions }}
         onAnimationComplete={handleAnimationComplete}

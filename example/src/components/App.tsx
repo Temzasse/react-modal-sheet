@@ -8,6 +8,7 @@ import {
   FaKeyboard as KeyboardIcon,
   FaMoon as MoonIcon,
   FaWalking,
+  FaMobile,
 } from 'react-icons/fa';
 
 import {
@@ -29,6 +30,7 @@ import { ContentHeight } from './ContentHeight';
 import { AvoidKeyboard } from './AvoidKeyboard';
 import { ShadowDOM } from './ShadowDOM';
 import { ReducedMotion } from './ReducedMotion';
+import { FullScreen } from './FullScreen';
 
 export function App() {
   return (
@@ -124,6 +126,14 @@ export function App() {
             </Screen>
           }
         />
+         <Route
+          path="full-screen/*"
+          element={
+            <Screen>
+              <FullScreen />
+            </Screen>
+          }
+        />
         <Route
           path="shadow-dom/*"
           element={
@@ -209,6 +219,14 @@ const ExampleSelector = () => {
           <span>Reduced Motion</span>
         </ExampleLink>
       </li>
+
+      <li>
+        <ExampleLink to="full-screen">
+          <FaMobile size={48} />
+          <span>Full screen</span>
+        </ExampleLink>
+      </li>
+
 
       <li>
         <ExampleLink to="shadow-dom">

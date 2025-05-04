@@ -10,11 +10,11 @@ export const SheetContext = createContext<SheetContextType | undefined>(
   undefined
 );
 
-export const useSheetContext = () => {
+export function useSheetContext() {
   const context = useContext(SheetContext);
   if (!context) throw new Error('Sheet context error');
   return context;
-};
+}
 
 export const SheetScrollerContext = createContext<
   SheetScrollerContextType | undefined
@@ -45,8 +45,8 @@ export function SheetScrollerContextProvider({
   );
 }
 
-export const useSheetScrollerContext = () => {
+export function useSheetScrollerContext() {
   const context = useContext(SheetScrollerContext);
   if (!context) throw new Error('Sheet scroller context error');
   return context;
-};
+}

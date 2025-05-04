@@ -4,6 +4,7 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import { Button } from './common';
 import { ExampleLayout } from './ExampleLayout';
+import { BoxList } from './BoxList';
 
 const snapPoints = [-50, 0.5, 200, 0];
 const initialSnap = 1;
@@ -29,7 +30,7 @@ export function ScrollableSnapPoints() {
             <Sheet.Header />
             <Sheet.Content style={{ paddingBottom: sheetRef.current?.y }}>
               <Sheet.Scroller draggableAt="both">
-                <BoxList>
+                <Content>
                   <Controls>
                     <Button onPress={() => snapTo(0)}>
                       Snap to -50 (from top)
@@ -38,13 +39,9 @@ export function ScrollableSnapPoints() {
                     <Button onPress={() => snapTo(2)}>Snap to 200</Button>
                     <Button onPress={() => snapTo(3)}>Snap to 0 (close)</Button>
                   </Controls>
+                </Content>
 
-                  {Array.from({ length: 20 })
-                    .fill(1)
-                    .map((_, i) => (
-                      <Box key={i}>{i + 1}</Box>
-                    ))}
-                </BoxList>
+                <BoxList count={20} />
               </Sheet.Scroller>
             </Sheet.Content>
           </Sheet.Container>
@@ -55,33 +52,16 @@ export function ScrollableSnapPoints() {
   );
 }
 
-const BoxList = styled.div`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 16px;
   padding: 16px;
-  padding-top: 0px;
-`;
-
-const Box = styled.div`
-  background-color: #eee;
-  border-radius: 12px;
-  min-height: 200px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 24px;
-
-  &:last-of-type {
-    margin-bottom: 0px;
-  }
 `;
 
 const Controls = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 24px;
   gap: 16px;
 `;

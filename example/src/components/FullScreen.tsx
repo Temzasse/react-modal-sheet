@@ -1,27 +1,32 @@
+import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
 
 import { ExampleLayout } from './ExampleLayout';
 import { BoxList } from './BoxList';
 
-export function Scrollable() {
+export function FullScreen() {
   return (
     <ExampleLayout
-      title="Scrollable"
-      description="Sheet that has scrollable content inside it."
+      title="FullScreen"
+      description="Sheet that fills the entire screen."
     >
       {({ isOpen, close }) => (
         <Sheet isOpen={isOpen} onClose={close}>
-          <Sheet.Container>
+          <SheetContainer>
             <Sheet.Header />
             <Sheet.Content>
               <Sheet.Scroller>
                 <BoxList count={50} />
               </Sheet.Scroller>
             </Sheet.Content>
-          </Sheet.Container>
-          <Sheet.Backdrop />
+          </SheetContainer>
         </Sheet>
       )}
     </ExampleLayout>
   );
 }
+
+const SheetContainer = styled(Sheet.Container)`
+  height: 100vh !important;
+  border-radius: 0 !important;
+`;
