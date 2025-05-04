@@ -5,6 +5,7 @@ import {
   type MutableRefObject,
   type ReactNode,
   type RefAttributes,
+  type RefObject,
 } from 'react';
 
 import {
@@ -98,13 +99,12 @@ export interface SheetDragProps {
 
 export interface SheetContextType {
   y: MotionValue<any>;
-  sheetRef: MutableRefObject<any>;
+  sheetRef: RefObject<any>;
   isOpen: boolean;
-  snapPoints: SheetProps['snapPoints'];
   detent: SheetDetent;
   initialSnap: SheetProps['initialSnap'];
   indicatorRotation: MotionValue<number>;
-  callbacks: MutableRefObject<SheetEvents>;
+  callbacks: RefObject<SheetEvents>;
   dragProps?: SheetDragProps;
   windowHeight: number;
   animationOptions: Transition;

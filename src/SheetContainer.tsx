@@ -9,13 +9,11 @@ import { mergeRefs } from './utils';
 import { styles } from './styles';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
-  ({ children, style = {}, className = '', ...rest }, ref) => {
+  ({ children, style, className = '', ...rest }, ref) => {
     const {
       y,
       isOpen,
       callbacks,
-      snapPoints,
-      initialSnap = 0,
       sheetRef,
       windowHeight,
       detent,
@@ -23,13 +21,6 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
     } = useSheetContext();
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
-    const initialY = snapPoints ? snapPoints[0] - snapPoints[initialSnap] : 0;
-    const maxSnapHeight = snapPoints ? snapPoints[0] : null;
-
-    const height =
-      maxSnapHeight !== null
-        ? `min(${maxSnapHeight}px, ${MAX_HEIGHT})`
-        : MAX_HEIGHT;
 
     return (
       <motion.div
@@ -39,12 +30,11 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
         style={{
           ...styles.container,
           ...style,
-          ...(detent === 'full-height' && { height }),
-          ...(detent === 'content-height' && { maxHeight: height }),
+          ...(detent === 'full-height' && { height: MAX_HEIGHT }),
+          ...(detent === 'content-height' && { maxHeight: MAX_HEIGHT }),
           y,
         }}
         initial={{ y: windowHeight }}
-        animate={{ y: initialY, transition: animationOptions }}
         exit={{ y: windowHeight, transition: animationOptions }}
         onAnimationComplete={handleAnimationComplete}
       >

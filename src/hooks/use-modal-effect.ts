@@ -1,33 +1,24 @@
 import { transform, type MotionValue } from 'motion';
-import { useEffect, useRef, type RefObject } from 'react';
+import { type RefObject } from 'react';
 
-import { IS_SSR } from '../constants';
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 import { useSafeAreaInsets } from './use-safe-area-insets';
+import { getSheetHeight, getSnapPoints } from '../utils';
 
 export function useModalEffect({
   y,
   rootId,
   sheetRef,
-  snapPoints,
+  snapPointsProp,
   startThreshold,
 }: {
   y: MotionValue<number>;
   rootId?: string;
   sheetRef: RefObject<HTMLDivElement | null>;
-  snapPoints?: number[];
+  snapPointsProp?: number[];
   startThreshold?: number;
 }) {
-  const heightRef = useRef(IS_SSR ? 0 : window.innerHeight);
   const insetTop = useSafeAreaInsets().top;
-
-  /**
-   * Start the effect only if we have dragged over the second snap point
-   * to make the effect more natural as the sheet will reach it's final
-   * position when the user drags it over the second snap point.
-   */
-  const snapThresholdPoint =
-    snapPoints && snapPoints.length > 1 ? snapPoints[1] : undefined;
 
   // Cleanup on unmount
   useIsomorphicLayoutEffect(() => {
@@ -36,22 +27,21 @@ export function useModalEffect({
     };
   }, []);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!rootId) return;
 
     const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
     if (!root) return;
 
-    function onCompleted() {
-      // -5 just to take into account some inprecision to ensure the cleanup is done
-      if (y.get() - 5 >= heightRef.current) {
-        // biome-ignore lint/style/noNonNullAssertion: root is always defined here
-        cleanupModalEffect(rootId!);
-      }
-    }
+    let sheetHeight = 0;
 
     const removeStartListener = y.on('animationStart', () => {
-      heightRef.current = sheetRef.current?.offsetHeight || window.innerHeight;
+      /**
+       * Only calculate the sheet height when the animation starts to avoid
+       * unnecessary layout calculations when y value changes.
+       */
+      sheetHeight = getSheetHeight(sheetRef);
+
       // biome-ignore lint/style/noNonNullAssertion: root is always defined here
       setupModalEffect(rootId!);
     });
@@ -63,10 +53,19 @@ export function useModalEffect({
     const removeChangeListener = y.on('change', (yValue) => {
       if (!root) return;
 
-      const sheetHeight = heightRef.current;
-      const pageWidth = window.innerWidth;
-
       let progress = Math.max(0, 1 - yValue / sheetHeight);
+
+      const snapPoints = snapPointsProp
+        ? getSnapPoints({ snapPointsProp, sheetHeight })
+        : undefined;
+
+      /**
+       * Start the effect only if we have dragged over the second snap point
+       * to make the effect more natural as the sheet will reach it's final
+       * position when the user drags it over the second snap point.
+       */
+      const snapThresholdPoint =
+        snapPoints && snapPoints.length > 1 ? snapPoints[1] : undefined;
 
       /**
        * If we have snap points, we need to calculate the progress percentage
@@ -75,12 +74,11 @@ export function useModalEffect({
        * and its end is different.
        */
       if (snapThresholdPoint !== undefined) {
-        const snapThresholdPointValue =
+        const snapThresholdValue =
           sheetHeight - Math.min(snapThresholdPoint, sheetHeight);
 
-        if (yValue <= snapThresholdPointValue) {
-          progress =
-            (snapThresholdPointValue - yValue) / snapThresholdPointValue;
+        if (yValue <= snapThresholdValue) {
+          progress = (snapThresholdValue - yValue) / snapThresholdValue;
         } else {
           progress = 0;
         }
@@ -107,6 +105,7 @@ export function useModalEffect({
       // Make sure progress is between 0 and 1
       progress = Math.max(0, Math.min(1, progress));
 
+      const pageWidth = window.innerWidth;
       const ty = transform(progress, [0, 1], [0, 24 + insetTop]);
       const s = transform(progress, [0, 1], [1, (pageWidth - 16) / pageWidth]);
       const borderRadius = transform(progress, [0, 1], [0, 10]);
@@ -115,6 +114,14 @@ export function useModalEffect({
       root.style.borderTopRightRadius = `${borderRadius}px`;
       root.style.borderTopLeftRadius = `${borderRadius}px`;
     });
+
+    function onCompleted() {
+      // -5 just to take into account some inprecision to ensure the cleanup is done
+      if (y.get() - 5 >= sheetHeight) {
+        // biome-ignore lint/style/noNonNullAssertion: root is always defined here
+        cleanupModalEffect(rootId!);
+      }
+    }
 
     const removeCompleteListener = y.on('animationComplete', onCompleted);
     const removeCancelListener = y.on('animationCancel', onCompleted);
@@ -125,7 +132,7 @@ export function useModalEffect({
       removeCompleteListener();
       removeCancelListener();
     };
-  }, [y, rootId, insetTop, startThreshold, snapThresholdPoint]);
+  }, [y, rootId, insetTop, startThreshold, snapPointsProp]);
 }
 
 function setupModalEffect(rootId: string) {

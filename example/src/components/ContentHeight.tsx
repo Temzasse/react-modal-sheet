@@ -5,6 +5,8 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { Button } from './common';
 import { ExampleLayout } from './ExampleLayout';
 
+const snapPoints = [1, 200, 0];
+
 export function ContentHeight() {
   const [boxes, setBoxes] = useState(2);
   const sheetRef = useRef<SheetRef>(null);
@@ -21,7 +23,7 @@ export function ContentHeight() {
           isOpen={isOpen}
           onClose={close}
           initialSnap={0}
-          snapPoints={[-50, 100, 0]}
+          snapPoints={snapPoints}
           detent="content-height"
         >
           <Sheet.Container layout>

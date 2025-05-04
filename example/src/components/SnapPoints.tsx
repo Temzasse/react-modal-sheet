@@ -5,7 +5,7 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { Button } from './common';
 import { ExampleLayout } from './ExampleLayout';
 
-const snapPoints = [1, 0.5, 200, 0];
+const snapPoints = [1, -300, 0.3, 0];
 const initialSnap = 1; // Initial snap point when sheet is opened
 
 export function SnapPoints() {
@@ -34,11 +34,11 @@ export function SnapPoints() {
             <Sheet.Content>
               <SheetContentWrapper>
                 <Controls>
-                  <Button onPress={() => snapTo(0)}>
-                    Snap to -50 (from top)
+                  <Button onPress={() => snapTo(0)}>Snap to top</Button>
+                  <Button onPress={() => snapTo(1)}>
+                    Snap to -300px from top
                   </Button>
-                  <Button onPress={() => snapTo(1)}>Snap to 50%</Button>
-                  <Button onPress={() => snapTo(2)}>Snap to 200</Button>
+                  <Button onPress={() => snapTo(2)}>Snap to 30%</Button>
                   <Button onPress={() => snapTo(3)}>Snap to 0 (close)</Button>
                 </Controls>
               </SheetContentWrapper>

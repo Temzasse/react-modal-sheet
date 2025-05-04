@@ -1,3 +1,5 @@
+import { createPortal } from 'react-dom';
+
 import React, {
   Children,
   cloneElement,
@@ -7,8 +9,6 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-
-import { createPortal } from 'react-dom';
 
 import {
   animate,
@@ -29,9 +29,16 @@ import {
   IS_SSR,
 } from './constants';
 
+import {
+  getClosest,
+  getSheetHeight,
+  getSnapY,
+  getSnapPoints,
+  validateSnapTo,
+} from './utils';
+
 import { type SheetContextType, type SheetProps } from './types';
 import { SheetScrollerContextProvider, SheetContext } from './context';
-import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
 import { styles } from './styles';
 import { useModalEffect } from './hooks/use-modal-effect';
 import { useDimensions } from './hooks/use-dimensions';
@@ -109,27 +116,6 @@ export const Sheet = forwardRef<any, SheetProps>(
       };
     });
 
-    let snapPoints: number[] | undefined = snapPointsProp;
-
-    if (snapPoints) {
-      // Convert negative / percentage snap points to absolute values
-      snapPoints = snapPoints.map((point) => {
-        // Percentage values e.g. between 0.0 and 1.0
-        if (point > 0 && point <= 1) return Math.round(point * windowHeight);
-        // TODO: should we take safe area inset top into account for negative values?
-        console.log('Height inner', window.innerHeight);
-        console.log('Height outer', window.outerHeight);
-        return point < 0 ? windowHeight + point : point; // negative values
-      });
-
-      console.assert(
-        inDescendingOrder(snapPoints) || windowHeight === 0,
-        `Snap points need to be in descending order got: [${snapPoints.join(
-          ', '
-        )}]`
-      );
-    }
-
     const onDrag = useStableCallback((_, { delta }: PanInfo) => {
       // Update drag indicator rotation based on drag velocity
       const velocity = y.getVelocity();
@@ -162,46 +148,49 @@ export const Sheet = forwardRef<any, SheetProps>(
         // User flicked the sheet down
         onClose();
       } else {
-        // biome-ignore lint/style/noNonNullAssertion: ref should be defined here
-        const sheetHeight = sheetRef.current!.getBoundingClientRect().height;
+        const sheetHeight = getSheetHeight(sheetRef);
         const currentY = y.get();
 
-        let snapTo = 0;
+        let yTo = 0;
+
+        const snapPoints = snapPointsProp
+          ? getSnapPoints({ snapPointsProp, sheetHeight })
+          : undefined;
 
         if (snapPoints) {
-          const snapToValues = snapPoints.map(
+          // Inverse values are the values that can be passed to `animate`
+          const snapInverse = snapPoints.map(
             (p) => sheetHeight - Math.min(p, sheetHeight)
           );
 
           // Allow snapping to the top of the sheet if detent is set to `content-height`
-          if (detent === 'content-height' && !snapToValues.includes(0)) {
-            snapToValues.unshift(0);
+          if (detent === 'content-height' && !snapInverse.includes(0)) {
+            snapInverse.unshift(0);
           }
 
           // Get the closest snap point
-          snapTo = getClosest(snapToValues, currentY);
+          const snapTo = getClosest(snapInverse, currentY);
+          const snapIndex = snapInverse.indexOf(snapTo);
+
+          yTo = validateSnapTo({
+            snapTo: getClosest(snapInverse, currentY),
+            sheetHeight,
+          });
+
+          // This happens before calling `animate` but it doesn't really matter
+          onSnap?.(snapIndex);
         } else if (currentY / sheetHeight > dragCloseThreshold) {
           // Close if dragged over enough far
-          snapTo = sheetHeight;
+          yTo = sheetHeight;
         }
-
-        snapTo = validateSnapTo({ snapTo, sheetHeight });
 
         // Update the spring value so that the sheet is animated to the snap point
-        animate(y, snapTo, animationOptions);
+        animate(y, yTo, animationOptions);
 
-        if (snapPoints && onSnap) {
-          const snapValue = Math.abs(Math.round(snapPoints[0] - snapTo));
-          const snapIndex = snapPoints.indexOf(
-            getClosest(snapPoints, snapValue)
-          );
-          onSnap(snapIndex);
+        // +1px for imprecision tolerance
+        if (yTo + 1 >= sheetHeight) {
+          onClose();
         }
-
-        const roundedSheetHeight = Math.round(sheetHeight);
-        const shouldClose = snapTo + 2 >= roundedSheetHeight; // 2px tolerance
-
-        if (shouldClose) onClose();
       }
 
       // Reset indicator rotation after dragging
@@ -210,27 +199,51 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     // Trigger onSnap callback when sheet is opened or closed
     useEffect(() => {
-      if (!snapPoints || !onSnap) return;
-      const snapIndex = isOpen ? initialSnap : snapPoints.length - 1;
-      onSnap(snapIndex);
+      if (snapPointsProp && onSnap) {
+        onSnap(isOpen ? initialSnap : snapPointsProp.length - 1);
+      }
+    }, [isOpen]);
+
+    // Animate the sheet open
+    useEffect(() => {
+      if (!isOpen) return; // let `AnimatePresence` handle the exit animation
+
+      let yTo = 0;
+
+      if (snapPointsProp) {
+        const snapIndex = initialSnap;
+        const sheetHeight = getSheetHeight(sheetRef);
+        const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
+        const ySnap = getSnapY({ sheetHeight, snapPoints, snapIndex });
+
+        if (ySnap !== null) {
+          yTo = ySnap;
+        }
+      }
+
+      animate(y, yTo, animationOptions);
     }, [isOpen]);
 
     useImperativeHandle(ref, () => ({
       y,
       snapTo: (snapIndex: number) => {
-        const sheetEl = sheetRef.current;
+        if (!snapPointsProp) {
+          console.warn('Snapping is not possible without `snapPoints` prop.');
+          return;
+        }
 
-        if (snapPoints?.[snapIndex] !== undefined && sheetEl) {
-          const sheetHeight = sheetEl.getBoundingClientRect().height;
-          const snapPoint = snapPoints[snapIndex];
-          const snapTo = validateSnapTo({
-            snapTo: sheetHeight - snapPoint,
-            sheetHeight,
-          });
+        const sheetHeight = getSheetHeight(sheetRef);
+        const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
+        const ySnap = getSnapY({ sheetHeight, snapPoints, snapIndex });
 
-          animate(y, snapTo, animationOptions);
-          if (onSnap) onSnap(snapIndex);
-          if (snapTo >= sheetHeight) onClose();
+        if (ySnap !== null) {
+          animate(y, ySnap, animationOptions);
+          onSnap?.(snapIndex);
+
+          // +1px for imprecision tolerance
+          if (ySnap + 1 >= sheetHeight) {
+            onClose();
+          }
         }
       },
     }));
@@ -244,14 +257,16 @@ export const Sheet = forwardRef<any, SheetProps>(
     useModalEffect({
       y,
       sheetRef,
-      snapPoints,
+      snapPointsProp,
       rootId: rootId || modalEffectRootId,
       startThreshold: modalEffectThreshold,
     });
 
     // Motion should handle body scroll locking but it's not working
     // properly on iOS. Scroll locking from React Aria seems to work much better.
-    usePreventScroll({ isDisabled: disableScrollLocking || !isOpen });
+    usePreventScroll({
+      isDisabled: disableScrollLocking || !isOpen,
+    });
 
     const dragProps = useMemo(() => {
       const dragProps: SheetContextType['dragProps'] = {
@@ -272,7 +287,6 @@ export const Sheet = forwardRef<any, SheetProps>(
       sheetRef,
       isOpen,
       initialSnap,
-      snapPoints,
       detent,
       indicatorRotation,
       callbacks,

@@ -18,7 +18,7 @@ export const styles: Record<string, Properties> = {
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    touchAction: 'none', // Disable iOS body scrolling
+    touchAction: 'none',
     border: 'none',
     WebkitTapHighlightColor: 'transparent',
   },
