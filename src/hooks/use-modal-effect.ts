@@ -1,18 +1,9 @@
-import {
-  type RefObject,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { transform, type MotionValue } from 'motion';
+import { useEffect, useRef, type RefObject } from 'react';
 
-import { type MotionValue, type BoundingBox, transform } from 'motion/react';
-
-import { IS_SSR } from './constants';
-import { type SheetEvents } from './types';
-
-export const useIsomorphicLayoutEffect = IS_SSR ? useEffect : useLayoutEffect;
+import { IS_SSR } from '../constants';
+import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
+import { useSafeAreaInsets } from './use-safe-area-insets';
 
 export function useModalEffect({
   y,
@@ -28,7 +19,7 @@ export function useModalEffect({
   startThreshold?: number;
 }) {
   const heightRef = useRef(IS_SSR ? 0 : window.innerHeight);
-  const insetTop = useSafeAreaInsetTop();
+  const insetTop = useSafeAreaInsets().top;
 
   /**
    * Start the effect only if we have dragged over the second snap point
@@ -137,30 +128,6 @@ export function useModalEffect({
   }, [y, rootId, insetTop, startThreshold, snapThresholdPoint]);
 }
 
-function useSafeAreaInsetTop() {
-  const [safeAreaInsetTop] = useState(() => {
-    if (IS_SSR) return 0;
-
-    const root = document.querySelector<HTMLElement>(':root');
-    if (!root) return 0;
-
-    root.style.setProperty('--rms-sat', 'env(safe-area-inset-top)');
-
-    const safeAreaInsetTopStr = getComputedStyle(root)
-      .getPropertyValue('--rms-sat')
-      .replace('px', '')
-      .trim();
-
-    const safeAreaInsetTop = parseInt(safeAreaInsetTopStr, 10) || 0;
-
-    root.style.removeProperty('--rms-sat');
-
-    return safeAreaInsetTop;
-  });
-
-  return safeAreaInsetTop;
-}
-
 function setupModalEffect(rootId: string) {
   const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
   const body = document.querySelector('body') as HTMLBodyElement;
@@ -188,97 +155,4 @@ function cleanupModalEffect(rootId: string) {
   root.style.removeProperty('transform');
   root.style.removeProperty('border-top-right-radius');
   root.style.removeProperty('border-top-left-radius');
-}
-
-export function useEventCallbacks(
-  isOpen: boolean,
-  callbacks: RefObject<SheetEvents>
-) {
-  const prevOpen = usePrevious(isOpen);
-  const didOpen = useRef(false);
-
-  // Because of AnimatePrecence we don't have access to latest isOpen value
-  // so we need to read and write to a ref to determine if we are
-  // opening or closing the sheet
-  const handleAnimationComplete = useCallback(() => {
-    if (!didOpen.current) {
-      callbacks.current.onOpenEnd?.();
-      didOpen.current = true;
-    } else {
-      callbacks.current.onCloseEnd?.();
-      didOpen.current = false;
-    }
-  }, [isOpen, prevOpen]);
-
-  useEffect(() => {
-    if (!prevOpen && isOpen) {
-      callbacks.current.onOpenStart?.();
-    } else if (!isOpen && prevOpen) {
-      callbacks.current.onCloseStart?.();
-    }
-  }, [isOpen, prevOpen]);
-
-  return { handleAnimationComplete };
-}
-
-export function useDimensions() {
-  const [dimensions, setDimensions] = useState(() => ({
-    height: !IS_SSR ? window.innerHeight : 0,
-    width: !IS_SSR ? window.innerWidth : 0,
-  }));
-
-  useIsomorphicLayoutEffect(() => {
-    function handler() {
-      setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth,
-      });
-    }
-
-    handler();
-
-    window.addEventListener('resize', handler);
-
-    return () => {
-      window.removeEventListener('resize', handler);
-    };
-  }, []);
-
-  return dimensions;
-}
-
-export function usePrevious<T>(state: T): T | undefined {
-  const ref = useRef<T>(undefined);
-
-  useEffect(() => {
-    ref.current = state;
-  });
-
-  return ref.current;
-}
-
-// Userland version of the `useEffectEvent` React hook:
-// RFC: https://react.dev/reference/react/experimental_useEffectEvent
-export function useEffectEvent<T extends (...args: any[]) => any>(handler: T) {
-  const handlerRef = useRef<T>(undefined);
-
-  useIsomorphicLayoutEffect(() => {
-    handlerRef.current = handler;
-  });
-
-  return useCallback((...args: any[]) => {
-    const fn = handlerRef.current;
-    return fn?.(...args);
-  }, []) as T;
-}
-
-// This is a hacky way to fix a bug in motion/react where the drag
-// constraints are not updated when window is resized.
-// https://github.com/framer/motion/issues/1659
-const constraints: BoundingBox = { bottom: 0, top: 0, left: 0, right: 0 };
-
-export function useDragConstraints() {
-  const constraintsRef = useRef<any>(null);
-  const onMeasureDragConstraints = useCallback(() => constraints, []);
-  return { constraintsRef, onMeasureDragConstraints };
 }

@@ -1,7 +1,7 @@
 // This code originates from https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/overlays/src/usePreventScroll.ts
 
-import { useIsomorphicLayoutEffect } from './hooks';
-import { isIOS } from './utils';
+import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
+import { isIOS } from '../utils';
 
 const KEYBOARD_BUFFER = 24;
 

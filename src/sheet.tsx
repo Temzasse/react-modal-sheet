@@ -22,13 +22,6 @@ import {
 } from 'motion/react';
 
 import {
-  useModalEffect,
-  useDimensions,
-  useIsomorphicLayoutEffect,
-  useEffectEvent,
-} from './hooks';
-
-import {
   REDUCED_MOTION_TWEEN_CONFIG,
   DEFAULT_TWEEN_CONFIG,
   DEFAULT_DRAG_CLOSE_THRESHOLD,
@@ -39,8 +32,12 @@ import {
 import { type SheetContextType, type SheetProps } from './types';
 import { SheetScrollerContextProvider, SheetContext } from './context';
 import { getClosest, inDescendingOrder, validateSnapTo } from './utils';
-import { usePreventScroll } from './use-prevent-scroll';
 import { styles } from './styles';
+import { useModalEffect } from './hooks/use-modal-effect';
+import { useDimensions } from './hooks/use-dimensions';
+import { useIsomorphicLayoutEffect } from './hooks/use-isomorphic-layout-effect';
+import { useStableCallback } from './hooks/use-stable-callback';
+import { usePreventScroll } from './hooks/use-prevent-scroll';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
@@ -119,6 +116,9 @@ export const Sheet = forwardRef<any, SheetProps>(
       snapPoints = snapPoints.map((point) => {
         // Percentage values e.g. between 0.0 and 1.0
         if (point > 0 && point <= 1) return Math.round(point * windowHeight);
+        // TODO: should we take safe area inset top into account for negative values?
+        console.log('Height inner', window.innerHeight);
+        console.log('Height outer', window.outerHeight);
         return point < 0 ? windowHeight + point : point; // negative values
       });
 
@@ -130,7 +130,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       );
     }
 
-    const onDrag = useEffectEvent((_, { delta }: PanInfo) => {
+    const onDrag = useStableCallback((_, { delta }: PanInfo) => {
       // Update drag indicator rotation based on drag velocity
       const velocity = y.getVelocity();
 
@@ -141,7 +141,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       y.set(Math.max(y.get() + delta.y, 0));
     });
 
-    const onDragStart = useEffectEvent(() => {
+    const onDragStart = useStableCallback(() => {
       // Find focused input inside the sheet and blur it when dragging starts
       // to prevent a weird ghost caret "bug" on mobile
       const focusedElement = document.activeElement as HTMLElement | null;
@@ -157,7 +157,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       }
     });
 
-    const onDragEnd = useEffectEvent((_, { velocity }: PanInfo) => {
+    const onDragEnd = useStableCallback((_, { velocity }: PanInfo) => {
       if (velocity.y > dragVelocityThreshold) {
         // User flicked the sheet down
         onClose();

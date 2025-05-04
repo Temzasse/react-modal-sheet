@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 
 import { type SheetContainerProps } from './types';
 import { useSheetContext } from './context';
-import { useEventCallbacks } from './hooks';
+import { useEventCallbacks } from './hooks/use-event-callbacks';
 import { MAX_HEIGHT } from './constants';
 import { mergeRefs } from './utils';
 import { styles } from './styles';

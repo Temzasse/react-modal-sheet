@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 
 import { type SheetDraggableProps } from './types';
 import { useSheetScrollerContext, useSheetContext } from './context';
-import { useDragConstraints } from './hooks';
+import { useDragConstraints } from './hooks/use-drag-constraints';
 import { mergeRefs } from './utils';
 import { styles } from './styles';
 
