@@ -1,5 +1,6 @@
 import './index.css';
 
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router';
 import { OverlayProvider } from 'react-aria';
@@ -19,4 +20,8 @@ function Root() {
   );
 }
 
-root.render(<Root />);
+root.render(
+  <StrictMode>
+    <Root />
+  </StrictMode>
+);
