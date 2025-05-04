@@ -28,7 +28,11 @@ export function AppleMusic() {
         onSongClick={setCurrentSong}
       />
 
-      <PlayerSheet isOpen={isPlayerOpen} onClose={closePlayer} rootId="root">
+      <PlayerSheet
+        isOpen={isPlayerOpen}
+        onClose={closePlayer}
+        modalEffectRootId="root"
+      >
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>

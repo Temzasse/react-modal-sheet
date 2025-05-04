@@ -56,6 +56,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       isOpen,
       snapPoints: snapPointsProp,
       rootId,
+      modalEffectRootId,
       mountPoint,
       style,
       detent = 'full-height',
@@ -234,11 +235,17 @@ export const Sheet = forwardRef<any, SheetProps>(
       },
     }));
 
+    if (rootId) {
+      console.warn(
+        'The `rootId` prop is deprecated and will be removed in the next major version. Use `modalEffectRootId` instead.'
+      );
+    }
+
     useModalEffect({
       y,
       sheetRef,
-      rootId,
       snapPoints,
+      rootId: rootId || modalEffectRootId,
       startThreshold: modalEffectThreshold,
     });
 

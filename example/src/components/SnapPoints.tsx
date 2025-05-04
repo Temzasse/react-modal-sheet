@@ -27,7 +27,7 @@ export function SnapPoints() {
           onSnap={setSnapPoint}
           snapPoints={snapPoints}
           initialSnap={initialSnap}
-          rootId="root"
+          modalEffectRootId="root"
         >
           <Sheet.Container>
             <Sheet.Header />

@@ -49,7 +49,7 @@ export function SlackMessage() {
           isOpen={sheetState.isOpen}
           onOpenEnd={focusInput}
           onClose={sheetState.close}
-          rootId="root"
+          modalEffectRootId="root"
         >
           <OverlayProvider>
             <FocusScope contain autoFocus={false} restoreFocus>

@@ -39,7 +39,9 @@ export type SheetProps = {
   isOpen: boolean;
   children: ReactNode;
   onClose: () => void;
+  /** @deprecated Use `modalEffectRootId` instead! */
   rootId?: string;
+  modalEffectRootId?: string;
   mountPoint?: Element;
   snapPoints?: number[];
   detent?: SheetDetent;
