@@ -18,77 +18,111 @@ export function useModalEffect({
   y,
   rootId,
   sheetRef,
+  snapPoints,
+  startThreshold,
 }: {
   y: MotionValue<number>;
   rootId?: string;
   sheetRef: RefObject<HTMLDivElement | null>;
+  snapPoints?: number[];
+  startThreshold?: number;
 }) {
   const heightRef = useRef(IS_SSR ? 0 : window.innerHeight);
+  const insetTop = useSafeAreaInsetTop();
 
-  function setup() {
-    const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
-    const body = document.querySelector('body') as HTMLBodyElement;
-    if (!root) return;
+  /**
+   * Start the effect only if we have dragged over the second snap point
+   * to make the effect more natural as the sheet will reach it's final
+   * position when the user drags it over the second snap point.
+   */
+  const snapThresholdPoint =
+    snapPoints && snapPoints.length > 1 ? snapPoints[1] : undefined;
 
-    body.style.backgroundColor = '#000';
-    root.style.overflow = 'hidden';
-    root.style.transitionTimingFunction = 'cubic-bezier(0.32, 0.72, 0, 1)';
-    root.style.transitionProperty = 'transform, border-radius';
-    root.style.transitionDuration = '0.5s';
-    root.style.transformOrigin = 'center top';
-  }
-
-  function cleanup() {
-    const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
-    const body = document.querySelector('body') as HTMLBodyElement;
-    if (!root) return;
-
-    setTimeout(() => {
-      body.style.removeProperty('background-color');
-      root.style.removeProperty('overflow');
-      root.style.removeProperty('transition-timing-function');
-      root.style.removeProperty('transition-property');
-      root.style.removeProperty('transition-duration');
-      root.style.removeProperty('transform-origin');
-      root.style.removeProperty('transform');
-      root.style.removeProperty('border-top-right-radius');
-      root.style.removeProperty('border-top-left-radius');
-    }, 100);
-  }
-
+  // Cleanup on unmount
   useIsomorphicLayoutEffect(() => {
     return () => {
-      if (rootId) cleanup();
+      if (rootId) cleanupModalEffect(rootId);
     };
   }, []);
 
   useEffect(() => {
+    if (!rootId) return;
+
     const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
     if (!root) return;
 
     function onCompleted() {
-      if (y.get() - 10 >= heightRef.current) cleanup();
+      // -5 just to take into account some inprecision to ensure the cleanup is done
+      if (y.get() - 5 >= heightRef.current) {
+        // biome-ignore lint/style/noNonNullAssertion: root is always defined here
+        cleanupModalEffect(rootId!);
+      }
     }
 
     const removeStartListener = y.on('animationStart', () => {
       heightRef.current = sheetRef.current?.offsetHeight || window.innerHeight;
-      setup();
+      // biome-ignore lint/style/noNonNullAssertion: root is always defined here
+      setupModalEffect(rootId!);
     });
 
-    const removeChangeListener = y.on('change', (value) => {
-      if (root) {
-        const progress = Math.max(0, 1 - value / heightRef.current);
-        const pageWidth = window.innerWidth;
-        const scale = (pageWidth - 16) / pageWidth;
-        const ty = transform(progress, [0, 1], [0, 24]);
-        const s = transform(progress, [0, 1], [1, scale]);
-        const borderRadius = transform(progress, [0, 1], [0, 10]);
-        const inset = 'env(safe-area-inset-top)';
+    /**
+     * NOTE: The `y` value gets smaller when the sheet is opened and larger
+     * when the sheet is being closed.
+     */
+    const removeChangeListener = y.on('change', (yValue) => {
+      if (!root) return;
 
-        root.style.transform = `scale(${s}) translate3d(0, calc(${inset} + ${ty}px), 0)`; // prettier-ignore
-        root.style.borderTopRightRadius = `${borderRadius}px`;
-        root.style.borderTopLeftRadius = `${borderRadius}px`;
+      const sheetHeight = heightRef.current;
+      const pageWidth = window.innerWidth;
+
+      let progress = Math.max(0, 1 - yValue / sheetHeight);
+
+      /**
+       * If we have snap points, we need to calculate the progress percentage
+       * based on the snap point threshold. Note that the maximum value is also
+       * different in this case as the range between the start of the effect
+       * and its end is different.
+       */
+      if (snapThresholdPoint !== undefined) {
+        const snapThresholdPointValue =
+          sheetHeight - Math.min(snapThresholdPoint, sheetHeight);
+
+        if (yValue <= snapThresholdPointValue) {
+          progress =
+            (snapThresholdPointValue - yValue) / snapThresholdPointValue;
+        } else {
+          progress = 0;
+        }
       }
+
+      /**
+       * If we have a start threshold, we need to calculate the progress
+       * percentage based on the start threshold (0 to 1). For example,
+       * if the start threshold is 0.5, the progress will be 0 until the sheet
+       * is dragged over 50% of the complete drag distance.
+       */
+      if (startThreshold !== undefined) {
+        const startThresholdValue =
+          sheetHeight -
+          Math.min(Math.floor(startThreshold * sheetHeight), sheetHeight);
+
+        if (yValue <= startThresholdValue) {
+          progress = (startThresholdValue - yValue) / startThresholdValue;
+        } else {
+          progress = 0;
+        }
+      }
+
+      // Make sure progress is between 0 and 1
+      progress = Math.max(0, Math.min(1, progress));
+
+      const ty = transform(progress, [0, 1], [0, 24 + insetTop]);
+      const s = transform(progress, [0, 1], [1, (pageWidth - 16) / pageWidth]);
+      const borderRadius = transform(progress, [0, 1], [0, 10]);
+
+      root.style.transform = `scale(${s}) translate3d(0, ${ty}px, 0)`;
+      root.style.borderTopRightRadius = `${borderRadius}px`;
+      root.style.borderTopLeftRadius = `${borderRadius}px`;
     });
 
     const removeCompleteListener = y.on('animationComplete', onCompleted);
@@ -100,7 +134,60 @@ export function useModalEffect({
       removeCompleteListener();
       removeCancelListener();
     };
-  }, [y, rootId]);
+  }, [y, rootId, insetTop, startThreshold, snapThresholdPoint]);
+}
+
+function useSafeAreaInsetTop() {
+  const [safeAreaInsetTop] = useState(() => {
+    if (IS_SSR) return 0;
+
+    const root = document.querySelector<HTMLElement>(':root');
+    if (!root) return 0;
+
+    root.style.setProperty('--rms-sat', 'env(safe-area-inset-top)');
+
+    const safeAreaInsetTopStr = getComputedStyle(root)
+      .getPropertyValue('--rms-sat')
+      .replace('px', '')
+      .trim();
+
+    const safeAreaInsetTop = parseInt(safeAreaInsetTopStr, 10) || 0;
+
+    root.style.removeProperty('--rms-sat');
+
+    return safeAreaInsetTop;
+  });
+
+  return safeAreaInsetTop;
+}
+
+function setupModalEffect(rootId: string) {
+  const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
+  const body = document.querySelector('body') as HTMLBodyElement;
+  if (!root) return;
+
+  body.style.backgroundColor = '#000';
+  root.style.overflow = 'hidden';
+  root.style.transitionTimingFunction = 'cubic-bezier(0.32, 0.72, 0, 1)';
+  root.style.transitionProperty = 'transform, border-radius';
+  root.style.transitionDuration = '0.5s';
+  root.style.transformOrigin = 'center top';
+}
+
+function cleanupModalEffect(rootId: string) {
+  const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
+  const body = document.querySelector('body') as HTMLBodyElement;
+  if (!root) return;
+
+  body.style.removeProperty('background-color');
+  root.style.removeProperty('overflow');
+  root.style.removeProperty('transition-timing-function');
+  root.style.removeProperty('transition-property');
+  root.style.removeProperty('transition-duration');
+  root.style.removeProperty('transform-origin');
+  root.style.removeProperty('transform');
+  root.style.removeProperty('border-top-right-radius');
+  root.style.removeProperty('border-top-left-radius');
 }
 
 export function useEventCallbacks(
@@ -135,10 +222,10 @@ export function useEventCallbacks(
 }
 
 export function useDimensions() {
-  const [dimensions, setDimensions] = useState({
+  const [dimensions, setDimensions] = useState(() => ({
     height: !IS_SSR ? window.innerHeight : 0,
     width: !IS_SSR ? window.innerWidth : 0,
-  });
+  }));
 
   useIsomorphicLayoutEffect(() => {
     function handler() {

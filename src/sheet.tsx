@@ -65,6 +65,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       tweenConfig = DEFAULT_TWEEN_CONFIG,
       dragVelocityThreshold = DEFAULT_DRAG_VELOCITY_THRESHOLD,
       dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
+      modalEffectThreshold,
       ...rest
     },
     ref
@@ -235,11 +236,13 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     useModalEffect({
       y,
-      rootId,
       sheetRef,
+      rootId,
+      snapPoints,
+      startThreshold: modalEffectThreshold,
     });
 
-    // Framer Motion should handle body scroll locking but it's not working
+    // Motion should handle body scroll locking but it's not working
     // properly on iOS. Scroll locking from React Aria seems to work much better.
     usePreventScroll({ isDisabled: disableScrollLocking || !isOpen });
 
