@@ -30,15 +30,18 @@ export function ScrollableSnapPoints() {
         >
           <Sheet.Container>
             <Sheet.Header />
-            <Sheet.Content style={{ paddingBottom: sheetRef.current?.y }}>
+            <Sheet.Content>
               <Sheet.Scroller
+                autoPadding
                 draggableAt="top"
                 disableScroll={currentSnap !== 0}
               >
                 <Content>
                   <CurrentSnapText>
                     <span>Current snap point: {currentSnap}</span>
-                    <span>Content is only scrollable at the upmost snap point</span>
+                    <span>
+                      Content is only scrollable at the upmost snap point
+                    </span>
                   </CurrentSnapText>
 
                   <Controls>

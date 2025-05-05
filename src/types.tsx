@@ -1,8 +1,6 @@
 import {
   type ComponentPropsWithoutRef,
   type ForwardRefExoticComponent,
-  type HTMLAttributes,
-  type MutableRefObject,
   type ReactNode,
   type RefAttributes,
   type RefObject,
@@ -31,6 +29,8 @@ type CommonProps = MotionProps & {
   className?: string;
 };
 
+type MotionDivProps = ComponentPropsWithoutRef<typeof motion.div>;
+
 export interface SheetTweenConfig {
   ease: EasingDefinition;
   duration: number;
@@ -55,7 +55,7 @@ export type SheetProps = {
   dragCloseThreshold?: number;
   modalEffectThreshold?: number;
 } & SheetEvents &
-  ComponentPropsWithoutRef<typeof motion.div>;
+  MotionDivProps;
 
 export type SheetContainerProps = Omit<
   CommonProps,
@@ -83,9 +83,10 @@ export type SheetBackdropProps = Omit<
   'initial' | 'animate' | 'exit'
 >;
 
-export type SheetScrollerProps = HTMLAttributes<HTMLDivElement> & {
+export type SheetScrollerProps = MotionDivProps & {
   draggableAt?: 'top' | 'bottom' | 'both';
   disableScroll?: boolean;
+  autoPadding?: boolean;
 };
 
 export interface SheetDragProps {

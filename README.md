@@ -159,7 +159,9 @@ The `y` value is an internal `MotionValue` that represents the distance to the t
 
 Similarly to the `snapTo` method the `y` value can be accessed via a ref.
 
-The `y` value can be useful for certain situtation eg. when you want to combine snap points with scrollable sheet content and ensure that the content stays properly scrollable in any snap point. Below you can see a simplified example of this situation and for a more detailed example take a look at the [ScrollableSnapPoints](example/components/ScrollableSnapPoints.tsx) component in the example app.
+The `y` value can be useful for certain situtations, eg. when you want to combine snap points with scrollable sheet content and ensure that the content stays properly scrollable at any snap point.
+
+Below you can see a simplified example of this situation:
 
 ```tsx
 import { Sheet, SheetRef } from 'react-modal-sheet';
@@ -201,6 +203,11 @@ function Example() {
   );
 }
 ```
+
+> [!NOTE]
+> As this use case is quite a common one, the `Sheet.Scroller` component has a built-in prop called `autoPadding` which automatically keeps the bottom padding in sync with the animated `y` value.
+>
+> See [Automatic padding with snap points](#automatic-padding-with-snap-points) for more details.
 
 ### Detents
 
@@ -280,10 +287,11 @@ Sheet scroller can be used to make the whole sheet content or parts of it scroll
 
 #### Scroller props
 
-| Name            | Required | Default | Description                                                                                                                                           |
-| --------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `draggableAt`   | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`.                |
-| `disableScroll` | no       | false   | Disable scrolling. This can be combined with snap points to make the sheet scroller only scrollable at a given snap point (usually the top position). |
+| Name            | Required | Default | Description                                                                                                                                              |
+| --------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `draggableAt`   | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`.                   |
+| `disableScroll` | no       | false   | Disable scrolling. This can be combined with snap points to make the sheet scroller only scrollable at a given snap point (usually the top position).    |
+| `autoPadding`   | no       | false   | Automatically apply padding bottom to the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point. |
 
 ### `Sheet.Backdrop`
 
@@ -373,6 +381,39 @@ function DisableScrollExample() {
   );
 }
 ```
+
+#### Automatic padding with snap points
+
+If you are using snap points and want to make sure that the content is scrollable at all snap points you can use the `autoPadding` prop on the `Sheet.Scroller` component.
+
+This will automatically apply padding to the bottom of the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point.
+
+```tsx
+import { Sheet } from 'react-modal-sheet';
+import { useState } from 'react';
+
+const snapPoints = [-50, 0.5, 0];
+const initialSnap = 1;
+
+function AutoPaddingExample() {
+  return (
+    <Sheet initialSnap={initialSnap} snapPoints={snapPoints}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>
+          <Sheet.Scroller autoPadding draggableAt="both">
+            {/*...*/}
+          </Sheet.Scroller>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+> [!NOTE]
+> For backwards compatibility the `autoPadding` prop is disabled by default but it will be enabled by default in the next major version.
 
 ### 🪟 iOS Modal View effect
 

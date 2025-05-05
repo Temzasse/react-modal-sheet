@@ -1,6 +1,7 @@
 import React, { type TouchEvent, type UIEvent, forwardRef } from 'react';
+import { motion, type MotionStyle } from 'motion/react';
 
-import { useSheetScrollerContext } from './context';
+import { useSheetContext, useSheetScrollerContext } from './context';
 import { type SheetScrollerProps } from './types';
 import { isTouchDevice } from './utils';
 import { styles } from './styles';
@@ -8,15 +9,17 @@ import { styles } from './styles';
 export const SheetScroller = forwardRef<any, SheetScrollerProps>(
   (
     {
+      autoPadding = true,
       disableScroll = false,
       draggableAt = 'top',
       children,
-      style,
+      style: styleProp,
       className = '',
       ...rest
     },
     ref
   ) => {
+    const { y } = useSheetContext();
     const { setDragEnabled, setDragDisabled } = useSheetScrollerContext();
 
     function determineDragState(element: HTMLDivElement) {
@@ -63,20 +66,29 @@ export const SheetScroller = forwardRef<any, SheetScrollerProps>(
       ? { onScroll, onTouchStart }
       : undefined;
 
+    const style: MotionStyle = {
+      ...styles.scroller,
+      ...styleProp,
+    };
+
+    if (autoPadding) {
+      style.paddingBottom = y;
+    }
+
+    if (disableScroll) {
+      style.overflowY = 'hidden';
+    }
+
     return (
-      <div
+      <motion.div
         {...rest}
         ref={ref}
         className={`react-modal-sheet-scroller ${className}`}
-        style={{
-          ...styles.scroller,
-          ...style,
-          overflowY: disableScroll ? 'hidden' : 'auto',
-        }}
+        style={style}
         {...scrollProps}
       >
         {children}
-      </div>
+      </motion.div>
     );
   }
 );

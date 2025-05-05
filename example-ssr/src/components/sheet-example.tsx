@@ -30,8 +30,8 @@ export function SheetExample() {
         <Sheet.Container>
           <Sheet.Header />
 
-          <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
-            <Sheet.Scroller draggableAt="both">
+          <Sheet.Content>
+            <Sheet.Scroller autoPadding draggableAt="both">
               <BoxList>
                 <Controls>
                   <Button onClick={() => snapTo(0)}>
@@ -52,7 +52,7 @@ export function SheetExample() {
           </Sheet.Content>
         </Sheet.Container>
 
-        <Sheet.Backdrop onTap={() => setOpen(false)} />
+        <Sheet.Backdrop onTap={close} />
       </Sheet>
     </>
   );
