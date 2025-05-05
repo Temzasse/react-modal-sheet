@@ -280,9 +280,10 @@ Sheet scroller can be used to make the whole sheet content or parts of it scroll
 
 #### Scroller props
 
-| Name          | Required | Default | Description                                                                                                                            |
-| ------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `draggableAt` | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`. |
+| Name            | Required | Default | Description                                                                                                                                           |
+| --------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `draggableAt`   | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`.                |
+| `disableScroll` | no       | false   | Disable scrolling. This can be combined with snap points to make the sheet scroller only scrollable at a given snap point (usually the top position). |
 
 ### `Sheet.Backdrop`
 
@@ -332,6 +333,39 @@ function ScrollableExample() {
         <Sheet.Header />
         <Sheet.Content>
           <Sheet.Scroller>{/*...*/}</Sheet.Scroller>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+#### Disabling scroll manually
+
+You can also disable scrolling manually by passing `disableScroll` prop to the `Sheet.Scroller` component. This can be useful if you want to have a scrollable sheet but only at a certain snap point.
+
+For example, if you have a snap point at the top of the sheet and you want to make the content scrollable only when the sheet is at that snap point, you can do the following:
+
+```tsx
+const snapPoints = [1, 0.5, 0];
+const initialSnap = 1;
+
+function DisableScrollExample() {
+  const [currentSnap, setCurrentSnap] = useState(initialSnap);
+
+  return (
+    <Sheet
+      initialSnap={initialSnap}
+      snapPoints={snapPoints}
+      onSnap={setCurrentSnap}
+    >
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>
+          <Sheet.Scroller draggableAt="top" disableScroll={currentSnap !== 0}>
+            {/*...*/}
+          </Sheet.Scroller>
         </Sheet.Content>
       </Sheet.Container>
       <Sheet.Backdrop />

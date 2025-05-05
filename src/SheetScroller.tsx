@@ -6,10 +6,29 @@ import { isTouchDevice } from './utils';
 import { styles } from './styles';
 
 export const SheetScroller = forwardRef<any, SheetScrollerProps>(
-  ({ draggableAt = 'top', children, style, className = '', ...rest }, ref) => {
-    const sheetScrollerContext = useSheetScrollerContext();
+  (
+    {
+      disableScroll = false,
+      draggableAt = 'top',
+      children,
+      style,
+      className = '',
+      ...rest
+    },
+    ref
+  ) => {
+    const { setDragEnabled, setDragDisabled } = useSheetScrollerContext();
 
     function determineDragState(element: HTMLDivElement) {
+      /**
+       * If the caller is managing the scrollability of the element,
+       * enable the dragging of the sheet content.
+       */
+      if (disableScroll) {
+        setDragEnabled();
+        return;
+      }
+
       const { scrollTop, scrollHeight, clientHeight } = element;
       const isScrollable = scrollHeight > clientHeight;
 
@@ -24,24 +43,20 @@ export const SheetScroller = forwardRef<any, SheetScrollerProps>(
         (draggableAt === 'both' && (isAtTop || isAtBottom));
 
       if (shouldEnable) {
-        sheetScrollerContext.setDragEnabled();
+        setDragEnabled();
       } else {
-        sheetScrollerContext.setDragDisabled();
+        setDragDisabled();
       }
     }
 
-    function onScroll(e: UIEvent<HTMLDivElement>) {
-      determineDragState(e.currentTarget);
-      if (rest.onScroll) {
-        rest.onScroll(e);
-      }
+    function onScroll(event: UIEvent<HTMLDivElement>) {
+      determineDragState(event.currentTarget);
+      if (rest.onScroll) rest.onScroll(event);
     }
 
-    function onTouchStart(e: TouchEvent<HTMLDivElement>) {
-      determineDragState(e.currentTarget);
-      if (rest.onTouchStart) {
-        rest.onTouchStart(e);
-      }
+    function onTouchStart(event: TouchEvent<HTMLDivElement>) {
+      determineDragState(event.currentTarget);
+      if (rest.onTouchStart) rest.onTouchStart(event);
     }
 
     const scrollProps = isTouchDevice()
@@ -53,7 +68,11 @@ export const SheetScroller = forwardRef<any, SheetScrollerProps>(
         {...rest}
         ref={ref}
         className={`react-modal-sheet-scroller ${className}`}
-        style={{ ...styles.scroller, ...style }}
+        style={{
+          ...styles.scroller,
+          ...style,
+          overflowY: disableScroll ? 'hidden' : 'auto',
+        }}
         {...scrollProps}
       >
         {children}

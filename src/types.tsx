@@ -85,6 +85,7 @@ export type SheetBackdropProps = Omit<
 
 export type SheetScrollerProps = HTMLAttributes<HTMLDivElement> & {
   draggableAt?: 'top' | 'bottom' | 'both';
+  disableScroll?: boolean;
 };
 
 export interface SheetDragProps {
