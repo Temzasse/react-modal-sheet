@@ -5,6 +5,7 @@
   "homepage": "https://temzasse.github.io/react-modal-sheet",
   "scripts": {
     "dev": "vite --force",
+    "dev:host": "vite --force --host",
     "build": "rm -rf dist && vite build --base /react-modal-sheet/",
     "preview": "vite preview --base /react-modal-sheet/",
     "predeploy": "npm run build",
