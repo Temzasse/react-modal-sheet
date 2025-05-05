@@ -20,6 +20,7 @@ export const styles: Record<string, Properties> = {
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     touchAction: 'none',
     border: 'none',
+    userSelect: 'none',
     WebkitTapHighlightColor: 'transparent',
   },
   container: {
@@ -63,5 +64,6 @@ export const styles: Record<string, Properties> = {
   scroller: {
     height: '100%',
     overflowY: 'auto',
+    overscrollBehaviorY: 'none',
   },
 };

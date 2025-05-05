@@ -1,5 +1,6 @@
 import { type ForwardedRef, type RefCallback, type RefObject } from 'react';
 import { IS_SSR } from './constants';
+import type { SheetDetent } from './types';
 
 /**
  * Get the rounded height of the sheet element and log a warning if the
@@ -43,6 +44,39 @@ export function getSnapPoints({
   );
 
   return snapPointValues;
+}
+
+export function getClosestSnapPoint({
+  snapPoints,
+  currentY,
+  sheetHeight,
+  detent,
+}: {
+  snapPoints: number[];
+  currentY: number;
+  sheetHeight: number;
+  detent?: SheetDetent;
+}) {
+  // Inverse values are the values that can be passed to `animate`
+  const snapInverse = snapPoints.map(
+    (p) => sheetHeight - Math.min(p, sheetHeight)
+  );
+
+  // Allow snapping to the top of the sheet if detent is set to `content-height`
+  if (detent === 'content-height' && !snapInverse.includes(0)) {
+    snapInverse.unshift(0);
+  }
+
+  // Get the closest snap point
+  const snapTo = getClosest(snapInverse, currentY);
+  const snapIndex = snapInverse.indexOf(snapTo);
+
+  const snapY = validateSnapTo({
+    snapTo: getClosest(snapInverse, currentY),
+    sheetHeight,
+  });
+
+  return { snapY, snapIndex };
 }
 
 /**

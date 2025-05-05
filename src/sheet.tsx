@@ -30,11 +30,10 @@ import {
 } from './constants';
 
 import {
-  getClosest,
   getSheetHeight,
   getSnapY,
   getSnapPoints,
-  validateSnapTo,
+  getClosestSnapPoint,
 } from './utils';
 
 import { type SheetContextType, type SheetProps } from './types';
@@ -116,7 +115,24 @@ export const Sheet = forwardRef<any, SheetProps>(
       };
     });
 
-    const onDrag = useStableCallback((_, { delta }: PanInfo) => {
+    const onDrag = useStableCallback((_: PointerEvent, info: PanInfo) => {
+      const currentY = y.get();
+
+      /**
+       * Make sure the user cannot drag the sheet beyond the upmost snap point
+       * if the `snapPoints` prop is provided.
+       */
+      if (snapPointsProp) {
+        const sheetHeight = getSheetHeight(sheetRef);
+        const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
+        const topSnapPoint = sheetHeight - snapPoints[0];
+
+        if (info.delta.y < 0 && currentY <= topSnapPoint) {
+          y.set(topSnapPoint);
+          return;
+        }
+      }
+
       // Update drag indicator rotation based on drag velocity
       const velocity = y.getVelocity();
 
@@ -124,7 +140,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       if (velocity < 0) indicatorRotation.set(-10);
 
       // Make sure user cannot drag beyond the top of the sheet
-      y.set(Math.max(y.get() + delta.y, 0));
+      y.set(Math.max(currentY + info.delta.y, 0));
     });
 
     const onDragStart = useStableCallback(() => {
@@ -158,24 +174,14 @@ export const Sheet = forwardRef<any, SheetProps>(
           : undefined;
 
         if (snapPoints) {
-          // Inverse values are the values that can be passed to `animate`
-          const snapInverse = snapPoints.map(
-            (p) => sheetHeight - Math.min(p, sheetHeight)
-          );
-
-          // Allow snapping to the top of the sheet if detent is set to `content-height`
-          if (detent === 'content-height' && !snapInverse.includes(0)) {
-            snapInverse.unshift(0);
-          }
-
-          // Get the closest snap point
-          const snapTo = getClosest(snapInverse, currentY);
-          const snapIndex = snapInverse.indexOf(snapTo);
-
-          yTo = validateSnapTo({
-            snapTo: getClosest(snapInverse, currentY),
+          const { snapY, snapIndex } = getClosestSnapPoint({
+            snapPoints,
+            currentY,
             sheetHeight,
+            detent,
           });
+
+          yTo = snapY;
 
           // This happens before calling `animate` but it doesn't really matter
           onSnap?.(snapIndex);
@@ -214,10 +220,10 @@ export const Sheet = forwardRef<any, SheetProps>(
         const snapIndex = initialSnap;
         const sheetHeight = getSheetHeight(sheetRef);
         const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
-        const ySnap = getSnapY({ sheetHeight, snapPoints, snapIndex });
+        const snapY = getSnapY({ sheetHeight, snapPoints, snapIndex });
 
-        if (ySnap !== null) {
-          yTo = ySnap;
+        if (snapY !== null) {
+          yTo = snapY;
         }
       }
 
@@ -234,14 +240,14 @@ export const Sheet = forwardRef<any, SheetProps>(
 
         const sheetHeight = getSheetHeight(sheetRef);
         const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
-        const ySnap = getSnapY({ sheetHeight, snapPoints, snapIndex });
+        const snapY = getSnapY({ sheetHeight, snapPoints, snapIndex });
 
-        if (ySnap !== null) {
-          animate(y, ySnap, animationOptions);
+        if (snapY !== null) {
+          animate(y, snapY, animationOptions);
           onSnap?.(snapIndex);
 
           // +1px for imprecision tolerance
-          if (ySnap + 1 >= sheetHeight) {
+          if (snapY + 1 >= sheetHeight) {
             onClose();
           }
         }
