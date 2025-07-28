@@ -1,6 +1,5 @@
 import { type ForwardedRef, type RefCallback, type RefObject } from 'react';
 import { IS_SSR } from './constants';
-import type { SheetDetent } from './types';
 
 /**
  * Get the rounded height of the sheet element and log a warning if the
@@ -17,66 +16,6 @@ export function getSheetHeight(sheetRef: RefObject<HTMLDivElement | null>) {
   }
 
   return Math.round(sheetEl.getBoundingClientRect().height);
-}
-
-/**
- * Convert negative / percentage snap points to absolute values
- */
-export function getSnapPoints({
-  snapPointsProp,
-  sheetHeight,
-}: {
-  snapPointsProp: number[];
-  sheetHeight: number;
-}) {
-  const snapPointValues = snapPointsProp.map((point) => {
-    // Percentage values e.g. between 0.0 and 1.0
-    if (point > 0 && point <= 1) {
-      return Math.round(point * sheetHeight);
-    }
-
-    return point < 0 ? sheetHeight + point : point; // negative values
-  });
-
-  console.assert(
-    inDescendingOrder(snapPointValues) || sheetHeight === 0,
-    `Snap points need to be in descending order got: [${snapPointsProp.join(', ')}]`
-  );
-
-  return snapPointValues;
-}
-
-export function getClosestSnapPoint({
-  snapPoints,
-  currentY,
-  sheetHeight,
-  detent,
-}: {
-  snapPoints: number[];
-  currentY: number;
-  sheetHeight: number;
-  detent?: SheetDetent;
-}) {
-  // Inverse values are the values that can be passed to `animate`
-  const snapInverse = snapPoints.map(
-    (p) => sheetHeight - Math.min(p, sheetHeight)
-  );
-
-  // Allow snapping to the top of the sheet if detent is set to `content-height`
-  if (detent === 'content-height' && !snapInverse.includes(0)) {
-    snapInverse.unshift(0);
-  }
-
-  // Get the closest snap point
-  const snapTo = getClosest(snapInverse, currentY);
-  const snapIndex = snapInverse.indexOf(snapTo);
-
-  const snapY = validateSnapTo({
-    snapTo: getClosest(snapInverse, currentY),
-    sheetHeight,
-  });
-
-  return { snapY, snapIndex };
 }
 
 /**
@@ -107,53 +46,6 @@ export function inDescendingOrder(arr: number[]) {
   }
 
   return true;
-}
-
-/**
- * Get the Y value of the given snap point. This can be passed to the `animate`
- * function to animate the sheet to the given snap point.
- */
-export function getSnapY({
-  sheetHeight,
-  snapPoints,
-  snapIndex,
-}: {
-  sheetHeight: number;
-  snapPoints: number[];
-  snapIndex: number;
-}) {
-  const snapPoint = snapPoints[snapIndex];
-
-  if (snapPoint === undefined) {
-    console.warn(
-      `Invalid snap index ${snapIndex}. Snap points are: [${snapPoints.join(', ')}]`
-    );
-    return null;
-  }
-
-  const y = validateSnapTo({ snapTo: sheetHeight - snapPoint, sheetHeight });
-
-  return y;
-}
-
-/**
- * Make sure the snap point is not out of bounds.
- * Snap points cannot be negative - `0` means the sheet is fully open.
- */
-export function validateSnapTo({
-  snapTo,
-  sheetHeight,
-}: {
-  snapTo: number;
-  sheetHeight: number;
-}) {
-  if (snapTo < 0) {
-    console.warn(
-      `Snap point is out of bounds. Sheet height is ${sheetHeight} but snap point is ${sheetHeight + Math.abs(snapTo)}.`
-    );
-  }
-
-  return Math.max(Math.round(snapTo), 0);
 }
 
 export function mergeRefs<T = any>(refs: ForwardedRef<T>[]): RefCallback<T> {

@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
-import { styled } from 'styled-components';
+import { useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
-import { Button } from './common';
 import { ExampleLayout } from './ExampleLayout';
+import { Button } from './common';
 
 const snapPoints = [1, 200, 0];
 
@@ -29,24 +29,22 @@ export function ContentHeight() {
           <Sheet.Container layout>
             <Sheet.Header />
             <Sheet.Content layout="position">
-              <Sheet.Scroller>
-                <BoxList>
-                  <Button onPress={() => snapTo(0)}>Snap to top</Button>
-                  <Button onPress={() => snapTo(1)}>Snap to bottom</Button>
-                  <Button onPress={() => setBoxes((prev) => prev + 1)}>
-                    Add box
-                  </Button>
-                  <Button
-                    onPress={() => setBoxes((prev) => Math.max(0, prev - 1))}
-                  >
-                    Remove box
-                  </Button>
+              <BoxList>
+                <Button onPress={() => snapTo(0)}>Snap to top</Button>
+                <Button onPress={() => snapTo(1)}>Snap to bottom</Button>
+                <Button onPress={() => setBoxes((prev) => prev + 1)}>
+                  Add box
+                </Button>
+                <Button
+                  onPress={() => setBoxes((prev) => Math.max(0, prev - 1))}
+                >
+                  Remove box
+                </Button>
 
-                  {Array.from({ length: boxes }).map((_, i) => (
-                    <Box key={i}>{i}</Box>
-                  ))}
-                </BoxList>
-              </Sheet.Scroller>
+                {Array.from({ length: boxes }).map((_, i) => (
+                  <Box key={i}>{i}</Box>
+                ))}
+              </BoxList>
             </Sheet.Content>
           </Sheet.Container>
           <Sheet.Backdrop onTap={close} />

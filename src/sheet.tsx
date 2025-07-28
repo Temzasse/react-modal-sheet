@@ -8,68 +8,72 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 
 import {
-  animate,
   AnimatePresence,
-  motion,
   type PanInfo,
   type Transition,
+  animate,
+  motion,
   useMotionValue,
   useReducedMotion,
   useTransform,
 } from 'motion/react';
 
 import {
-  REDUCED_MOTION_TWEEN_CONFIG,
-  DEFAULT_TWEEN_CONFIG,
   DEFAULT_DRAG_CLOSE_THRESHOLD,
   DEFAULT_DRAG_VELOCITY_THRESHOLD,
+  DEFAULT_TWEEN_CONFIG,
   IS_SSR,
+  REDUCED_MOTION_TWEEN_CONFIG,
 } from './constants';
-
-import {
-  getSheetHeight,
-  getSnapY,
-  getSnapPoints,
-  getClosestSnapPoint,
-} from './utils';
-
-import { type SheetContextType, type SheetProps } from './types';
-import { SheetScrollerContextProvider, SheetContext } from './context';
-import { styles } from './styles';
-import { useModalEffect } from './hooks/use-modal-effect';
+import { SheetContext, SheetScrollerContextProvider } from './context';
 import { useDimensions } from './hooks/use-dimensions';
 import { useIsomorphicLayoutEffect } from './hooks/use-isomorphic-layout-effect';
-import { useStableCallback } from './hooks/use-stable-callback';
+import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
+import { useStableCallback } from './hooks/use-stable-callback';
+import {
+  computeSnapPoints,
+  getSnapY,
+  handleFastDownwardFlick,
+  handleFastUpwardFlick,
+  handleLowVelocityDrag,
+} from './snap';
+import { styles } from './styles';
+import { type SheetContextType, type SheetProps } from './types';
+import { getSheetHeight } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
     {
+      children,
+      detent = 'full-height',
+      disableDrag = false,
+      disableScrollLocking = false,
+      disableDismiss = false,
+      dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
+      dragVelocityThreshold = DEFAULT_DRAG_VELOCITY_THRESHOLD,
+      initialSnap = 0,
+      isOpen,
+      modalEffectRootId,
+      modalEffectThreshold,
+      mountPoint,
+      prefersReducedMotion = false,
+      snapPoints: snapPointsProp,
+      style,
+      tweenConfig = DEFAULT_TWEEN_CONFIG,
       onOpenStart,
       onOpenEnd,
       onClose,
       onCloseStart,
       onCloseEnd,
       onSnap,
-      children,
-      disableScrollLocking = false,
-      isOpen,
-      snapPoints: snapPointsProp,
-      rootId,
-      modalEffectRootId,
-      mountPoint,
-      style,
-      detent = 'full-height',
-      initialSnap = 0,
-      disableDrag = false,
-      prefersReducedMotion = false,
-      tweenConfig = DEFAULT_TWEEN_CONFIG,
-      dragVelocityThreshold = DEFAULT_DRAG_VELOCITY_THRESHOLD,
-      dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
-      modalEffectThreshold,
+      onDrag: onDragProp,
+      onDragStart: onDragStartProp,
+      onDragEnd: onDragEndProp,
       ...rest
     },
     ref
@@ -78,11 +82,18 @@ export const Sheet = forwardRef<any, SheetProps>(
     const indicatorRotation = useMotionValue(0);
     const { height: windowHeight } = useDimensions();
     const shouldReduceMotion = useReducedMotion();
+    const [currentSnap, setCurrentSnap] = useState(initialSnap);
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
       type: 'tween',
       ...(reduceMotion ? REDUCED_MOTION_TWEEN_CONFIG : tweenConfig),
     };
+
+    if (disableDismiss && snapPointsProp?.includes(0)) {
+      console.warn(
+        'Cannot use snap point 0 when `disableDismiss` is true. It will not work as expected.'
+      );
+    }
 
     // NOTE: the inital value for `y` doesn't matter since it is overwritten by
     // the value driven by the `AnimatePresence` component when the sheet is opened
@@ -115,8 +126,10 @@ export const Sheet = forwardRef<any, SheetProps>(
       };
     });
 
-    const onDrag = useStableCallback((_: PointerEvent, info: PanInfo) => {
+    const onDrag = useStableCallback((event: PointerEvent, info: PanInfo) => {
+      onDragProp?.(event, info);
       const currentY = y.get();
+      console.log(`onDrag: currentY=${currentY}, delta=${info.delta.y}`);
 
       /**
        * Make sure the user cannot drag the sheet beyond the upmost snap point
@@ -124,7 +137,7 @@ export const Sheet = forwardRef<any, SheetProps>(
        */
       if (snapPointsProp) {
         const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
+        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
         const topSnapPoint = sheetHeight - snapPoints[0];
 
         if (info.delta.y < 0 && currentY <= topSnapPoint) {
@@ -143,70 +156,138 @@ export const Sheet = forwardRef<any, SheetProps>(
       y.set(Math.max(currentY + info.delta.y, 0));
     });
 
-    const onDragStart = useStableCallback(() => {
-      // Find focused input inside the sheet and blur it when dragging starts
-      // to prevent a weird ghost caret "bug" on mobile
-      const focusedElement = document.activeElement as HTMLElement | null;
-      if (!focusedElement || !sheetRef.current) return;
+    const onDragStart = useStableCallback(
+      (event: PointerEvent, info: PanInfo) => {
+        onDragStartProp?.(event, info);
+        // Find focused input inside the sheet and blur it when dragging starts
+        // to prevent a weird ghost caret "bug" on mobile
+        const focusedElement = document.activeElement as HTMLElement | null;
+        if (!focusedElement || !sheetRef.current) return;
 
-      const isInput =
-        focusedElement.tagName === 'INPUT' ||
-        focusedElement.tagName === 'TEXTAREA';
+        const isInput =
+          focusedElement.tagName === 'INPUT' ||
+          focusedElement.tagName === 'TEXTAREA';
 
-      // Only blur the focused element if it's inside the sheet
-      if (isInput && sheetRef.current.contains(focusedElement)) {
-        focusedElement.blur();
+        // Only blur the focused element if it's inside the sheet
+        if (isInput && sheetRef.current.contains(focusedElement)) {
+          focusedElement.blur();
+        }
       }
-    });
+    );
 
-    const onDragEnd = useStableCallback((_, { velocity }: PanInfo) => {
-      if (velocity.y > dragVelocityThreshold) {
-        // User flicked the sheet down
-        onClose();
-      } else {
+    const onDragEnd = useStableCallback(
+      (event: PointerEvent, info: PanInfo) => {
+        onDragEndProp?.(event, info);
         const sheetHeight = getSheetHeight(sheetRef);
         const currentY = y.get();
 
         let yTo = 0;
 
-        const snapPoints = snapPointsProp
-          ? getSnapPoints({ snapPointsProp, sheetHeight })
-          : undefined;
+        if (snapPointsProp) {
+          const dragDirection = info.offset.y > 0 ? 'down' : 'up';
+          const dragDistance = Math.abs(info.offset.y);
+          const isFlick = Math.abs(info.velocity.y) > dragVelocityThreshold;
 
-        if (snapPoints) {
-          const { snapY, snapIndex } = getClosestSnapPoint({
-            snapPoints,
-            currentY,
-            sheetHeight,
-            detent,
-          });
+          // Calculate all snap point Y values for easier comparison
+          const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
+          const snapYValues = snapPoints
+            .map((_, i) => getSnapY({ sheetHeight, snapPoints, snapIndex: i }))
+            .filter((snapY): snapY is number => snapY !== null);
 
-          yTo = snapY;
+          let result: { yTo: number; snapIndex: number | undefined };
 
-          // This happens before calling `animate` but it doesn't really matter
-          onSnap?.(snapIndex);
-        } else if (currentY / sheetHeight > dragCloseThreshold) {
-          // Close if dragged over enough far
-          yTo = sheetHeight;
+          // setTimeout(() => {
+          //   alert(
+          //     `Velocity ${velocity.y}\nDelta ${delta.y}\nPoint ${point.y}\nOffset ${offset.y}`
+          //   );
+          // }, 1000);
+          if (isFlick) {
+            if (info.velocity.y > 0) {
+              result = handleFastDownwardFlick({
+                dragDirection,
+                dragDistance,
+                currentY,
+                snapYValues,
+                sheetHeight,
+              });
+            } else {
+              result = handleFastUpwardFlick({
+                dragDirection,
+                currentY,
+                snapYValues,
+              });
+            }
+          } else {
+            result = handleLowVelocityDrag({
+              dragDirection,
+              currentY,
+              snapYValues,
+              sheetHeight,
+              snapPoints,
+              currentSnap,
+              dragCloseThreshold,
+            });
+          }
+
+          yTo = result.yTo;
+
+          // If disableDismiss is true, prevent closing via gesture
+          if (disableDismiss && yTo + 1 >= sheetHeight) {
+            // Use the bottom-most open snap point
+            const bottomSnapIndex = snapYValues.length - 1;
+            const bottomSnapY = snapYValues[bottomSnapIndex];
+
+            if (bottomSnapY !== undefined && bottomSnapY > 0) {
+              yTo = bottomSnapY;
+
+              if (bottomSnapIndex) {
+                setCurrentSnap(bottomSnapIndex);
+                onSnap?.(bottomSnapIndex);
+              }
+            } else {
+              // If no open snap points available, stay at current position
+              yTo = currentY;
+            }
+          } else if (result.snapIndex !== undefined) {
+            setCurrentSnap(result.snapIndex);
+            onSnap?.(result.snapIndex);
+          }
+        } else if (
+          info.velocity.y > dragVelocityThreshold ||
+          currentY > sheetHeight * dragCloseThreshold
+        ) {
+          // Close the sheet if dragged past the threshold or if the velocity is high enough
+          // But only if disableDismiss is false
+          if (disableDismiss) {
+            // If disableDismiss, snap back to the open position
+            yTo = 0;
+          } else {
+            yTo = sheetHeight;
+          }
         }
+
+        console.log(`onDragEnd: yTo=${yTo}, currentY=${currentY}`);
 
         // Update the spring value so that the sheet is animated to the snap point
         animate(y, yTo, animationOptions);
 
         // +1px for imprecision tolerance
-        if (yTo + 1 >= sheetHeight) {
+        // Only call onClose if disableDismiss is false or if we're actually closing
+        if (yTo + 1 >= sheetHeight && !disableDismiss) {
           onClose();
         }
-      }
 
-      // Reset indicator rotation after dragging
-      indicatorRotation.set(0);
-    });
+        // Reset indicator rotation after dragging
+        indicatorRotation.set(0);
+      }
+    );
 
     // Trigger onSnap callback when sheet is opened or closed
     useEffect(() => {
       if (snapPointsProp && onSnap) {
-        onSnap(isOpen ? initialSnap : snapPointsProp.length - 1);
+        const snapIndex = isOpen ? initialSnap : snapPointsProp.length - 1;
+        setCurrentSnap(snapIndex);
+        onSnap(snapIndex);
       }
     }, [isOpen]);
 
@@ -219,7 +300,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       if (snapPointsProp) {
         const snapIndex = initialSnap;
         const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
+        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
         const snapY = getSnapY({ sheetHeight, snapPoints, snapIndex });
 
         if (snapY !== null) {
@@ -232,39 +313,57 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     useImperativeHandle(ref, () => ({
       y,
-      snapTo: (snapIndex: number) => {
+      snapTo: (snapIndex: number, onComplete?: () => void) => {
         if (!snapPointsProp) {
           console.warn('Snapping is not possible without `snapPoints` prop.');
           return;
         }
 
         const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = getSnapPoints({ snapPointsProp, sheetHeight });
+        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
         const snapY = getSnapY({ sheetHeight, snapPoints, snapIndex });
 
         if (snapY !== null) {
-          animate(y, snapY, animationOptions);
-          onSnap?.(snapIndex);
-
-          // +1px for imprecision tolerance
-          if (snapY + 1 >= sheetHeight) {
-            onClose();
+          // If disableDismiss is true, prevent closing via snapTo
+          if (disableDismiss && snapY + 1 >= sheetHeight) {
+            console.warn(
+              'Cannot snap to a closing position when disableDismiss is true.'
+            );
+            return;
           }
+
+          animate(y, snapY, {
+            ...animationOptions,
+            onComplete: () => {
+              if (onComplete) onComplete();
+              setCurrentSnap(snapIndex);
+              onSnap?.(snapIndex);
+
+              // +1px for imprecision tolerance
+              if (snapY + 1 >= sheetHeight && !disableDismiss) {
+                onClose();
+              }
+            },
+          });
         }
       },
-    }));
+      getSnapY: (snapIndex: number) => {
+        if (!snapPointsProp) {
+          console.warn('Snapping is not possible without `snapPoints` prop.');
+          return null;
+        }
 
-    if (rootId) {
-      console.warn(
-        'The `rootId` prop is deprecated and will be removed in the next major version. Use `modalEffectRootId` instead.'
-      );
-    }
+        const sheetHeight = getSheetHeight(sheetRef);
+        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
+        return getSnapY({ sheetHeight, snapPoints, snapIndex });
+      },
+    }));
 
     useModalEffect({
       y,
       sheetRef,
       snapPointsProp,
-      rootId: rootId || modalEffectRootId,
+      rootId: modalEffectRootId,
       startThreshold: modalEffectThreshold,
     });
 
@@ -289,18 +388,21 @@ export const Sheet = forwardRef<any, SheetProps>(
     }, [disableDrag, windowHeight]);
 
     const context: SheetContextType = {
-      y,
-      sheetRef,
-      isOpen,
-      initialSnap,
-      detent,
-      indicatorRotation,
-      callbacks,
-      dragProps,
-      windowHeight,
       animationOptions,
-      reduceMotion,
+      callbacks,
+      currentSnap,
+      detent,
       disableDrag,
+      disableDismiss,
+      dragProps,
+      indicatorRotation,
+      initialSnap,
+      isOpen,
+      reduceMotion,
+      sheetRef,
+      snapPoints: snapPointsProp,
+      windowHeight,
+      y,
     };
 
     const sheet = (

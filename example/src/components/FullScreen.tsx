@@ -1,8 +1,8 @@
-import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
-import { ExampleLayout } from './ExampleLayout';
 import { BoxList } from './BoxList';
+import { ExampleLayout } from './ExampleLayout';
 
 export function FullScreen() {
   return (
@@ -15,9 +15,7 @@ export function FullScreen() {
           <SheetContainer>
             <Sheet.Header />
             <Sheet.Content>
-              <Sheet.Scroller>
-                <BoxList count={50} />
-              </Sheet.Scroller>
+              <BoxList count={50} />
             </Sheet.Content>
           </SheetContainer>
         </Sheet>

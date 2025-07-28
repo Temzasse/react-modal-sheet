@@ -8,11 +8,11 @@ import {
 
 import {
   type DragHandlers,
-  type MotionValue,
-  type MotionProps,
-  type motion,
   type EasingDefinition,
+  type MotionProps,
+  type MotionValue,
   type Transition,
+  type motion,
 } from 'motion/react';
 
 export interface SheetEvents {
@@ -37,23 +37,22 @@ export interface SheetTweenConfig {
 }
 
 export type SheetProps = {
-  isOpen: boolean;
   children: ReactNode;
-  onClose: () => void;
-  /** @deprecated Use `modalEffectRootId` instead! */
-  rootId?: string;
-  modalEffectRootId?: string;
-  mountPoint?: Element;
-  snapPoints?: number[];
   detent?: SheetDetent;
-  initialSnap?: number; // index of snap points array
-  tweenConfig?: SheetTweenConfig;
   disableDrag?: boolean;
   disableScrollLocking?: boolean;
-  prefersReducedMotion?: boolean;
-  dragVelocityThreshold?: number;
+  disableDismiss?: boolean;
   dragCloseThreshold?: number;
+  dragVelocityThreshold?: number;
+  initialSnap?: number; // index of snap points array
+  isOpen: boolean;
+  modalEffectRootId?: string;
   modalEffectThreshold?: number;
+  mountPoint?: Element;
+  onClose: () => void;
+  prefersReducedMotion?: boolean;
+  snapPoints?: number[];
+  tweenConfig?: SheetTweenConfig;
 } & SheetEvents &
   MotionDivProps;
 
@@ -62,18 +61,10 @@ export type SheetContainerProps = Omit<
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
 > & {
   children: ReactNode;
+  ensureContentReachability?: boolean;
 };
 
-export type SheetDraggableProps = Omit<
-  CommonProps,
-  | 'drag'
-  | 'dragElastic'
-  | 'dragConstraints'
-  | 'dragMomentum'
-  | 'onDrag'
-  | 'onDragStart'
-  | 'onDragEnd'
-> & {
+export type SheetDraggableProps = MotionDivProps & {
   children?: ReactNode;
   disableDrag?: boolean;
 };
@@ -82,12 +73,6 @@ export type SheetBackdropProps = Omit<
   CommonProps,
   'initial' | 'animate' | 'exit'
 >;
-
-export type SheetScrollerProps = MotionDivProps & {
-  draggableAt?: 'top' | 'bottom' | 'both';
-  disableScroll?: boolean;
-  autoPadding?: boolean;
-};
 
 export interface SheetDragProps {
   drag: 'y';
@@ -99,19 +84,33 @@ export interface SheetDragProps {
   onDragEnd: DragHandlers['onDragEnd'];
 }
 
+export type SheetStateInfo = {
+  scrollPosition?: 'top' | 'bottom' | 'middle';
+  currentSnap?: number;
+};
+
+export type SheetContentScrollableProps = MotionDivProps & {
+  disableDrag?: boolean | ((args: SheetStateInfo) => boolean);
+  disableScroll?: boolean | ((args: SheetStateInfo) => boolean);
+  scrollRef?: RefObject<HTMLDivElement | null>;
+};
+
 export interface SheetContextType {
-  y: MotionValue<any>;
-  sheetRef: RefObject<any>;
-  isOpen: boolean;
-  detent: SheetDetent;
-  initialSnap: SheetProps['initialSnap'];
-  indicatorRotation: MotionValue<number>;
-  callbacks: RefObject<SheetEvents>;
-  dragProps?: SheetDragProps;
-  windowHeight: number;
   animationOptions: Transition;
-  reduceMotion: boolean;
+  callbacks: RefObject<SheetEvents>;
+  currentSnap: number;
+  detent: SheetDetent;
   disableDrag: boolean;
+  disableDismiss: boolean;
+  dragProps?: SheetDragProps;
+  indicatorRotation: MotionValue<number>;
+  initialSnap: SheetProps['initialSnap'];
+  isOpen: boolean;
+  reduceMotion: boolean;
+  sheetRef: RefObject<any>;
+  snapPoints?: number[];
+  windowHeight: number;
+  y: MotionValue<any>;
 }
 
 export interface SheetScrollerContextType {
@@ -136,16 +135,15 @@ type SheetComponent = ForwardRefExoticComponent<
   SheetProps & RefAttributes<any>
 >;
 
-type ScrollerComponent = ForwardRefExoticComponent<
-  SheetScrollerProps & RefAttributes<any>
+type ContentScrollableComponent = ForwardRefExoticComponent<
+  SheetContentScrollableProps & RefAttributes<any>
 >;
 
 interface SheetCompoundComponent {
   Container: ContainerComponent;
   Header: DraggableComponent;
-  Content: DraggableComponent;
+  Content: ContentScrollableComponent;
   Backdrop: BackdropComponent;
-  Scroller: ScrollerComponent;
 }
 
 export type SheetCompound = SheetComponent & SheetCompoundComponent;

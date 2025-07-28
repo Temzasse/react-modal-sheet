@@ -291,7 +291,7 @@ Sheet scroller can be used to make the whole sheet content or parts of it scroll
 | --------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `draggableAt`   | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`.                   |
 | `disableScroll` | no       | false   | Disable scrolling. This can be combined with snap points to make the sheet scroller only scrollable at a given snap point (usually the top position).    |
-| `autoPadding`   | no       | false   | Automatically apply padding bottom to the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point. |
+| `autoPadding`   | no       | true   | Automatically apply padding bottom to the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point. |
 
 ### `Sheet.Backdrop`
 
@@ -387,6 +387,9 @@ function DisableScrollExample() {
 If you are using snap points and want to make sure that the content is scrollable at all snap points you can use the `autoPadding` prop on the `Sheet.Scroller` component.
 
 This will automatically apply padding to the bottom of the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point.
+
+> [!IMPORTANT]
+> You shouldn't have any extra content below the `Sheet.Scroller` component when using `autoPadding` as it expects the whole sheet content to be scrollable.
 
 ```tsx
 import { Sheet } from 'react-modal-sheet';

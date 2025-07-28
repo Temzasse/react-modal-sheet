@@ -1,5 +1,5 @@
-import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
 import { ExampleLayout } from './ExampleLayout';
 
@@ -14,15 +14,13 @@ export function ReducedMotion() {
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content>
-              <Sheet.Scroller>
-                <BoxList>
-                  {Array.from({ length: 50 })
-                    .fill(1)
-                    .map((_, i) => (
-                      <Box key={i}>{i}</Box>
-                    ))}
-                </BoxList>
-              </Sheet.Scroller>
+              <BoxList>
+                {Array.from({ length: 50 })
+                  .fill(1)
+                  .map((_, i) => (
+                    <Box key={i}>{i}</Box>
+                  ))}
+              </BoxList>
             </Sheet.Content>
           </Sheet.Container>
           <Sheet.Backdrop />

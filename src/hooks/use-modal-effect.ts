@@ -1,9 +1,10 @@
-import { transform, type MotionValue } from 'motion';
+import { type MotionValue, transform } from 'motion';
 import { type RefObject } from 'react';
 
+import { computeSnapPoints } from '../snap';
+import { getSheetHeight } from '../utils';
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 import { useSafeAreaInsets } from './use-safe-area-insets';
-import { getSheetHeight, getSnapPoints } from '../utils';
 
 export function useModalEffect({
   y,
@@ -56,7 +57,7 @@ export function useModalEffect({
       let progress = Math.max(0, 1 - yValue / sheetHeight);
 
       const snapPoints = snapPointsProp
-        ? getSnapPoints({ snapPointsProp, sheetHeight })
+        ? computeSnapPoints({ snapPointsProp, sheetHeight })
         : undefined;
 
       /**

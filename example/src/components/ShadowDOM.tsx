@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Sheet } from 'react-modal-sheet';
 
 import { ExampleLayout } from './ExampleLayout';
@@ -19,36 +19,34 @@ export function ShadowDOM() {
               <Sheet.Container>
                 <Sheet.Header />
                 <Sheet.Content>
-                  <Sheet.Scroller>
-                    {/* We used inline styles because the CSS in document.head is outside the shadow DOM */}
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        padding: '16px',
-                        paddingTop: '0px',
-                      }}
-                    >
-                      {Array.from({ length: 50 }).map((_, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            backgroundColor: '#eee',
-                            borderRadius: '12px',
-                            minHeight: '200px',
-                            marginBottom: '16px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: '700',
-                            fontSize: '24px',
-                          }}
-                        >
-                          {i}
-                        </div>
-                      ))}
-                    </div>
-                  </Sheet.Scroller>
+                  {/* We used inline styles because the CSS in document.head is outside the shadow DOM */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      padding: '16px',
+                      paddingTop: '0px',
+                    }}
+                  >
+                    {Array.from({ length: 50 }).map((_, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          backgroundColor: '#eee',
+                          borderRadius: '12px',
+                          minHeight: '200px',
+                          marginBottom: '16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: '700',
+                          fontSize: '24px',
+                        }}
+                      >
+                        {i}
+                      </div>
+                    ))}
+                  </div>
                 </Sheet.Content>
               </Sheet.Container>
               <Sheet.Backdrop />

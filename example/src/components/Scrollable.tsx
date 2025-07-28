@@ -1,7 +1,7 @@
 import { Sheet } from 'react-modal-sheet';
 
-import { ExampleLayout } from './ExampleLayout';
 import { BoxList } from './BoxList';
+import { ExampleLayout } from './ExampleLayout';
 
 export function Scrollable() {
   return (
@@ -10,13 +10,11 @@ export function Scrollable() {
       description="Sheet that has scrollable content inside it."
     >
       {({ isOpen, close }) => (
-        <Sheet isOpen={isOpen} onClose={close}>
+        <Sheet isOpen={isOpen} onClose={close} snapPoints={[-50, 0.5, 170, 0]}>
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content>
-              <Sheet.Scroller>
-                <BoxList count={50} />
-              </Sheet.Scroller>
+              <BoxList count={50} />
             </Sheet.Content>
           </Sheet.Container>
           <Sheet.Backdrop />

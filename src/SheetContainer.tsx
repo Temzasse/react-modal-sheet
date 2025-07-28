@@ -1,15 +1,24 @@
-import React, { forwardRef } from 'react';
 import { motion } from 'motion/react';
+import React, { forwardRef } from 'react';
 
-import { type SheetContainerProps } from './types';
+import { MAX_HEIGHT } from './constants';
 import { useSheetContext } from './context';
 import { useEventCallbacks } from './hooks/use-event-callbacks';
-import { MAX_HEIGHT } from './constants';
-import { mergeRefs } from './utils';
 import { styles } from './styles';
+import { type SheetContainerProps } from './types';
+import { mergeRefs } from './utils';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
-  ({ children, style, className = '', ...rest }, ref) => {
+  (
+    {
+      children,
+      style,
+      className = '',
+      ensureContentReachability = true,
+      ...rest
+    },
+    ref
+  ) => {
     const {
       y,
       isOpen,
@@ -22,15 +31,24 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
 
     const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
 
-    const height = detent === 'full-height' ? MAX_HEIGHT : undefined;
-    const maxHeight = detent === 'content-height' ? MAX_HEIGHT : undefined;
+    const containerStyle = {
+      ...styles.container,
+      height: detent === 'full-height' ? MAX_HEIGHT : undefined,
+      maxHeight: detent === 'content-height' ? MAX_HEIGHT : undefined,
+      ...style,
+      y,
+    };
+
+    if (ensureContentReachability) {
+      containerStyle.paddingBottom = y;
+    }
 
     return (
       <motion.div
         {...rest}
         ref={mergeRefs([sheetRef, ref])}
         className={`react-modal-sheet-container ${className}`}
-        style={{ ...styles.container, height, maxHeight, ...style, y }}
+        style={containerStyle}
         initial={{ y: windowHeight }}
         exit={{ y: windowHeight, transition: animationOptions }}
         onAnimationComplete={handleAnimationComplete}

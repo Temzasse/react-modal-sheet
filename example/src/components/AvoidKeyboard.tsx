@@ -1,10 +1,10 @@
-import { styled } from 'styled-components';
 import { useRef } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
+import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
 import { useAnimatedVirtualKeyboard } from './hooks';
-import { ExampleLayout } from './ExampleLayout';
 
 export function AvoidKeyboard() {
   const sheetRef = useRef<SheetRef>(null);
@@ -26,19 +26,17 @@ export function AvoidKeyboard() {
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content style={{ paddingBottom: keyboardHeight }}>
-              <Sheet.Scroller>
-                <Content>
-                  <p>Focus input to show virtual keyboard</p>
+              <Content>
+                <p>Focus input to show virtual keyboard</p>
 
-                  <Input ref={inputRef} />
+                <Input ref={inputRef} />
 
-                  {isKeyboardOpen ? (
-                    <strong>Virtual keyboard is open!</strong>
-                  ) : (
-                    <Button onPress={close}>Close</Button>
-                  )}
-                </Content>
-              </Sheet.Scroller>
+                {isKeyboardOpen ? (
+                  <strong>Virtual keyboard is open!</strong>
+                ) : (
+                  <Button onPress={close}>Close</Button>
+                )}
+              </Content>
             </Sheet.Content>
           </Sheet.Container>
           <Sheet.Backdrop />

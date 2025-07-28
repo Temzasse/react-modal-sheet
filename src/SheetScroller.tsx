@@ -1,10 +1,10 @@
+import { type MotionStyle, motion } from 'motion/react';
 import React, { type TouchEvent, type UIEvent, forwardRef } from 'react';
-import { motion, type MotionStyle } from 'motion/react';
 
 import { useSheetContext, useSheetScrollerContext } from './context';
+import { styles } from './styles';
 import { type SheetScrollerProps } from './types';
 import { isTouchDevice } from './utils';
-import { styles } from './styles';
 
 export const SheetScroller = forwardRef<any, SheetScrollerProps>(
   (
