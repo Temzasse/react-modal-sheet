@@ -2,7 +2,6 @@ import { createPortal } from 'react-dom';
 
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -27,7 +26,6 @@ import {
 } from './constants';
 import { SheetContext } from './context';
 import { useDimensions } from './hooks/use-dimensions';
-import { useIsomorphicLayoutEffect } from './hooks/use-isomorphic-layout-effect';
 import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
 import { useSheetState } from './hooks/use-sheet-state';
@@ -78,26 +76,17 @@ export const Sheet = forwardRef<any, SheetProps>(
     ref
   ) => {
     const sheetRef = useRef<HTMLDivElement>(null);
+    const { windowHeight } = useDimensions();
+    const y = useMotionValue(windowHeight);
     const indicatorRotation = useMotionValue(0);
-    const { height: windowHeight } = useDimensions();
     const shouldReduceMotion = useReducedMotion();
     const [currentSnap, setCurrentSnap] = useState(initialSnap);
+
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
       type: 'tween',
       ...(reduceMotion ? REDUCED_MOTION_TWEEN_CONFIG : tweenConfig),
     };
-
-    if (disableDismiss && snapPointsProp?.includes(0)) {
-      console.warn(
-        'Cannot use snap point 0 when `disableDismiss` is true. It will not work as expected.'
-      );
-    }
-
-    // NOTE: the inital value for `y` doesn't matter since it is overwritten by
-    // the value driven by the `AnimatePresence` component when the sheet is opened
-    // and after that it is driven by the gestures and/or snapping
-    const y = useMotionValue(windowHeight);
 
     // +2 for tolerance in case the animated value is slightly off
     const zIndex = useTransform(y, (value) =>
@@ -107,26 +96,24 @@ export const Sheet = forwardRef<any, SheetProps>(
       value + 2 >= windowHeight ? 'hidden' : 'visible'
     );
 
-    // Keep the callback fns up-to-date so that they can be accessed inside
-    // the effect without including them to the dependencies array
-    const callbacks = useRef({
-      onOpenStart,
-      onOpenEnd,
-      onCloseStart,
-      onCloseEnd,
-    });
+    function getSnapY(snapIndex: number) {
+      if (snapPointsProp) {
+        const sheetHeight = getSheetHeight(sheetRef);
+        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
+        const snapY = computeSnapY({ sheetHeight, snapPoints, snapIndex });
+        return snapY;
+      }
+      return null;
+    }
 
-    useIsomorphicLayoutEffect(() => {
-      callbacks.current = {
-        onOpenStart,
-        onOpenEnd,
-        onCloseStart,
-        onCloseEnd,
-      };
-    });
+    function updateSnap(snapIndex: number) {
+      setCurrentSnap(snapIndex);
+      onSnap?.(snapIndex);
+    }
 
     const onDrag = useStableCallback<DragHandler>((event, info) => {
       onDragProp?.(event, info);
+
       const currentY = y.get();
 
       /**
@@ -156,6 +143,7 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     const onDragStart = useStableCallback<DragHandler>((event, info) => {
       onDragStartProp?.(event, info);
+
       // Find focused input inside the sheet and blur it when dragging starts
       // to prevent a weird ghost caret "bug" on mobile
       const focusedElement = document.activeElement as HTMLElement | null;
@@ -173,6 +161,7 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     const onDragEnd = useStableCallback<DragHandler>((event, info) => {
       onDragEndProp?.(event, info);
+
       const sheetHeight = getSheetHeight(sheetRef);
       const currentY = y.get();
 
@@ -231,18 +220,13 @@ export const Sheet = forwardRef<any, SheetProps>(
 
           if (bottomSnapY !== undefined && bottomSnapY > 0) {
             yTo = bottomSnapY;
-
-            if (bottomSnapIndex) {
-              setCurrentSnap(bottomSnapIndex);
-              onSnap?.(bottomSnapIndex);
-            }
+            if (bottomSnapIndex) updateSnap(bottomSnapIndex);
           } else {
             // If no open snap points available, stay at current position
             yTo = currentY;
           }
         } else if (result.snapIndex !== undefined) {
-          setCurrentSnap(result.snapIndex);
-          onSnap?.(result.snapIndex);
+          updateSnap(result.snapIndex);
         }
       } else if (
         info.velocity.y > dragVelocityThreshold ||
@@ -271,26 +255,6 @@ export const Sheet = forwardRef<any, SheetProps>(
       indicatorRotation.set(0);
     });
 
-    // Trigger onSnap callback when sheet is opened or closed
-    useEffect(() => {
-      if (snapPointsProp && onSnap) {
-        const snapIndex = isOpen ? initialSnap : snapPointsProp.length - 1;
-        setCurrentSnap(snapIndex);
-        onSnap(snapIndex);
-      }
-    }, [isOpen]);
-
-    function getSnapY(snapIndex: number) {
-      if (snapPointsProp) {
-        const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
-        const snapY = computeSnapY({ sheetHeight, snapPoints, snapIndex });
-
-        return snapY;
-      }
-      return null;
-    }
-
     useImperativeHandle(ref, () => ({
       y,
       snapTo: async (snapIndex: number) => {
@@ -299,38 +263,27 @@ export const Sheet = forwardRef<any, SheetProps>(
           return;
         }
 
-        const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
-        const snapY = computeSnapY({ sheetHeight, snapPoints, snapIndex });
+        const snapY = getSnapY(snapIndex);
 
-        if (snapY !== null) {
-          // If disableDismiss is true, prevent closing via snapTo
-          if (disableDismiss && snapY + 1 >= sheetHeight) {
-            console.warn(
-              'Cannot snap to a closing position when disableDismiss is true.'
-            );
-            return;
-          }
-
-          await animate(y, snapY, {
-            ...animationOptions,
-            onComplete: () => {
-              setCurrentSnap(snapIndex);
-              onSnap?.(snapIndex);
-
-              // +1px for imprecision tolerance
-              if (snapY + 1 >= sheetHeight && !disableDismiss) {
-                onClose();
-              }
-            },
-          });
+        if (snapY === null) {
+          console.warn(`Invalid snap index ${snapIndex}.`);
+          return;
         }
+
+        await animate(y, snapY, {
+          ...animationOptions,
+          onComplete: () => {
+            updateSnap(snapIndex);
+            if (snapPointsProp[snapIndex] === 0) onClose();
+          },
+        });
       },
       getSnapY: (snapIndex: number) => {
         if (!snapPointsProp) {
           console.warn('Snapping is not possible without `snapPoints` prop.');
           return null;
         }
+
         return getSnapY(snapIndex);
       },
     }));
@@ -352,40 +305,15 @@ export const Sheet = forwardRef<any, SheetProps>(
     // Sheet state machine
     const state = useSheetState({
       isOpen,
-      onClosed: async () => {
-        console.log('Sheet closed');
-      },
-      onOpening: async () => {
-        console.log('Sheet opening');
-
-        // Render children but keep them hidden
-        y.set(windowHeight);
-      },
       onOpen: async () => {
-        console.log('Sheet open');
         onOpenStart?.();
-
-        // Calculate target Y position
-        let yTo = 0;
-
-        if (snapPointsProp) {
-          const snapY = getSnapY(initialSnap);
-          if (snapY !== null) {
-            yTo = snapY;
-          }
-        }
-
-        // Animate to target position
+        const yTo = getSnapY(initialSnap) ?? 0;
         await animate(y, yTo, animationOptions);
-
-        setCurrentSnap(initialSnap);
-        onSnap?.(initialSnap);
+        updateSnap(initialSnap);
         onOpenEnd?.();
       },
       onClosing: async () => {
-        console.log('Sheet closing');
         onCloseStart?.();
-
         await animate(y, windowHeight, animationOptions);
         onCloseEnd?.();
       },
@@ -403,7 +331,6 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     const context: SheetContextType = {
       animationOptions,
-      callbacks,
       currentSnap,
       detent,
       disableDrag,
@@ -425,6 +352,7 @@ export const Sheet = forwardRef<any, SheetProps>(
         <motion.div
           {...rest}
           ref={ref}
+          data-sheet-state={state}
           className={`react-modal-sheet ${className}`}
           style={{ ...styles.wrapper, zIndex, visibility, ...style }}
         >

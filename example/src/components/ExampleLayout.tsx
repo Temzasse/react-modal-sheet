@@ -17,7 +17,7 @@ type Props = {
 };
 
 export function ExampleLayout({ title, description, children }: Props) {
-  const state = useOverlayTriggerState({ isOpen: true});
+  const state = useOverlayTriggerState({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ axis: 'y', container: scrollRef });
   const fabOpacity = useTransform(scrollY, [200, 220], [0, 1]);

@@ -15,14 +15,6 @@ import {
   type motion,
 } from 'motion/react';
 
-export interface SheetEvents {
-  onOpenStart?: () => void;
-  onOpenEnd?: () => void;
-  onCloseStart?: () => void;
-  onCloseEnd?: () => void;
-  onSnap?: (index: number) => void;
-}
-
 export type SheetDetent = 'full-height' | 'content-height';
 
 type CommonProps = MotionProps & {
@@ -39,9 +31,9 @@ export interface SheetTweenConfig {
 export type SheetProps = {
   children: ReactNode;
   detent?: SheetDetent;
+  disableDismiss?: boolean;
   disableDrag?: boolean;
   disableScrollLocking?: boolean;
-  disableDismiss?: boolean;
   dragCloseThreshold?: number;
   dragVelocityThreshold?: number;
   ensureContentReachability?: boolean;
@@ -50,12 +42,16 @@ export type SheetProps = {
   modalEffectRootId?: string;
   modalEffectThreshold?: number;
   mountPoint?: Element;
-  onClose: () => void;
   prefersReducedMotion?: boolean;
   snapPoints?: number[];
   tweenConfig?: SheetTweenConfig;
-} & SheetEvents &
-  MotionDivProps;
+  onClose: () => void;
+  onCloseEnd?: () => void;
+  onCloseStart?: () => void;
+  onOpenEnd?: () => void;
+  onOpenStart?: () => void;
+  onSnap?: (index: number) => void;
+} & MotionDivProps;
 
 export type SheetContainerProps = Omit<
   CommonProps,
@@ -97,7 +93,6 @@ export type SheetContentScrollableProps = MotionDivProps & {
 
 export interface SheetContextType {
   animationOptions: Transition;
-  callbacks: RefObject<SheetEvents>;
   currentSnap: number;
   detent: SheetDetent;
   disableDrag: boolean;
