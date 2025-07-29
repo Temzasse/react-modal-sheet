@@ -1,5 +1,4 @@
-import type { SheetDetent } from './types';
-import { getClosest, inDescendingOrder } from './utils';
+import { inDescendingOrder } from './utils';
 
 /**
  * Make sure the snap point is not out of bounds.
@@ -25,7 +24,7 @@ export function validateSnapTo({
  * Get the Y value of the given snap point. This can be passed to the `animate`
  * function to animate the sheet to the given snap point.
  */
-export function getSnapY({
+export function computeSnapY({
   sheetHeight,
   snapPoints,
   snapIndex,
@@ -251,7 +250,7 @@ export function handleLowVelocityDrag({
 
   if (secondClosest) {
     // Check if we're past the midpoint between current snap and the next one
-    const currentSnapY = getSnapY({
+    const currentSnapY = computeSnapY({
       sheetHeight,
       snapPoints,
       snapIndex: currentSnap,

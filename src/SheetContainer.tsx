@@ -1,47 +1,31 @@
-import { motion } from 'motion/react';
+import { motion, useTransform } from 'motion/react';
 import React, { forwardRef } from 'react';
 
-import { MAX_HEIGHT } from './constants';
+import { MAX_HEIGHT, REACHABILITY_PADDING_VAR } from './constants';
 import { useSheetContext } from './context';
-import { useEventCallbacks } from './hooks/use-event-callbacks';
 import { styles } from './styles';
 import { type SheetContainerProps } from './types';
 import { mergeRefs } from './utils';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
-  (
-    {
-      children,
-      style,
-      className = '',
-      ensureContentReachability = true,
-      ...rest
-    },
-    ref
-  ) => {
-    const {
-      y,
-      isOpen,
-      callbacks,
-      sheetRef,
-      windowHeight,
-      detent,
-      animationOptions,
-    } = useSheetContext();
+  ({ children, style, className = '', ...rest }, ref) => {
+    const { y, sheetRef, detent, ensureContentReachability } =
+      useSheetContext();
 
-    const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
+    const paddingBottomVar = useTransform(() => y.get() + 'px');
 
     const containerStyle = {
+      // Use CSS variable for padding bottom to ensure content reachability
+      [REACHABILITY_PADDING_VAR]: ensureContentReachability
+        ? paddingBottomVar
+        : undefined,
       ...styles.container,
       height: detent === 'full-height' ? MAX_HEIGHT : undefined,
       maxHeight: detent === 'content-height' ? MAX_HEIGHT : undefined,
+      paddingBottom: `var(${REACHABILITY_PADDING_VAR}, 0px)`,
       ...style,
       y,
     };
-
-    if (ensureContentReachability) {
-      containerStyle.paddingBottom = y;
-    }
 
     return (
       <motion.div
@@ -49,9 +33,6 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
         ref={mergeRefs([sheetRef, ref])}
         className={`react-modal-sheet-container ${className}`}
         style={containerStyle}
-        initial={{ y: windowHeight }}
-        exit={{ y: windowHeight, transition: animationOptions }}
-        onAnimationComplete={handleAnimationComplete}
       >
         {children}
       </motion.div>

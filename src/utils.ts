@@ -1,5 +1,5 @@
 import { type ForwardedRef, type RefCallback, type RefObject } from 'react';
-import { IS_SSR } from './constants';
+import { IS_SSR, REACHABILITY_PADDING_VAR } from './constants';
 
 /**
  * Get the rounded height of the sheet element and log a warning if the
@@ -15,7 +15,19 @@ export function getSheetHeight(sheetRef: RefObject<HTMLDivElement | null>) {
     return 0;
   }
 
-  return Math.round(sheetEl.getBoundingClientRect().height);
+  const height = Math.round(sheetEl.getBoundingClientRect().height);
+
+  /**
+   * Take into account the padding bottom, if it exists,
+   * which should NOT contribute to the sheet height
+   */
+  const paddingBottom = parseFloat(
+    getComputedStyle(sheetEl).getPropertyValue(REACHABILITY_PADDING_VAR) || '0'
+  );
+
+  console.log(`Sheet height: ${height}px, padding bottom: ${paddingBottom}px`);
+
+  return height;
 }
 
 /**

@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 
 import { BoxList } from './BoxList';
 import { ExampleLayout } from './ExampleLayout';
-import { Button, disableContentDrag } from './common';
+import { Button } from './common';
 
 const snapPoints = [-50, 0.5, 170, 0];
 const initialSnap = 2;
@@ -33,8 +33,7 @@ export function ScrollableSnapPoints() {
 
             <Sheet.Content
               // Only scroll when at the upmost snap point
-              disableScroll={(s) => s.currentSnap !== 0}
-              disableDrag={disableContentDrag}
+              disableScroll={(state) => state.currentSnap !== 0}
             >
               <Header>
                 <CurrentSnapText>
@@ -46,16 +45,16 @@ export function ScrollableSnapPoints() {
               </Header>
 
               <BoxList count={20} />
-
-              <Footer>
-                <Controls>
-                  <Button onPress={() => snapTo(0)}>0</Button>
-                  <Button onPress={() => snapTo(1)}>1</Button>
-                  <Button onPress={() => snapTo(2)}>2</Button>
-                  <Button onPress={() => snapTo(3)}>Close</Button>
-                </Controls>
-              </Footer>
             </Sheet.Content>
+
+            <Footer>
+              <Controls>
+                <Button onPress={() => snapTo(0)}>0</Button>
+                <Button onPress={() => snapTo(1)}>1</Button>
+                <Button onPress={() => snapTo(2)}>2</Button>
+                <Button onPress={() => snapTo(3)}>Close</Button>
+              </Controls>
+            </Footer>
           </Sheet.Container>
           <Sheet.Backdrop onTap={close} />
         </Sheet>
@@ -76,8 +75,6 @@ const Footer = styled.div`
   flex-direction: column;
   gap: 16px;
   padding: 16px;
-  position: sticky;
-  bottom: 0;
   background-color: #fff;
   border-top: 1px solid #ddd;
 `;

@@ -18,7 +18,7 @@
     "generate:pwa": "pwa-assets-generator --preset minimal public/favicon.svg"
   },
   "dependencies": {
-    "motion": "12.9.2",
+    "motion": "12.23.11",
     "react": "19.1.0",
     "react-aria": "3.39.0",
     "react-dom": "19.1.0",

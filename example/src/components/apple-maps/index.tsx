@@ -10,7 +10,6 @@ import { FiChevronLeft, FiSearch } from 'react-icons/fi';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import { disableContentDrag } from '../common';
 import bgImg from './map-bg.jpeg';
 
 const snapPoints = [-30, 0.5, 100];
@@ -91,8 +90,7 @@ export function AppleMaps() {
 
           <SheetContent
             // Only scroll when at the upmost snap point
-            disableScroll={(s) => s.currentSnap !== 0}
-            disableDrag={disableContentDrag}
+            disableScroll={(state) => state.currentSnap !== 0}
             scrollRef={scrollRef}
             style={{ borderTopColor: contentBorderColor }}
           >

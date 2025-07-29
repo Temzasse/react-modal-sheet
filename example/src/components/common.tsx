@@ -1,16 +1,6 @@
 import { useRef } from 'react';
 import { type AriaButtonProps, useButton } from 'react-aria';
-import type { SheetDisableDragArgs } from 'react-modal-sheet';
 import styled, { createGlobalStyle } from 'styled-components';
-
-export function disableContentDrag({
-  scrollPosition,
-  currentSnap,
-}: SheetDisableDragArgs) {
-  if (currentSnap !== 0) return false;
-  if (!scrollPosition || scrollPosition === 'top') return false;
-  return true;
-}
 
 export function Button({ children, ...rest }: AriaButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);

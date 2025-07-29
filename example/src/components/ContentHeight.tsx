@@ -26,9 +26,11 @@ export function ContentHeight() {
           snapPoints={snapPoints}
           detent="content-height"
         >
-          <Sheet.Container layout>
+          <Sheet.Container>
             <Sheet.Header />
-            <Sheet.Content layout="position">
+            <Sheet.Content // Only scroll when at the upmost snap point
+              disableScroll={(state) => state.currentSnap !== 0}
+            >
               <BoxList>
                 <Button onPress={() => snapTo(0)}>Snap to top</Button>
                 <Button onPress={() => snapTo(1)}>Snap to bottom</Button>

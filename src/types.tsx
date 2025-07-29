@@ -7,7 +7,7 @@ import {
 } from 'react';
 
 import {
-  type DragHandlers,
+  type DragHandler,
   type EasingDefinition,
   type MotionProps,
   type MotionValue,
@@ -44,6 +44,7 @@ export type SheetProps = {
   disableDismiss?: boolean;
   dragCloseThreshold?: number;
   dragVelocityThreshold?: number;
+  ensureContentReachability?: boolean;
   initialSnap?: number; // index of snap points array
   isOpen: boolean;
   modalEffectRootId?: string;
@@ -61,7 +62,6 @@ export type SheetContainerProps = Omit<
   'initial' | 'animate' | 'exit' | 'onAnimationComplete'
 > & {
   children: ReactNode;
-  ensureContentReachability?: boolean;
 };
 
 export type SheetDraggableProps = MotionDivProps & {
@@ -79,9 +79,9 @@ export interface SheetDragProps {
   dragElastic: number;
   dragMomentum: boolean;
   dragPropagation: boolean;
-  onDrag: DragHandlers['onDrag'];
-  onDragStart: DragHandlers['onDragStart'];
-  onDragEnd: DragHandlers['onDragEnd'];
+  onDrag: DragHandler;
+  onDragStart: DragHandler;
+  onDragEnd: DragHandler;
 }
 
 export type SheetStateInfo = {
@@ -103,6 +103,7 @@ export interface SheetContextType {
   disableDrag: boolean;
   disableDismiss: boolean;
   dragProps?: SheetDragProps;
+  ensureContentReachability: boolean;
   indicatorRotation: MotionValue<number>;
   initialSnap: SheetProps['initialSnap'];
   isOpen: boolean;

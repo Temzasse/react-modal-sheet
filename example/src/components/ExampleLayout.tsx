@@ -1,12 +1,12 @@
-import { useRef, type ReactNode } from 'react';
-import { createGlobalStyle, styled } from 'styled-components';
-import { Link } from 'react-router';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { type ReactNode, useRef } from 'react';
 import { FiChevronLeft } from 'react-icons/fi';
-import { useScroll, motion, useTransform } from 'motion/react';
+import { Link } from 'react-router';
 import {
-  useOverlayTriggerState,
   type OverlayTriggerState,
+  useOverlayTriggerState,
 } from 'react-stately';
+import { createGlobalStyle, styled } from 'styled-components';
 
 import { Button, ScrollView } from './common';
 
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export function ExampleLayout({ title, description, children }: Props) {
-  const state = useOverlayTriggerState({});
+  const state = useOverlayTriggerState({ isOpen: true});
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ axis: 'y', container: scrollRef });
   const fabOpacity = useTransform(scrollY, [200, 220], [0, 1]);
