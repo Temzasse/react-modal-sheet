@@ -5,7 +5,7 @@ import { styled } from 'styled-components';
 import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
 
-const snapPoints = [1, -100, 0.5, 100, 0];
+const snapPoints = [0, 100, 0.5, -100, 1];
 const initialSnap = 1; // Initial snap point when sheet is opened
 
 export function SnapPoints() {

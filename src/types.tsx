@@ -14,8 +14,9 @@ import {
   type Transition,
   type motion,
 } from 'motion/react';
+import type { RectReadOnly } from 'react-use-measure';
 
-export type SheetDetent = 'full-height' | 'content-height';
+export type SheetDetent = 'default' | 'full' | 'content';
 
 type CommonProps = MotionProps & {
   className?: string;
@@ -36,7 +37,6 @@ export type SheetProps = {
   disableScrollLocking?: boolean;
   dragCloseThreshold?: number;
   dragVelocityThreshold?: number;
-  ensureContentReachability?: boolean;
   initialSnap?: number; // index of snap points array
   isOpen: boolean;
   modalEffectRootId?: string;
@@ -91,21 +91,20 @@ export type SheetContentScrollableProps = MotionDivProps & {
   scrollRef?: RefObject<HTMLDivElement | null>;
 };
 
+export type SheetSnapPoint = {
+  snapIndex: number;
+  snapValue: number; // Absolute value from the bottom of the sheet
+  snapValueY: number; // Y value is inverted as `y = 0` means sheet is at the top
+};
+
 export interface SheetContextType {
-  animationOptions: Transition;
-  currentSnap: number;
+  currentSnap?: number;
   detent: SheetDetent;
   disableDrag: boolean;
-  disableDismiss: boolean;
   dragProps?: SheetDragProps;
-  ensureContentReachability: boolean;
   indicatorRotation: MotionValue<number>;
-  initialSnap: SheetProps['initialSnap'];
-  isOpen: boolean;
-  reduceMotion: boolean;
+  sheetBoundsRef: (node: HTMLDivElement | null) => void;
   sheetRef: RefObject<any>;
-  snapPoints?: number[];
-  windowHeight: number;
   y: MotionValue<any>;
 }
 

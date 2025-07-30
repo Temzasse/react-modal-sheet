@@ -18,7 +18,7 @@ export function useSheetState({
   onOpen: _onOpen,
   onClosing: _onClosing,
 }: UseSheetStatesProps) {
-  const [state, setState] = useState<SheetState>(isOpen ? 'open' : 'closed');
+  const [state, setState] = useState<SheetState>(isOpen ? 'opening' : 'closed');
   const onClosed = useStableCallback(() => _onClosed?.());
   const onOpening = useStableCallback(() => _onOpening?.());
   const onOpen = useStableCallback(() => _onOpen?.());

@@ -1,12 +1,3 @@
-import { createPortal } from 'react-dom';
-
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
-
 import {
   type DragHandler,
   type Transition,
@@ -16,6 +7,14 @@ import {
   useReducedMotion,
   useTransform,
 } from 'motion/react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import { createPortal } from 'react-dom';
+import useMeasure from 'react-use-measure';
 
 import {
   DEFAULT_DRAG_CLOSE_THRESHOLD,
@@ -32,34 +31,31 @@ import { useSheetState } from './hooks/use-sheet-state';
 import { useStableCallback } from './hooks/use-stable-callback';
 import {
   computeSnapPoints,
-  computeSnapY,
   handleFastDownwardFlick,
   handleFastUpwardFlick,
   handleLowVelocityDrag,
 } from './snap';
 import { styles } from './styles';
 import { type SheetContextType, type SheetProps } from './types';
-import { getSheetHeight } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
     {
       children,
       className = '',
-      detent = 'full-height',
+      detent = 'default',
       disableDrag = false,
       disableScrollLocking = false,
       disableDismiss = false,
       dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
       dragVelocityThreshold = DEFAULT_DRAG_VELOCITY_THRESHOLD,
-      ensureContentReachability = true,
-      initialSnap = 0,
       isOpen,
       modalEffectRootId,
       modalEffectThreshold,
       mountPoint,
       prefersReducedMotion = false,
       snapPoints: snapPointsProp,
+      initialSnap,
       style,
       tweenConfig = DEFAULT_TWEEN_CONFIG,
       onOpenStart,
@@ -75,13 +71,19 @@ export const Sheet = forwardRef<any, SheetProps>(
     },
     ref
   ) => {
+    const [sheetBoundsRef, sheetBounds] = useMeasure();
     const sheetRef = useRef<HTMLDivElement>(null);
-    const { windowHeight } = useDimensions();
-    const y = useMotionValue(windowHeight);
+    const sheetHeight = Math.round(sheetBounds.height);
+    const [currentSnap, setCurrentSnap] = useState(initialSnap);
+    const snapPoints =
+      snapPointsProp && sheetHeight > 0
+        ? computeSnapPoints({ sheetHeight, snapPointsProp })
+        : [];
+    const { windowHeight: closedY } = useDimensions();
+    const y = useMotionValue(closedY);
+    const yInverted = useTransform(y, (val) => Math.max(sheetHeight - val, 0));
     const indicatorRotation = useMotionValue(0);
     const shouldReduceMotion = useReducedMotion();
-    const [currentSnap, setCurrentSnap] = useState(initialSnap);
-
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
       type: 'tween',
@@ -89,51 +91,64 @@ export const Sheet = forwardRef<any, SheetProps>(
     };
 
     // +2 for tolerance in case the animated value is slightly off
-    const zIndex = useTransform(y, (value) =>
-      value + 2 >= windowHeight ? -1 : (style?.zIndex ?? 9999)
+    const zIndex = useTransform(y, (val) =>
+      val + 2 >= closedY ? -1 : (style?.zIndex ?? 9999)
     );
-    const visibility = useTransform(y, (value) =>
-      value + 2 >= windowHeight ? 'hidden' : 'visible'
+    const visibility = useTransform(y, (val) =>
+      val + 2 >= closedY ? 'hidden' : 'visible'
     );
 
-    function getSnapY(snapIndex: number) {
-      if (snapPointsProp) {
-        const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
-        const snapY = computeSnapY({ sheetHeight, snapPoints, snapIndex });
-        return snapY;
-      }
-      return null;
-    }
-
-    function updateSnap(snapIndex: number) {
+    const updateSnap = useStableCallback((snapIndex: number) => {
       setCurrentSnap(snapIndex);
       onSnap?.(snapIndex);
-    }
+    });
+
+    const getSnapPoint = useStableCallback((snapIndex: number) => {
+      if (snapPointsProp && snapPoints) {
+        if (snapIndex < 0 || snapIndex >= snapPoints.length) {
+          console.warn(
+            `Invalid snap index ${snapIndex}. Snap points are: [${snapPointsProp.join(', ')}] and their computed values are: [${snapPoints
+              .map((point) => point.snapValue)
+              .join(', ')}]`
+          );
+          return null;
+        }
+        return snapPoints[snapIndex];
+      }
+      return null;
+    });
+
+    const snapTo = useStableCallback(async (snapIndex: number) => {
+      if (!snapPointsProp) {
+        console.warn('Snapping is not possible without `snapPoints` prop.');
+        return;
+      }
+
+      const snapPoint = getSnapPoint(snapIndex);
+
+      if (snapPoint === null) {
+        console.warn(`Invalid snap index ${snapIndex}.`);
+        return;
+      }
+
+      if (snapIndex === 0) {
+        onClose();
+        return;
+      }
+
+      await animate(y, snapPoint.snapValueY, {
+        ...animationOptions,
+        onComplete: () => updateSnap(snapIndex),
+      });
+    });
 
     const onDrag = useStableCallback<DragHandler>((event, info) => {
       onDragProp?.(event, info);
 
       const currentY = y.get();
 
-      /**
-       * Make sure the user cannot drag the sheet beyond the upmost snap point
-       * if the `snapPoints` prop is provided.
-       */
-      if (snapPointsProp) {
-        const sheetHeight = getSheetHeight(sheetRef);
-        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
-        const topSnapPoint = sheetHeight - snapPoints[0];
-
-        if (info.delta.y < 0 && currentY <= topSnapPoint) {
-          y.set(topSnapPoint);
-          return;
-        }
-      }
-
       // Update drag indicator rotation based on drag velocity
       const velocity = y.getVelocity();
-
       if (velocity > 0) indicatorRotation.set(10);
       if (velocity < 0) indicatorRotation.set(-10);
 
@@ -162,7 +177,19 @@ export const Sheet = forwardRef<any, SheetProps>(
     const onDragEnd = useStableCallback<DragHandler>((event, info) => {
       onDragEndProp?.(event, info);
 
-      const sheetHeight = getSheetHeight(sheetRef);
+      const focusedElement = document.activeElement as HTMLElement | null;
+
+      if (focusedElement) {
+        const isInput =
+          focusedElement.tagName === 'INPUT' ||
+          focusedElement.tagName === 'TEXTAREA';
+
+        // If the focused element is an input, blur it to prevent focus issues
+        if (isInput) {
+          focusedElement.blur();
+        }
+      }
+
       const currentY = y.get();
 
       let yTo = 0;
@@ -172,14 +199,6 @@ export const Sheet = forwardRef<any, SheetProps>(
         const dragDistance = Math.abs(info.offset.y);
         const isFlick = Math.abs(info.velocity.y) > dragVelocityThreshold;
 
-        // Calculate all snap point Y values for easier comparison
-        const snapPoints = computeSnapPoints({ snapPointsProp, sheetHeight });
-        const snapYValues = snapPoints
-          .map((_, i) =>
-            computeSnapY({ sheetHeight, snapPoints, snapIndex: i })
-          )
-          .filter((snapY): snapY is number => snapY !== null);
-
         let result: { yTo: number; snapIndex: number | undefined };
 
         if (isFlick) {
@@ -188,23 +207,22 @@ export const Sheet = forwardRef<any, SheetProps>(
               dragDirection,
               dragDistance,
               currentY,
-              snapYValues,
+              snapPoints,
               sheetHeight,
             });
           } else {
             result = handleFastUpwardFlick({
               dragDirection,
               currentY,
-              snapYValues,
+              snapPoints,
             });
           }
         } else {
           result = handleLowVelocityDrag({
             dragDirection,
             currentY,
-            snapYValues,
-            sheetHeight,
             snapPoints,
+            sheetHeight,
             currentSnap,
             dragCloseThreshold,
           });
@@ -215,12 +233,11 @@ export const Sheet = forwardRef<any, SheetProps>(
         // If disableDismiss is true, prevent closing via gesture
         if (disableDismiss && yTo + 1 >= sheetHeight) {
           // Use the bottom-most open snap point
-          const bottomSnapIndex = snapYValues.length - 1;
-          const bottomSnapY = snapYValues[bottomSnapIndex];
+          const bottomSnapPoint = snapPoints.find((s) => s.snapValue > 0);
 
-          if (bottomSnapY !== undefined && bottomSnapY > 0) {
-            yTo = bottomSnapY;
-            if (bottomSnapIndex) updateSnap(bottomSnapIndex);
+          if (bottomSnapPoint) {
+            yTo = bottomSnapPoint.snapValueY;
+            updateSnap(bottomSnapPoint.snapIndex);
           } else {
             // If no open snap points available, stay at current position
             yTo = currentY;
@@ -238,7 +255,7 @@ export const Sheet = forwardRef<any, SheetProps>(
           // If disableDismiss, snap back to the open position
           yTo = 0;
         } else {
-          yTo = sheetHeight;
+          yTo = closedY;
         }
       }
 
@@ -257,64 +274,49 @@ export const Sheet = forwardRef<any, SheetProps>(
 
     useImperativeHandle(ref, () => ({
       y,
-      snapTo: async (snapIndex: number) => {
-        if (!snapPointsProp) {
-          console.warn('Snapping is not possible without `snapPoints` prop.');
-          return;
-        }
-
-        const snapY = getSnapY(snapIndex);
-
-        if (snapY === null) {
-          console.warn(`Invalid snap index ${snapIndex}.`);
-          return;
-        }
-
-        await animate(y, snapY, {
-          ...animationOptions,
-          onComplete: () => {
-            updateSnap(snapIndex);
-            if (snapPointsProp[snapIndex] === 0) onClose();
-          },
-        });
-      },
-      getSnapY: (snapIndex: number) => {
-        if (!snapPointsProp) {
-          console.warn('Snapping is not possible without `snapPoints` prop.');
-          return null;
-        }
-
-        return getSnapY(snapIndex);
-      },
+      yInverted,
+      height: sheetHeight,
+      snapTo,
     }));
 
     useModalEffect({
       y,
-      sheetRef,
-      snapPointsProp,
+      detent,
+      sheetHeight,
+      snapPoints,
       rootId: modalEffectRootId,
       startThreshold: modalEffectThreshold,
     });
 
-    // Motion should handle body scroll locking but it's not working
-    // properly on iOS. Scroll locking from React Aria seems to work much better.
+    /**
+     * Motion should handle body scroll locking but it's not working properly on iOS.
+     * Scroll locking from React Aria seems to work much better 🤷‍♂️
+     */
     usePreventScroll({
       isDisabled: disableScrollLocking || !isOpen,
     });
 
-    // Sheet state machine
     const state = useSheetState({
       isOpen,
       onOpen: async () => {
         onOpenStart?.();
-        const yTo = getSnapY(initialSnap) ?? 0;
+
+        const initialSnapPoint =
+          initialSnap !== undefined ? getSnapPoint(initialSnap) : null;
+
+        const yTo = initialSnapPoint?.snapValueY ?? 0;
+
         await animate(y, yTo, animationOptions);
-        updateSnap(initialSnap);
+
+        if (initialSnap !== undefined) {
+          updateSnap(initialSnap);
+        }
+
         onOpenEnd?.();
       },
       onClosing: async () => {
         onCloseStart?.();
-        await animate(y, windowHeight, animationOptions);
+        await animate(y, closedY, animationOptions);
         onCloseEnd?.();
       },
     });
@@ -330,20 +332,13 @@ export const Sheet = forwardRef<any, SheetProps>(
     };
 
     const context: SheetContextType = {
-      animationOptions,
       currentSnap,
       detent,
       disableDrag,
-      disableDismiss,
       dragProps,
-      ensureContentReachability,
       indicatorRotation,
-      initialSnap,
-      isOpen,
-      reduceMotion,
+      sheetBoundsRef,
       sheetRef,
-      snapPoints: snapPointsProp,
-      windowHeight,
       y,
     };
 
@@ -353,8 +348,8 @@ export const Sheet = forwardRef<any, SheetProps>(
           {...rest}
           ref={ref}
           data-sheet-state={state}
-          className={`react-modal-sheet ${className}`}
-          style={{ ...styles.wrapper, zIndex, visibility, ...style }}
+          className={`react-modal-sheet-root ${className}`}
+          style={{ ...styles.root, zIndex, visibility, ...style }}
         >
           {state !== 'closed' ? children : null}
         </motion.div>

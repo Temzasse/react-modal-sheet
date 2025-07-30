@@ -5,12 +5,18 @@ import { SheetContainer } from './SheetContainer';
 import { SheetContent } from './SheetContent';
 import { SheetHeader } from './SheetHeader';
 import { Sheet as SheetBase } from './sheet';
-import type { SheetCompound, SheetDraggableProps } from './types';
+import type {
+  SheetCompound,
+  SheetDraggableProps,
+  SheetSnapPoint,
+} from './types';
 
 export interface SheetRef {
   y: MotionValue<number>;
+  yInverted: MotionValue<number>;
+  height: number;
   snapTo: (index: number) => Promise<void>;
-  getSnapY: (snapIndex: number) => number | null;
+  getSnapPoint: (snapIndex: number) => SheetSnapPoint | null;
 }
 
 export const Sheet: SheetCompound = Object.assign(SheetBase, {
@@ -28,4 +34,5 @@ export type {
   SheetBackdropProps,
   SheetContainerProps,
   SheetStateInfo,
+  SheetSnapPoint,
 } from './types';

@@ -1,54 +1,40 @@
-import { inDescendingOrder } from './utils';
-
-/**
- * Make sure the snap point is not out of bounds.
- * Snap points cannot be negative - `0` means the sheet is fully open.
- */
-export function validateSnapTo({
-  snapTo,
-  sheetHeight,
-}: {
-  snapTo: number;
-  sheetHeight: number;
-}) {
-  if (snapTo < 0) {
-    console.warn(
-      `Snap point is out of bounds. Sheet height is ${sheetHeight} but snap point is ${sheetHeight + Math.abs(snapTo)}.`
-    );
-  }
-
-  return Math.max(Math.round(snapTo), 0);
-}
-
-/**
- * Get the Y value of the given snap point. This can be passed to the `animate`
- * function to animate the sheet to the given snap point.
- */
-export function computeSnapY({
-  sheetHeight,
-  snapPoints,
-  snapIndex,
-}: {
-  sheetHeight: number;
-  snapPoints: number[];
-  snapIndex: number;
-}) {
-  const snapPoint = snapPoints[snapIndex];
-
-  if (snapPoint === undefined) {
-    console.warn(
-      `Invalid snap index ${snapIndex}. Snap points are: [${snapPoints.join(', ')}]`
-    );
-    return null;
-  }
-
-  const y = validateSnapTo({ snapTo: sheetHeight - snapPoint, sheetHeight });
-
-  return y;
-}
+import type { SheetSnapPoint } from './types';
+import { isAscendingOrder } from './utils';
 
 /**
  * Convert negative / percentage snap points to absolute values
+ *
+ * Example output:
+ *
+ * ```json
+ * [
+ *     {
+ *         "snapIndex": 0, // <-- bottom snap point
+ *         "snapValue": 0,
+ *         "snapValueY": 810
+ *     },
+ *     {
+ *         "snapIndex": 1,
+ *         "snapValue": 170,
+ *         "snapValueY": 640
+ *     },
+ *     {
+ *         "snapIndex": 2,
+ *         "snapValue": 405,
+ *         "snapValueY": 405
+ *     },
+ *     {
+ *         "snapIndex": 3,
+ *         "snapValue": 760,
+ *         "snapValueY": 50
+ *     },
+ *     {
+ *         "snapIndex": 4, // <-- top snap point
+ *         "snapValue": 810,
+ *         "snapValueY": 0
+ *     }
+ * ]
+ * ```
  */
 export function computeSnapPoints({
   snapPointsProp,
@@ -56,7 +42,15 @@ export function computeSnapPoints({
 }: {
   snapPointsProp: number[];
   sheetHeight: number;
-}) {
+}): SheetSnapPoint[] {
+  if (sheetHeight <= 0) {
+    console.warn(
+      `Sheet height is ${sheetHeight}, cannot compute snap points. ` +
+        'Make sure the sheet is mounted and has a valid height.'
+    );
+    return [];
+  }
+
   const snapPointValues = snapPointsProp.map((point) => {
     // Percentage values e.g. between 0.0 and 1.0
     if (point > 0 && point <= 1) {
@@ -67,16 +61,42 @@ export function computeSnapPoints({
   });
 
   console.assert(
-    inDescendingOrder(snapPointValues) || sheetHeight === 0,
-    `Snap points need to be in descending order got: [${snapPointsProp.join(', ')}]`
+    isAscendingOrder(snapPointValues),
+    `Snap points need to be in ascending order got: [${snapPointsProp.join(', ')}]`
   );
 
-  return snapPointValues;
+  // Make sure all snap points are within the sheet height
+  snapPointValues.forEach((snap) => {
+    if (snap < 0 || snap > sheetHeight) {
+      console.warn(
+        `Snap point ${snap} is outside of the sheet height ${sheetHeight}. ` +
+          'This can cause unexpected behavior. Consider adjusting your snap points.'
+      );
+    }
+  });
+
+  if (!snapPointValues.includes(sheetHeight)) {
+    console.warn(
+      'Snap points do not include the sheet height.' +
+        'Please include `1` as the last snap point or it will be included automatically.' +
+        'This is to ensure the sheet can be fully opened.'
+    );
+    snapPointValues.push(sheetHeight);
+  }
+
+  return snapPointValues.map((snap, index) => ({
+    snapIndex: index,
+    snapValue: snap, // Absolute value from the bottom of the sheet
+    snapValueY: sheetHeight - snap, // Y value is inverted as `y = 0` means sheet is at the top
+  }));
 }
 
-function findClosestSnapPoint(snapYValues: number[], currentY: number) {
-  return snapYValues.reduce((closest, snapY) =>
-    Math.abs(snapY - currentY) < Math.abs(closest - currentY) ? snapY : closest
+function findClosestSnapPoint(snapPoints: SheetSnapPoint[], currentY: number) {
+  return snapPoints.reduce((closest, snap) =>
+    Math.abs(snap.snapValueY - currentY) <
+    Math.abs(closest.snapValueY - currentY)
+      ? snap
+      : closest
   );
 }
 
@@ -84,165 +104,205 @@ export function handleFastDownwardFlick({
   dragDirection,
   dragDistance,
   currentY,
-  snapYValues,
+  snapPoints,
   sheetHeight,
 }: {
   dragDirection: 'up' | 'down';
   dragDistance: number;
   currentY: number;
-  snapYValues: number[];
+  snapPoints: SheetSnapPoint[];
   sheetHeight: number;
 }) {
   if (dragDirection === 'down') {
-    // Find the next snap point in the direction of the flick
-    const nextSnapIndex = snapYValues.findIndex((y) => y > currentY);
+    // Check if we should close based on distance
+    const draggedSignificantDistance = dragDistance > sheetHeight * 0.3;
 
-    if (nextSnapIndex !== -1) {
-      // Check if we should close based on distance
-      const draggedSignificantDistance = dragDistance > sheetHeight * 0.3;
+    if (draggedSignificantDistance) {
+      // Close the sheet if dragged far enough
+      return {
+        yTo: sheetHeight,
+        snapIndex: undefined,
+      };
+    }
 
-      if (draggedSignificantDistance) {
-        // Close the sheet if dragged far enough
-        return { yTo: sheetHeight, snapIndex: undefined };
-      } else {
-        // Go to next snap point
-        const nextSnapY = snapYValues[nextSnapIndex];
-        return { yTo: nextSnapY, snapIndex: snapYValues.indexOf(nextSnapY) };
-      }
+    // Find the next snap point down (higher Y value)
+    const closestSnapDown = snapPoints
+      .slice()
+      .reverse()
+      .find((s) => s.snapValueY > currentY);
+
+    if (closestSnapDown) {
+      // Go to next snap point
+      return {
+        yTo: closestSnapDown.snapValueY,
+        snapIndex: closestSnapDown.snapIndex,
+      };
     } else {
       // No snap point below, close
-      return { yTo: sheetHeight, snapIndex: undefined };
+      return {
+        yTo: sheetHeight,
+        snapIndex: undefined,
+      };
     }
   } else {
-    // Flicked down but net movement was up, go to closest snap point
-    const closestSnapY = findClosestSnapPoint(snapYValues, currentY);
-    return { yTo: closestSnapY, snapIndex: snapYValues.indexOf(closestSnapY) };
+    // Flicked down but net movement was up, go to closest snap point in either direction
+    const closestSnap = findClosestSnapPoint(snapPoints, currentY);
+
+    return {
+      yTo: closestSnap.snapValueY,
+      snapIndex: closestSnap.snapIndex,
+    };
   }
 }
 
 export function handleFastUpwardFlick({
   dragDirection,
   currentY,
-  snapYValues,
+  snapPoints,
 }: {
   dragDirection: 'up' | 'down';
   currentY: number;
-  snapYValues: number[];
+  snapPoints: SheetSnapPoint[];
 }) {
   if (dragDirection === 'up') {
-    // Find the previous snap point in the direction of the flick
-    const prevSnapIndex = [...snapYValues]
-      .reverse()
-      .findIndex((y) => y < currentY);
+    // Find the next snap point up (lower Y means higher in the sheet position)
+    const closestSnapUp = snapPoints.find((s) => s.snapValueY < currentY);
 
-    if (prevSnapIndex !== -1) {
-      // Return the Y value of the previous snap point
-      const actualIndex = snapYValues.length - 1 - prevSnapIndex;
-      return { yTo: snapYValues[actualIndex], snapIndex: actualIndex };
+    if (closestSnapUp) {
+      return {
+        yTo: closestSnapUp.snapValueY,
+        snapIndex: closestSnapUp.snapIndex,
+      };
     } else {
       // Already at top, stay there
-      return { yTo: snapYValues[0], snapIndex: 0 };
+      return {
+        yTo: snapPoints[snapPoints.length - 1].snapValueY,
+        snapIndex: snapPoints.length - 1,
+      };
     }
   } else {
-    // Flicked up but net movement was down, go to closest snap point
-    const closestSnapY = findClosestSnapPoint(snapYValues, currentY);
-    return { yTo: closestSnapY, snapIndex: snapYValues.indexOf(closestSnapY) };
+    // Flicked up but net movement was down, go to closest snap point in either direction
+    const closestSnap = findClosestSnapPoint(snapPoints, currentY);
+
+    return {
+      yTo: closestSnap.snapValueY,
+      snapIndex: closestSnap.snapIndex,
+    };
   }
 }
 
 export function handleLowVelocityDragDown({
   currentY,
   currentSnapY,
-  snapYValues,
+  snapPoints,
   sheetHeight,
   dragCloseThreshold,
 }: {
   currentY: number;
   currentSnapY: number;
-  snapYValues: number[];
+  snapPoints: SheetSnapPoint[];
   sheetHeight: number;
   dragCloseThreshold: number;
 }) {
-  const midpointThreshold = 0.5;
-  const nextSnapDownY = snapYValues.find((y) => y > currentSnapY);
+  // Find the closest snap point down (higher Y value)
+  const closestSnapDown = snapPoints
+    .slice()
+    .reverse()
+    .find((s) => s.snapValueY > currentSnapY);
 
-  if (nextSnapDownY) {
+  if (closestSnapDown) {
     const midpoint =
-      currentSnapY + (nextSnapDownY - currentSnapY) * midpointThreshold;
+      currentSnapY + (closestSnapDown.snapValueY - currentSnapY) * 0.5;
 
     if (currentY > midpoint) {
       // Past midpoint, go to next snap point
       return {
-        yTo: nextSnapDownY,
-        snapIndex: snapYValues.indexOf(nextSnapDownY),
+        yTo: closestSnapDown.snapValueY,
+        snapIndex: closestSnapDown.snapIndex,
       };
     } else {
       // Stay at current snap point
-      return { yTo: currentSnapY, snapIndex: undefined };
+      return {
+        yTo: currentSnapY,
+        snapIndex: undefined,
+      };
     }
   } else {
-    // No snap point below, check if should close
-    const lastSnapY = snapYValues[snapYValues.length - 1];
-    const distanceFromLast = currentY - lastSnapY;
-    const shouldClose = distanceFromLast > sheetHeight * dragCloseThreshold;
-
-    if (shouldClose) {
-      return { yTo: sheetHeight, snapIndex: undefined };
-    } else {
-      return { yTo: lastSnapY, snapIndex: snapYValues.length - 1 };
+    // No snap point below, check if we should close
+    if (currentY > sheetHeight * dragCloseThreshold) {
+      // Close the sheet if dragged far enough
+      return {
+        yTo: sheetHeight,
+        snapIndex: undefined,
+      };
     }
+    // Otherwise, stay at current snap point
+    return {
+      yTo: currentSnapY,
+      snapIndex: undefined,
+    };
   }
 }
 
 export function handleLowVelocityDragUp({
   currentY,
   currentSnapY,
-  snapYValues,
+  snapPoints,
 }: {
   currentY: number;
   currentSnapY: number;
-  snapYValues: number[];
+  snapPoints: SheetSnapPoint[];
 }) {
-  const midpointThreshold = 0.5;
-  const nextSnapUpY = [...snapYValues].reverse().find((y) => y < currentSnapY);
+  const nextSnapUp = snapPoints.find((s) => s.snapValueY < currentSnapY);
 
-  if (nextSnapUpY) {
+  if (nextSnapUp) {
     const midpoint =
-      currentSnapY - (currentSnapY - nextSnapUpY) * midpointThreshold;
+      currentSnapY - (currentSnapY - nextSnapUp.snapValueY) * 0.5;
 
     if (currentY < midpoint) {
       // Past midpoint, go to next snap point
-      return { yTo: nextSnapUpY, snapIndex: snapYValues.indexOf(nextSnapUpY) };
+      return {
+        yTo: nextSnapUp.snapValueY,
+        snapIndex: nextSnapUp.snapIndex,
+      };
     } else {
       // Stay at current snap point
-      return { yTo: currentSnapY, snapIndex: undefined };
+      return {
+        yTo: currentSnapY,
+        snapIndex: undefined,
+      };
     }
   } else {
     // Already at top
-    return { yTo: snapYValues[0], snapIndex: 0 };
+    return {
+      yTo: snapPoints[snapPoints.length - 1].snapValueY,
+      snapIndex: 0,
+    };
   }
 }
 
 export function handleLowVelocityDrag({
   dragDirection,
   currentY,
-  snapYValues,
-  sheetHeight,
   snapPoints,
+  sheetHeight,
   currentSnap,
   dragCloseThreshold,
 }: {
   dragDirection: 'up' | 'down';
   currentY: number;
-  snapYValues: number[];
+  snapPoints: SheetSnapPoint[];
   sheetHeight: number;
-  snapPoints: number[];
-  currentSnap: number;
+  currentSnap?: number;
   dragCloseThreshold: number;
 }) {
   // Find the two closest snap points
-  const sortedByDistance = snapYValues
-    .map((y, index) => ({ snapY: y, index, distance: Math.abs(y - currentY) }))
+  const sortedByDistance = snapPoints
+    .map((snap, index) => ({
+      snapY: snap.snapValueY,
+      index,
+      distance: Math.abs(snap.snapValueY - currentY),
+    }))
     .sort((a, b) => a.distance - b.distance);
 
   const closest = sortedByDistance[0];
@@ -250,18 +310,15 @@ export function handleLowVelocityDrag({
 
   if (secondClosest) {
     // Check if we're past the midpoint between current snap and the next one
-    const currentSnapY = computeSnapY({
-      sheetHeight,
-      snapPoints,
-      snapIndex: currentSnap,
-    });
+    const currentSnapY =
+      currentSnap !== undefined ? snapPoints[currentSnap].snapValueY : null;
 
     if (currentSnapY !== null) {
       if (dragDirection === 'down') {
         return handleLowVelocityDragDown({
           currentY,
           currentSnapY,
-          snapYValues,
+          snapPoints,
           sheetHeight,
           dragCloseThreshold,
         });
@@ -269,15 +326,21 @@ export function handleLowVelocityDrag({
         return handleLowVelocityDragUp({
           currentY,
           currentSnapY,
-          snapYValues,
+          snapPoints,
         });
       }
     } else {
       // Fallback to closest snap point
-      return { yTo: closest.snapY, snapIndex: closest.index };
+      return {
+        yTo: closest.snapY,
+        snapIndex: closest.index,
+      };
     }
   } else {
     // Only one snap point or fallback
-    return { yTo: closest.snapY, snapIndex: closest.index };
+    return {
+      yTo: closest.snapY,
+      snapIndex: closest.index,
+    };
   }
 }

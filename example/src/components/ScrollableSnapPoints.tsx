@@ -6,8 +6,8 @@ import { BoxList } from './BoxList';
 import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
 
-const snapPoints = [-50, 0.5, 170, 0];
-const initialSnap = 2;
+const snapPoints = [0, 170, 0.5, -50, 1];
+const initialSnap = 1;
 
 export function ScrollableSnapPoints() {
   const [currentSnap, setCurrentSnap] = useState(initialSnap);

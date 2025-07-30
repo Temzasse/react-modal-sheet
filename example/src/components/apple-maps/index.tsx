@@ -12,8 +12,8 @@ import { Link } from 'react-router';
 import styled from 'styled-components';
 import bgImg from './map-bg.jpeg';
 
-const snapPoints = [-30, 0.5, 100];
-const initialSnap = 2;
+const snapPoints = [100, 0.5, 1];
+const initialSnap = 0;
 
 export function AppleMaps() {
   const [sheetRef, setSheetRef] = useState<SheetRef | null>(null);
@@ -32,16 +32,9 @@ export function AppleMaps() {
     }
   }
 
-  function handleDragEnd() {
-    // Stop the input from accidentally gaining focus
-    if (document.activeElement === inputRef.current) {
-      inputRef.current?.blur();
-    }
-  }
-
   function handleInputFocus() {
-    if (snapPoint !== 0) {
-      sheetRef?.snapTo(0);
+    if (snapPoint !== 2) {
+      sheetRef?.snapTo(2);
     }
   }
 
@@ -62,7 +55,6 @@ export function AppleMaps() {
         disableDismiss
         onClose={close}
         onSnap={setSnapPoint}
-        onDragEnd={handleDragEnd}
       >
         <SheetContainer>
           <SheetHeader>
@@ -103,14 +95,10 @@ export function AppleMaps() {
 }
 
 function SheetSuggestions({ sheetRef }: { sheetRef: SheetRef }) {
-  const mix = interpolate(
-    [sheetRef.getSnapY(2) || 0, sheetRef.getSnapY(1) || 0],
-    [0, 1]
-  );
+  const mix = interpolate([100, 150], [0, 1]);
 
   const contentOpacity = useTransform(() => {
-    const y = sheetRef.y.get();
-    return mix(y);
+    return mix(sheetRef.yInverted.get());
   });
 
   return (

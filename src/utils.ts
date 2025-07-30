@@ -1,62 +1,10 @@
 import { type ForwardedRef, type RefCallback, type RefObject } from 'react';
-import { IS_SSR, REACHABILITY_PADDING_VAR } from './constants';
+import { IS_SSR } from './constants';
 
-/**
- * Get the rounded height of the sheet element and log a warning if the
- * element is not mounted yet but the height is requested.
- */
-export function getSheetHeight(sheetRef: RefObject<HTMLDivElement | null>) {
-  const sheetEl = sheetRef.current;
-
-  if (!sheetEl) {
-    console.warn(
-      'Sheet height is not available because the sheet element is not mounted yet.'
-    );
-    return 0;
-  }
-
-  const height = Math.round(sheetEl.getBoundingClientRect().height);
-
-  /**
-   * Take into account the padding bottom, if it exists,
-   * which should NOT contribute to the sheet height
-   */
-  const paddingBottom = parseFloat(
-    getComputedStyle(sheetEl).getPropertyValue(REACHABILITY_PADDING_VAR) || '0'
-  );
-
-  console.log(`Sheet height: ${height}px, padding bottom: ${paddingBottom}px`);
-
-  return height;
-}
-
-/**
- * Get the closest number to the goal from the array of numbers.
- */
-export function getClosest(nums: number[], goal: number) {
-  let closest = nums[0];
-  let minDifference = Math.abs(nums[0] - goal);
-
-  for (let i = 1; i < nums.length; i++) {
-    const difference = Math.abs(nums[i] - goal);
-    if (difference < minDifference) {
-      closest = nums[i];
-      minDifference = difference;
-    }
-  }
-
-  return closest;
-}
-
-/**
- * Check if the array is in descending order.
- * This is used to validate the snap points.
- */
-export function inDescendingOrder(arr: number[]) {
+export function isAscendingOrder(arr: number[]) {
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i + 1] > arr[i]) return false;
+    if (arr[i + 1] < arr[i]) return false;
   }
-
   return true;
 }
 

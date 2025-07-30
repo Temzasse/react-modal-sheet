@@ -5,7 +5,7 @@ import { styled } from 'styled-components';
 import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
 
-const snapPoints = [1, 200, 0];
+const snapPoints = [0, 200, 1];
 
 export function ContentHeight() {
   const [boxes, setBoxes] = useState(2);
@@ -22,7 +22,7 @@ export function ContentHeight() {
           ref={sheetRef}
           isOpen={isOpen}
           onClose={close}
-          initialSnap={0}
+          initialSnap={1}
           snapPoints={snapPoints}
           detent="content-height"
         >

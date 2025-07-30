@@ -10,7 +10,11 @@ export function Scrollable() {
       description="Sheet that has scrollable content inside it."
     >
       {({ isOpen, close }) => (
-        <Sheet isOpen={isOpen} onClose={close} snapPoints={[-50, 0.5, 170, 0]}>
+        <Sheet
+          isOpen={isOpen}
+          onClose={close}
+          snapPoints={[0, 170, 0.5, -50, 1]}
+        >
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content>
