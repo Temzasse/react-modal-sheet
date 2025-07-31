@@ -31,8 +31,7 @@ import { useSheetState } from './hooks/use-sheet-state';
 import { useStableCallback } from './hooks/use-stable-callback';
 import {
   computeSnapPoints,
-  handleFastDownwardFlick,
-  handleFastUpwardFlick,
+  handleHighVelocityDrag,
   handleLowVelocityDrag,
 } from './snap';
 import { styles } from './styles';
@@ -79,7 +78,8 @@ export const Sheet = forwardRef<any, SheetProps>(
       snapPointsProp && sheetHeight > 0
         ? computeSnapPoints({ sheetHeight, snapPointsProp })
         : [];
-    const { windowHeight: closedY } = useDimensions();
+    const { windowHeight } = useDimensions();
+    const closedY = sheetHeight > 0 ? sheetHeight : windowHeight;
     const y = useMotionValue(closedY);
     const yInverted = useTransform(y, (val) => Math.max(sheetHeight - val, 0));
     const indicatorRotation = useMotionValue(0);
@@ -142,23 +142,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       });
     });
 
-    const onDrag = useStableCallback<DragHandler>((event, info) => {
-      onDragProp?.(event, info);
-
-      const currentY = y.get();
-
-      // Update drag indicator rotation based on drag velocity
-      const velocity = y.getVelocity();
-      if (velocity > 0) indicatorRotation.set(10);
-      if (velocity < 0) indicatorRotation.set(-10);
-
-      // Make sure user cannot drag beyond the top of the sheet
-      y.set(Math.max(currentY + info.delta.y, 0));
-    });
-
-    const onDragStart = useStableCallback<DragHandler>((event, info) => {
-      onDragStartProp?.(event, info);
-
+    const blurActiveInput = useStableCallback(() => {
       // Find focused input inside the sheet and blur it when dragging starts
       // to prevent a weird ghost caret "bug" on mobile
       const focusedElement = document.activeElement as HTMLElement | null;
@@ -174,57 +158,64 @@ export const Sheet = forwardRef<any, SheetProps>(
       }
     });
 
+    const onDrag = useStableCallback<DragHandler>((event, info) => {
+      onDragProp?.(event, info);
+
+      const currentY = y.get();
+
+      // Update drag indicator rotation based on drag velocity
+      const velocity = y.getVelocity();
+      if (velocity > 0) indicatorRotation.set(10);
+      if (velocity < 0) indicatorRotation.set(-10);
+
+      // Make sure user cannot drag beyond the top of the sheet
+      y.set(Math.max(currentY + info.delta.y, 0));
+    });
+
+    const onDragStart = useStableCallback<DragHandler>((event, info) => {
+      blurActiveInput();
+      onDragStartProp?.(event, info);
+    });
+
     const onDragEnd = useStableCallback<DragHandler>((event, info) => {
+      blurActiveInput();
       onDragEndProp?.(event, info);
-
-      const focusedElement = document.activeElement as HTMLElement | null;
-
-      if (focusedElement) {
-        const isInput =
-          focusedElement.tagName === 'INPUT' ||
-          focusedElement.tagName === 'TEXTAREA';
-
-        // If the focused element is an input, blur it to prevent focus issues
-        if (isInput) {
-          focusedElement.blur();
-        }
-      }
 
       const currentY = y.get();
 
       let yTo = 0;
 
-      if (snapPointsProp) {
-        const dragDirection = info.offset.y > 0 ? 'down' : 'up';
-        const dragDistance = Math.abs(info.offset.y);
-        const isFlick = Math.abs(info.velocity.y) > dragVelocityThreshold;
+      const currentSnapPoint =
+        currentSnap !== undefined ? getSnapPoint(currentSnap) : null;
+
+      if (currentSnapPoint) {
+        const dragOffsetDirection = info.offset.y > 0 ? 'down' : 'up';
+        const dragVelocityDirection = info.velocity.y > 0 ? 'down' : 'up';
+        const isHighVelocity =
+          Math.abs(info.velocity.y) > dragVelocityThreshold;
+
+        console.log(
+          `dragOffsetDirection = ${dragOffsetDirection}\n` +
+            `dragVelocityDirection = ${dragVelocityDirection}\n` +
+            `isHighVelocity = ${isHighVelocity}\n` +
+            `currentY = ${currentY}\n` +
+            `currentSnapY = ${currentSnapPoint.snapValueY}\n`
+        );
 
         let result: { yTo: number; snapIndex: number | undefined };
 
-        if (isFlick) {
-          if (info.velocity.y > 0) {
-            result = handleFastDownwardFlick({
-              dragDirection,
-              dragDistance,
-              currentY,
-              snapPoints,
-              sheetHeight,
-            });
-          } else {
-            result = handleFastUpwardFlick({
-              dragDirection,
-              currentY,
-              snapPoints,
-            });
-          }
+        if (isHighVelocity) {
+          result = handleHighVelocityDrag({
+            snapPoints,
+            dragDirection: dragVelocityDirection,
+          });
         } else {
           result = handleLowVelocityDrag({
-            dragDirection,
+            currentSnapPoint,
             currentY,
+            dragDirection: dragOffsetDirection,
             snapPoints,
-            sheetHeight,
-            currentSnap,
-            dragCloseThreshold,
+            velocity: info.velocity.y,
           });
         }
 

@@ -1,4 +1,5 @@
 import {
+  AnimatePresence,
   interpolate,
   motion,
   useMotionTemplate,
@@ -14,6 +15,7 @@ import bgImg from './map-bg.jpeg';
 
 const snapPoints = [100, 0.5, 1];
 const initialSnap = 0;
+const lastSnapIndex = snapPoints.length - 1;
 
 export function AppleMaps() {
   const [sheetRef, setSheetRef] = useState<SheetRef | null>(null);
@@ -33,17 +35,28 @@ export function AppleMaps() {
   }
 
   function handleInputFocus() {
-    if (snapPoint !== 2) {
-      sheetRef?.snapTo(2);
+    if (snapPoint !== lastSnapIndex) {
+      sheetRef?.snapTo(lastSnapIndex);
     }
   }
 
   return (
     <Container>
-      <BackLink to="..">
-        <FiChevronLeft size={16} />
-        <span>Back</span>
-      </BackLink>
+      <AnimatePresence>
+        {snapPoint < lastSnapIndex && (
+          <BackLinkContainer
+            key="back-link"
+            initial={false}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <BackLink to="..">
+              <FiChevronLeft size={16} />
+              <span>Back</span>
+            </BackLink>
+          </BackLinkContainer>
+        )}
+      </AnimatePresence>
 
       <FakeMap />
 
@@ -82,13 +95,15 @@ export function AppleMaps() {
 
           <SheetContent
             // Only scroll when at the upmost snap point
-            disableScroll={(state) => state.currentSnap !== 0}
+            disableScroll={(state) => state.currentSnap !== lastSnapIndex}
             scrollRef={scrollRef}
             style={{ borderTopColor: contentBorderColor }}
           >
             {!!sheetRef && <SheetSuggestions sheetRef={sheetRef} />}
           </SheetContent>
         </SheetContainer>
+
+        {snapPoint === lastSnapIndex && <Sheet.Backdrop />}
       </Sheet>
     </Container>
   );
@@ -207,11 +222,14 @@ const ProfilePicture = styled.img`
   object-fit: cover;
 `;
 
-const BackLink = styled(Link)`
+const BackLinkContainer = styled(motion.div)`
   position: fixed;
   top: 16px;
   left: 16px;
   z-index: 1000;
+`;
+
+const BackLink = styled(Link)`
   display: flex;
   align-items: center;
   gap: 8px;

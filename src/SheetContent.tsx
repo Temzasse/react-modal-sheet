@@ -22,18 +22,19 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
     ref
   ) => {
     const sheetContext = useSheetContext();
-    const { constraintsRef, onMeasureDragConstraints } = useDragConstraints();
-    const { scrollPosition, scrollRef } = useScrollPosition();
+    const dragConstraints = useDragConstraints();
+    const scroll = useScrollPosition();
 
-    const disableDragDueToScroll = scrollPosition && scrollPosition !== 'top';
+    const disableDragDueToScroll =
+      scroll.scrollPosition && scroll.scrollPosition !== 'top';
 
     const disableDragDueToProp =
       typeof disableDragProp === 'function'
         ? disableDragProp({
-            scrollPosition,
+            scrollPosition: scroll.scrollPosition,
             currentSnap: sheetContext.currentSnap,
           })
-        : disableDragProp;
+        : Boolean(disableDragProp);
 
     const disableDrag =
       disableDragDueToProp ||
@@ -43,7 +44,7 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
     const disableScroll =
       typeof disableScrollProp === 'function'
         ? disableScrollProp({
-            scrollPosition,
+            scrollPosition: scroll.scrollPosition,
             currentSnap: sheetContext.currentSnap,
           })
         : Boolean(disableScrollProp);
@@ -69,15 +70,15 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
     return (
       <motion.div
         {...rest}
-        ref={mergeRefs([ref, constraintsRef])}
+        ref={mergeRefs([ref, dragConstraints.constraintsRef])}
         className={`react-modal-sheet-content ${className}`}
         style={contentStyle}
         {...dragProps}
-        dragConstraints={constraintsRef}
-        onMeasureDragConstraints={onMeasureDragConstraints}
+        dragConstraints={dragConstraints.constraintsRef}
+        onMeasureDragConstraints={dragConstraints.onMeasureDragConstraints}
       >
         <motion.div
-          ref={mergeRefs([scrollRef, scrollRefProp])}
+          ref={mergeRefs([scroll.scrollRef, scrollRefProp])}
           style={scrollStyle}
           className="react-modal-sheet-content-scroller"
         >

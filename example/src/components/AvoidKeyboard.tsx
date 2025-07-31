@@ -17,12 +17,7 @@ export function AvoidKeyboard() {
       description="Note that keyboard avoidance only works on mobile devices!"
     >
       {({ isOpen, close }) => (
-        <Sheet
-          ref={sheetRef}
-          isOpen={isOpen}
-          onClose={close}
-          detent="content-height"
-        >
+        <Sheet ref={sheetRef} isOpen={isOpen} onClose={close} detent="content">
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content style={{ paddingBottom: keyboardHeight }}>

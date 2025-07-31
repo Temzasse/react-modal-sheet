@@ -9,24 +9,24 @@ import { mergeRefs } from './utils';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
   ({ children, style, className = '', ...rest }, ref) => {
-    const { y, sheetRef, sheetBoundsRef, detent } = useSheetContext();
+    const sheetContext = useSheetContext();
 
     const containerStyle: MotionStyle = {
       ...styles.container,
       ...style,
-      y,
+      y: sheetContext.y,
     };
 
-    if (detent === 'default') {
+    if (sheetContext.detent === 'default') {
       containerStyle.height = DEFAULT_HEIGHT;
     }
 
-    if (detent === 'full') {
+    if (sheetContext.detent === 'full') {
       containerStyle.height = '100%';
       containerStyle.maxHeight = '100%';
     }
 
-    if (detent === 'content') {
+    if (sheetContext.detent === 'content') {
       containerStyle.height = 'auto';
       containerStyle.maxHeight = DEFAULT_HEIGHT;
     }
@@ -34,7 +34,11 @@ export const SheetContainer = forwardRef<any, SheetContainerProps>(
     return (
       <motion.div
         {...rest}
-        ref={mergeRefs([ref, sheetRef, sheetBoundsRef])}
+        ref={mergeRefs([
+          ref,
+          sheetContext.sheetRef,
+          sheetContext.sheetBoundsRef,
+        ])}
         className={`react-modal-sheet-container ${className}`}
         style={containerStyle}
       >
