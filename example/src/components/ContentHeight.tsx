@@ -6,6 +6,7 @@ import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
 
 const snapPoints = [0, 200, 1];
+const lastSnap = snapPoints.length - 1;
 
 export function ContentHeight() {
   const [boxes, setBoxes] = useState(2);
@@ -24,12 +25,12 @@ export function ContentHeight() {
           onClose={close}
           initialSnap={1}
           snapPoints={snapPoints}
-          detent="content-height"
+          detent="content"
         >
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content // Only scroll when at the upmost snap point
-              disableScroll={(state) => state.currentSnap !== 0}
+              disableScroll={(state) => state.currentSnap !== lastSnap}
             >
               <BoxList>
                 <Button onPress={() => snapTo(0)}>Snap to top</Button>

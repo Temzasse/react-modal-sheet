@@ -15,7 +15,7 @@ import bgImg from './map-bg.jpeg';
 
 const snapPoints = [100, 0.5, 1];
 const initialSnap = 0;
-const lastSnapIndex = snapPoints.length - 1;
+const lastSnap = snapPoints.length - 1;
 
 export function AppleMaps() {
   const [sheetRef, setSheetRef] = useState<SheetRef | null>(null);
@@ -35,15 +35,15 @@ export function AppleMaps() {
   }
 
   function handleInputFocus() {
-    if (snapPoint !== lastSnapIndex) {
-      sheetRef?.snapTo(lastSnapIndex);
+    if (snapPoint !== lastSnap) {
+      sheetRef?.snapTo(lastSnap);
     }
   }
 
   return (
     <Container>
       <AnimatePresence>
-        {snapPoint < lastSnapIndex && (
+        {snapPoint < lastSnap && (
           <BackLinkContainer
             key="back-link"
             initial={false}
@@ -95,7 +95,7 @@ export function AppleMaps() {
 
           <SheetContent
             // Only scroll when at the upmost snap point
-            disableScroll={(state) => state.currentSnap !== lastSnapIndex}
+            disableScroll={(state) => state.currentSnap !== lastSnap}
             scrollRef={scrollRef}
             style={{ borderTopColor: contentBorderColor }}
           >
@@ -103,7 +103,7 @@ export function AppleMaps() {
           </SheetContent>
         </SheetContainer>
 
-        {snapPoint === lastSnapIndex && <Sheet.Backdrop />}
+        {snapPoint === lastSnap && <Sheet.Backdrop />}
       </Sheet>
     </Container>
   );

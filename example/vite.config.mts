@@ -54,4 +54,7 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     exclude: ["react-modal-sheet"],
   },
+  server: {
+    allowedHosts: ['namely-enough-caiman.ngrok-free.app']
+  }
 }));

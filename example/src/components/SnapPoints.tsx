@@ -34,13 +34,13 @@ export function SnapPoints() {
             <Sheet.Content>
               <SheetContentWrapper>
                 <Controls>
-                  <Button onPress={() => snapTo(0)}>Snap to top</Button>
-                  <Button onPress={() => snapTo(1)}>
+                  <Button onPress={() => snapTo(4)}>Snap to top</Button>
+                  <Button onPress={() => snapTo(3)}>
                     Snap to -100px from top
                   </Button>
                   <Button onPress={() => snapTo(2)}>Snap to 50%</Button>
-                  <Button onPress={() => snapTo(3)}>Snap to 100px</Button>
-                  <Button onPress={() => snapTo(4)}>Snap to 0 (close)</Button>
+                  <Button onPress={() => snapTo(1)}>Snap to 100px</Button>
+                  <Button onPress={() => snapTo(0)}>Snap to 0 (close)</Button>
                 </Controls>
               </SheetContentWrapper>
             </Sheet.Content>

@@ -63,6 +63,11 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
       ...styles.scroller,
     };
 
+    if (sheetContext.avoidKeyboard) {
+      scrollStyle.paddingBottom =
+        'env(keyboard-inset-height, var(--keyboard-inset-height, 0px))';
+    }
+
     if (disableScroll) {
       scrollStyle.overflowY = 'hidden';
     }
@@ -70,15 +75,15 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
     return (
       <motion.div
         {...rest}
-        ref={mergeRefs([ref, dragConstraints.constraintsRef])}
+        ref={mergeRefs([ref, dragConstraints.ref])}
         className={`react-modal-sheet-content ${className}`}
         style={contentStyle}
         {...dragProps}
-        dragConstraints={dragConstraints.constraintsRef}
-        onMeasureDragConstraints={dragConstraints.onMeasureDragConstraints}
+        dragConstraints={dragConstraints.ref}
+        onMeasureDragConstraints={dragConstraints.onMeasure}
       >
         <motion.div
-          ref={mergeRefs([scroll.scrollRef, scrollRefProp])}
+          ref={mergeRefs([scroll.ref, scrollRefProp])}
           style={scrollStyle}
           className="react-modal-sheet-content-scroller"
         >
@@ -89,4 +94,4 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
   }
 );
 
-SheetContent.displayName = 'SheetContentScrollable';
+SheetContent.displayName = 'SheetContent';

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 export function useScrollPosition() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState<
     'top' | 'bottom' | 'middle' | undefined
   >(undefined);
 
   useEffect(() => {
-    const element = scrollRef.current;
+    const element = ref.current;
     if (!element) return;
 
     let scrollTimeout: number | null = null;
@@ -68,5 +68,5 @@ export function useScrollPosition() {
     };
   }, []);
 
-  return { scrollRef, scrollPosition };
+  return { ref, scrollPosition };
 }

@@ -8,7 +8,7 @@ import { type BoundingBox } from 'motion/react';
 const constraints: BoundingBox = { bottom: 0, top: 0, left: 0, right: 0 };
 
 export function useDragConstraints() {
-  const constraintsRef = useRef<any>(null);
-  const onMeasureDragConstraints = useCallback(() => constraints, []);
-  return { constraintsRef, onMeasureDragConstraints };
+  const ref = useRef<any>(null);
+  const onMeasure = useCallback(() => constraints, []);
+  return { ref, onMeasure };
 }

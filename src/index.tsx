@@ -1,22 +1,18 @@
 import type { MotionValue } from 'motion/react';
+import type { RefObject } from 'react';
 
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetContainer } from './SheetContainer';
 import { SheetContent } from './SheetContent';
 import { SheetHeader } from './SheetHeader';
 import { Sheet as SheetBase } from './sheet';
-import type {
-  SheetCompound,
-  SheetDraggableProps,
-  SheetSnapPoint,
-} from './types';
+import type { SheetCompound, SheetDraggableProps } from './types';
 
 export interface SheetRef {
   y: MotionValue<number>;
   yInverted: MotionValue<number>;
   height: number;
   snapTo: (index: number) => Promise<void>;
-  getSnapPoint: (snapIndex: number) => SheetSnapPoint | null;
 }
 
 export const Sheet: SheetCompound = Object.assign(SheetBase, {
@@ -30,9 +26,9 @@ export const Sheet: SheetCompound = Object.assign(SheetBase, {
 export type SheetHeaderProps = SheetDraggableProps;
 export type SheetContentProps = SheetDraggableProps;
 export type {
-  SheetProps,
   SheetBackdropProps,
   SheetContainerProps,
-  SheetStateInfo,
+  SheetProps,
   SheetSnapPoint,
+  SheetStateInfo,
 } from './types';

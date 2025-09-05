@@ -30,6 +30,7 @@ export interface SheetTweenConfig {
 }
 
 export type SheetProps = {
+  avoidKeyboard?: boolean;
   children: ReactNode;
   detent?: SheetDetent;
   disableDismiss?: boolean;
@@ -103,6 +104,7 @@ export interface SheetContextType {
   disableDrag: boolean;
   dragProps?: SheetDragProps;
   indicatorRotation: MotionValue<number>;
+  avoidKeyboard: boolean;
   sheetBoundsRef: (node: HTMLDivElement | null) => void;
   sheetRef: RefObject<any>;
   y: MotionValue<any>;

@@ -29,6 +29,7 @@ import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
 import { useSheetState } from './hooks/use-sheet-state';
 import { useStableCallback } from './hooks/use-stable-callback';
+import { useVirtualKeyboard } from './hooks/use-virtual-keyboard';
 import {
   computeSnapPoints,
   handleHighVelocityDrag,
@@ -40,10 +41,11 @@ import { type SheetContextType, type SheetProps } from './types';
 export const Sheet = forwardRef<any, SheetProps>(
   (
     {
+      avoidKeyboard = true,
       children,
       className = '',
       detent = 'default',
-      disableDrag = false,
+      disableDrag: disableDragProp = false,
       disableScrollLocking = false,
       disableDismiss = false,
       dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
@@ -78,17 +80,27 @@ export const Sheet = forwardRef<any, SheetProps>(
       snapPointsProp && sheetHeight > 0
         ? computeSnapPoints({ sheetHeight, snapPointsProp })
         : [];
+
     const { windowHeight } = useDimensions();
     const closedY = sheetHeight > 0 ? sheetHeight : windowHeight;
     const y = useMotionValue(closedY);
     const yInverted = useTransform(y, (val) => Math.max(sheetHeight - val, 0));
     const indicatorRotation = useMotionValue(0);
+
     const shouldReduceMotion = useReducedMotion();
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
       type: 'tween',
       ...(reduceMotion ? REDUCED_MOTION_TWEEN_CONFIG : tweenConfig),
     };
+
+    const keyboard = useVirtualKeyboard({
+      isEnabled: isOpen && avoidKeyboard,
+      containerRef: sheetRef,
+    });
+
+    // Disable drag if the keyboard is open to avoid weird behavior
+    const disableDrag = keyboard.isKeyboardOpen || disableDragProp;
 
     // +2 for tolerance in case the animated value is slightly off
     const zIndex = useTransform(y, (val) =>
@@ -193,14 +205,6 @@ export const Sheet = forwardRef<any, SheetProps>(
         const dragVelocityDirection = info.velocity.y > 0 ? 'down' : 'up';
         const isHighVelocity =
           Math.abs(info.velocity.y) > dragVelocityThreshold;
-
-        console.log(
-          `dragOffsetDirection = ${dragOffsetDirection}\n` +
-            `dragVelocityDirection = ${dragVelocityDirection}\n` +
-            `isHighVelocity = ${isHighVelocity}\n` +
-            `currentY = ${currentY}\n` +
-            `currentSnapY = ${currentSnapPoint.snapValueY}\n`
-        );
 
         let result: { yTo: number; snapIndex: number | undefined };
 
@@ -307,7 +311,9 @@ export const Sheet = forwardRef<any, SheetProps>(
       },
       onClosing: async () => {
         onCloseStart?.();
+
         await animate(y, closedY, animationOptions);
+
         onCloseEnd?.();
       },
     });
@@ -328,6 +334,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       disableDrag,
       dragProps,
       indicatorRotation,
+      avoidKeyboard,
       sheetBoundsRef,
       sheetRef,
       y,

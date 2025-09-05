@@ -29,11 +29,11 @@ export const SheetHeader = forwardRef<any, SheetDraggableProps>(
     return (
       <motion.div
         {...rest}
-        ref={mergeRefs([ref, dragConstraints.constraintsRef])}
+        ref={mergeRefs([ref, dragConstraints.ref])}
         style={{ ...styles.headerWrapper, ...style }}
         {...dragProps}
-        dragConstraints={dragConstraints.constraintsRef}
-        onMeasureDragConstraints={dragConstraints.onMeasureDragConstraints}
+        dragConstraints={dragConstraints.ref}
+        onMeasureDragConstraints={dragConstraints.onMeasure}
       >
         {children || (
           <div className="react-modal-sheet-header" style={styles.header}>

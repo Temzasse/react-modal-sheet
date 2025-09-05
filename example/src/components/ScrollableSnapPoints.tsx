@@ -6,8 +6,9 @@ import { BoxList } from './BoxList';
 import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
 
-const snapPoints = [0, 170, 0.5, -50, 1];
+const snapPoints = [0, 170, 0.5, -200, 1];
 const initialSnap = 1;
+const lastSnap = snapPoints.length - 1;
 
 export function ScrollableSnapPoints() {
   const [currentSnap, setCurrentSnap] = useState(initialSnap);
@@ -33,7 +34,7 @@ export function ScrollableSnapPoints() {
 
             <Sheet.Content
               // Only scroll when at the upmost snap point
-              disableScroll={(state) => state.currentSnap !== 0}
+              disableScroll={(state) => state.currentSnap !== lastSnap}
             >
               <Header>
                 <CurrentSnapText>
@@ -52,7 +53,8 @@ export function ScrollableSnapPoints() {
                 <Button onPress={() => snapTo(0)}>0</Button>
                 <Button onPress={() => snapTo(1)}>1</Button>
                 <Button onPress={() => snapTo(2)}>2</Button>
-                <Button onPress={() => snapTo(3)}>Close</Button>
+                <Button onPress={() => snapTo(3)}>3</Button>
+                <Button onPress={() => snapTo(4)}>4</Button>
               </Controls>
             </Footer>
           </Sheet.Container>
