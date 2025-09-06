@@ -32,9 +32,6 @@ The gestures and animations are handled by the excellent [Motion](https://motion
 npm install motion
 ```
 
-> [!IMPORTANT]
-> If you are still using the old `framer-motion` package you need to upgrade to `motion` as `react-modal-sheet` is now built on top of the new `motion` package. **Version `v3.5.0` and older are compatible with `framer-motion`**.
-
 ---
 
 <details>
@@ -664,4 +661,3 @@ If you're experiencing issues after upgrading, check the "What's new in v5" sect
 1. **Snap points not working**: Ensure your snap points are in ascending order (`[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
 2. **Scrolling issues**: Remove `Sheet.Scroller` components as scrolling is now handled by `Sheet.Content`
 3. **Detent errors**: Update detent prop values (`"full-height"` → `"default"`, `"content-height"` → `"content"`)
-4. **Motion import errors**: Install `motion` package and remove `framer-motion`
