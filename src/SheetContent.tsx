@@ -25,8 +25,18 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
     const dragConstraints = useDragConstraints();
     const scroll = useScrollPosition();
 
+    const disableScroll =
+      typeof disableScrollProp === 'function'
+        ? disableScrollProp({
+            scrollPosition: scroll.scrollPosition,
+            currentSnap: sheetContext.currentSnap,
+          })
+        : Boolean(disableScrollProp);
+
     const disableDragDueToScroll =
-      scroll.scrollPosition && scroll.scrollPosition !== 'top';
+      !disableScroll &&
+      scroll.scrollPosition &&
+      scroll.scrollPosition !== 'top';
 
     const disableDragDueToProp =
       typeof disableDragProp === 'function'
@@ -40,14 +50,6 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
       disableDragDueToProp ||
       disableDragDueToScroll ||
       sheetContext.disableDrag;
-
-    const disableScroll =
-      typeof disableScrollProp === 'function'
-        ? disableScrollProp({
-            scrollPosition: scroll.scrollPosition,
-            currentSnap: sheetContext.currentSnap,
-          })
-        : Boolean(disableScrollProp);
 
     const dragProps =
       disableDrag || sheetContext.disableDrag
