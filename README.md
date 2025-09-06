@@ -497,6 +497,8 @@ function Example() {
 ```
 
 ```css
+/* styles.css */
+
 .sheetContainer {
   /* custom styles */
 }
@@ -512,6 +514,8 @@ function Example() {
 ```
 
 #### Vanilla CSS
+
+You can also use vanilla CSS to override the styles by targeting the exposed class names:
 
 ```css
 .react-modal-sheet-backdrop {
@@ -534,7 +538,7 @@ function Example() {
 #### CSS-in-JS
 
 ```tsx
-import { styled } from 'styled-components';
+import { styled } from 'styled-components'; // or emotion, pandacss, etc.
 
 function Example() {
   return (
@@ -565,6 +569,8 @@ const SheetBackdrop = styled(Sheet.Backdrop)`
 `;
 ```
 
+### Custom styles example
+
 You can customize the sheet quite a lot if you get creative with the styles.
 
 Here's an example how a totally custom sheet could look like:
@@ -572,6 +578,11 @@ Here's an example how a totally custom sheet could look like:
 <p align="center">
   <img width="355" height="768" src="media/example-custom-styles.gif">
 </p>
+
+See the [CustomStyles](https://github.com/Temzasse/react-modal-sheet/blob/main/example/src/components/CustomStyles.tsx) component to view the full implementation of the above example.
+
+> [!IMPORTANT]
+> Wrapping the sheet components with custom elements or components can have unexpected results since the default sheet styles provided by the library rely on the sheet parts being direct children of each other. Some behavious like keyboard avoidance or scroll handling might not work as expected if the sheet parts are not direct children of each other or if you customize the styles too much.
 
 ## ♿️ Accessibility
 
