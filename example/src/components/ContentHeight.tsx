@@ -9,7 +9,7 @@ const snapPoints = [0, 200, 1];
 const lastSnap = snapPoints.length - 1;
 
 export function ContentHeight() {
-  const [boxes, setBoxes] = useState(2);
+  const [boxes, setBoxes] = useState(1);
   const sheetRef = useRef<SheetRef>(null);
   const snapTo = (i: number) => sheetRef.current?.snapTo(i);
 

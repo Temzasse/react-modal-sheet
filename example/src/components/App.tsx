@@ -10,7 +10,8 @@ import {
   FaKeyboard as KeyboardIcon,
   FaLock as LockIcon,
   FaMoon as MoonIcon,
-  FaScroll as ScrollIcon,
+  FaPaintBrush as PaintIcon,
+  FaScroll as ScrollIcon
 } from 'react-icons/fa';
 
 import {
@@ -21,6 +22,7 @@ import {
 
 import { AvoidKeyboard } from './AvoidKeyboard';
 import { ContentHeight } from './ContentHeight';
+import { CustomStyles } from './CustomStyles';
 import { DisableDrag } from './DisableDrag';
 import { FullScreen } from './FullScreen';
 import { ReducedMotion } from './ReducedMotion';
@@ -87,6 +89,14 @@ export function App() {
           }
         />
         <Route
+          path="custom-styles/*"
+          element={
+            <Screen>
+              <CustomStyles />
+            </Screen>
+          }
+        />
+        <Route
           path="apple-music/*"
           element={
             <Screen>
@@ -137,7 +147,7 @@ export function App() {
             </Screen>
           }
         />
-         <Route
+        <Route
           path="full-screen/*"
           element={
             <Screen>
@@ -172,6 +182,13 @@ const ExampleSelector = () => {
         <ExampleLink to="content-height">
           <HeightIcon size={48} />
           <span>Use Content Height</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="custom-styles">
+          <PaintIcon size={32} />
+          <span>Custom Styles</span>
         </ExampleLink>
       </li>
 
@@ -244,7 +261,6 @@ const ExampleSelector = () => {
           <span>Full screen</span>
         </ExampleLink>
       </li>
-
 
       <li>
         <ExampleLink to="shadow-dom">
