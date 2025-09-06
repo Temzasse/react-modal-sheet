@@ -1,22 +1,22 @@
 import { useRef } from 'react';
-import { styled } from 'styled-components';
 import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
-import { useOverlayTriggerState } from 'react-stately';
 import { Sheet } from 'react-modal-sheet';
+import { useOverlayTriggerState } from 'react-stately';
+import { styled } from 'styled-components';
 
 import {
-  useOverlay,
-  useModal,
-  OverlayProvider,
   FocusScope,
+  OverlayProvider,
   useButton,
   useDialog,
+  useModal,
+  useOverlay,
 } from 'react-aria';
 
-import { NewMessageHeader } from './NewMessageHeader';
-import { NewMessageContent } from './NewMessageContent';
-import { useMetaThemeColor } from '../hooks';
 import { ScrollView } from '../common';
+import { useMetaThemeColor } from '../hooks';
+import { NewMessageContent } from './NewMessageContent';
+import { NewMessageHeader } from './NewMessageHeader';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
@@ -97,7 +97,6 @@ const MessageSheetComp = ({
           <NewMessageContent inputRef={inputRef} />
         </Sheet.Content>
       </Sheet.Container>
-      <Sheet.Backdrop />
     </>
   );
 };
@@ -130,6 +129,7 @@ const Topbar = styled.div`
   justify-content: space-between;
   padding: 8px 16px;
   color: #fff;
+  padding-top: env(safe-area-inset-top);
 `;
 
 const Logo = styled.div`

@@ -224,7 +224,7 @@ const ProfilePicture = styled.img`
 
 const BackLinkContainer = styled(motion.div)`
   position: fixed;
-  top: 16px;
+  top: max(16px, env(safe-area-inset-top));
   left: 16px;
   z-index: 1000;
 `;
