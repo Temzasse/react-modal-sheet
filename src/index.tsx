@@ -1,16 +1,18 @@
 import type { MotionValue } from 'motion/react';
+import type { RefObject } from 'react';
 
-import type { SheetCompound, SheetDraggableProps } from './types';
-import { Sheet as SheetBase } from './sheet';
+import { SheetBackdrop } from './SheetBackdrop';
 import { SheetContainer } from './SheetContainer';
 import { SheetContent } from './SheetContent';
 import { SheetHeader } from './SheetHeader';
-import { SheetBackdrop } from './SheetBackdrop';
-import { SheetScroller } from './SheetScroller';
+import { Sheet as SheetBase } from './sheet';
+import type { SheetCompound, SheetDraggableProps } from './types';
 
 export interface SheetRef {
   y: MotionValue<number>;
-  snapTo: (index: number) => void;
+  yInverted: MotionValue<number>;
+  height: number;
+  snapTo: (index: number) => Promise<void>;
 }
 
 export const Sheet: SheetCompound = Object.assign(SheetBase, {
@@ -18,15 +20,15 @@ export const Sheet: SheetCompound = Object.assign(SheetBase, {
   Header: SheetHeader,
   Content: SheetContent,
   Backdrop: SheetBackdrop,
-  Scroller: SheetScroller,
 });
 
 // Export types
 export type SheetHeaderProps = SheetDraggableProps;
 export type SheetContentProps = SheetDraggableProps;
 export type {
-  SheetProps,
   SheetBackdropProps,
-  SheetScrollerProps,
   SheetContainerProps,
+  SheetProps,
+  SheetSnapPoint,
+  SheetStateInfo,
 } from './types';

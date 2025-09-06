@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
 import { useMetaThemeColor } from '../hooks';
-import { album } from './data';
 import { Album } from './Album';
 import { Player } from './Player';
+import { album } from './data';
 
 export function AppleMusic() {
   const [isPlayerOpen, setPlayerOpen] = useState(false);

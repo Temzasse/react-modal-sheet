@@ -1,6 +1,6 @@
 import { type RefObject } from 'react';
-import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
 const people = [
   'john',
@@ -27,7 +27,7 @@ export function NewMessageContent({
   inputRef: RefObject<HTMLInputElement>;
 }) {
   return (
-    <Wrapper>
+    <>
       <Search>
         <SearchLabel>To:</SearchLabel>
         <SearchInput
@@ -36,31 +36,19 @@ export function NewMessageContent({
         />
       </Search>
 
-      <Sheet.Scroller>
-        <PeopleList>
-          {people.map(({ id, name, image }) => (
-            <Person key={id} tabIndex={0}>
-              <PersonImage
-                src={image(id)}
-                alt={`Profile picture for ${name}`}
-              />
-              <PersonName>{name}</PersonName>
-              <PersonStatus online={id % 2 === 0} />
-              <PersonName dimmed>{name}</PersonName>
-            </Person>
-          ))}
-        </PeopleList>
-      </Sheet.Scroller>
-    </Wrapper>
+      <PeopleList>
+        {people.map(({ id, name, image }) => (
+          <Person key={id} tabIndex={0}>
+            <PersonImage src={image(id)} alt={`Profile picture for ${name}`} />
+            <PersonName>{name}</PersonName>
+            <PersonStatus online={id % 2 === 0} />
+            <PersonName dimmed>{name}</PersonName>
+          </Person>
+        ))}
+      </PeopleList>
+    </>
   );
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-`;
 
 const Search = styled.label`
   border-top: 1px solid #333;
@@ -68,6 +56,9 @@ const Search = styled.label`
   display: flex;
   align-items: center;
   padding: 16px;
+  position: sticky;
+  top: 0;
+  background-color: #222;
 `;
 
 const SearchLabel = styled.span`

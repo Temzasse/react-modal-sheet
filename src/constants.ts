@@ -1,13 +1,15 @@
-export const MAX_HEIGHT = 'calc(100% - env(safe-area-inset-top) - 34px)';
+import type { SheetTweenConfig } from './types';
+
+export const DEFAULT_HEIGHT = 'calc(100% - env(safe-area-inset-top) - 34px)';
 
 export const IS_SSR = typeof window === 'undefined';
 
-export const DEFAULT_TWEEN_CONFIG = {
+export const DEFAULT_TWEEN_CONFIG: SheetTweenConfig = {
   ease: 'easeOut',
   duration: 0.2,
 };
 
-export const REDUCED_MOTION_TWEEN_CONFIG = {
+export const REDUCED_MOTION_TWEEN_CONFIG: SheetTweenConfig = {
   ease: 'linear',
   duration: 0.01,
 };

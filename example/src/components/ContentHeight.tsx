@@ -1,14 +1,15 @@
-import { useState, useRef } from 'react';
-import { styled } from 'styled-components';
+import { useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
-import { Button } from './common';
 import { ExampleLayout } from './ExampleLayout';
+import { Button } from './common';
 
-const snapPoints = [1, 200, 0];
+const snapPoints = [0, 200, 1];
+const lastSnap = snapPoints.length - 1;
 
 export function ContentHeight() {
-  const [boxes, setBoxes] = useState(2);
+  const [boxes, setBoxes] = useState(1);
   const sheetRef = useRef<SheetRef>(null);
   const snapTo = (i: number) => sheetRef.current?.snapTo(i);
 
@@ -22,31 +23,31 @@ export function ContentHeight() {
           ref={sheetRef}
           isOpen={isOpen}
           onClose={close}
-          initialSnap={0}
+          initialSnap={1}
           snapPoints={snapPoints}
-          detent="content-height"
+          detent="content"
         >
-          <Sheet.Container layout>
+          <Sheet.Container>
             <Sheet.Header />
-            <Sheet.Content layout="position">
-              <Sheet.Scroller>
-                <BoxList>
-                  <Button onPress={() => snapTo(0)}>Snap to top</Button>
-                  <Button onPress={() => snapTo(1)}>Snap to bottom</Button>
-                  <Button onPress={() => setBoxes((prev) => prev + 1)}>
-                    Add box
-                  </Button>
-                  <Button
-                    onPress={() => setBoxes((prev) => Math.max(0, prev - 1))}
-                  >
-                    Remove box
-                  </Button>
+            <Sheet.Content // Only scroll when at the upmost snap point
+              disableScroll={(state) => state.currentSnap !== lastSnap}
+            >
+              <BoxList>
+                <Button onPress={() => snapTo(0)}>Snap to top</Button>
+                <Button onPress={() => snapTo(1)}>Snap to bottom</Button>
+                <Button onPress={() => setBoxes((prev) => prev + 1)}>
+                  Add box
+                </Button>
+                <Button
+                  onPress={() => setBoxes((prev) => Math.max(0, prev - 1))}
+                >
+                  Remove box
+                </Button>
 
-                  {Array.from({ length: boxes }).map((_, i) => (
-                    <Box key={i}>{i}</Box>
-                  ))}
-                </BoxList>
-              </Sheet.Scroller>
+                {Array.from({ length: boxes }).map((_, i) => (
+                  <Box key={i}>{i}</Box>
+                ))}
+              </BoxList>
             </Sheet.Content>
           </Sheet.Container>
           <Sheet.Backdrop onTap={close} />

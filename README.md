@@ -1,5 +1,5 @@
 <p align='center'>
-  <img src="media/banner.jpg" alt="React Modal Sheet logo"/>
+  <img src="media/hero.jpg" alt="React Modal Sheet logo"/>
 <p/>
 
 <div align="center" >
@@ -10,12 +10,13 @@
   <br/>
   <img alt="npm version" src="https://img.shields.io/npm/v/react-modal-sheet?style=for-the-badge">
   <img alt="npm license" src="https://img.shields.io/npm/l/react-modal-sheet?style=for-the-badge">
+  <img alt="npm downloads" src="https://img.shields.io/npm/dm/react-modal-sheet?style=for-the-badge">
   <br/>
   <br/>
 </div>
 
-| ![](media/1.gif) | ![](media/2.gif) | ![](media/3.gif) | ![](media/4.gif) |
-| :--------------: | :--------------: | :--------------: | :--------------: |
+| ![](media/example-apple-maps.gif) | ![](media/example-apple-music.gif) | ![](media/example-snap-points.gif) | ![](media/example-scrollable.gif) |
+| :-------------------------------: | :--------------------------------: | :--------------------------------: | :-------------------------------: |
 
 ## 📦 Installation
 
@@ -31,14 +32,12 @@ The gestures and animations are handled by the excellent [Motion](https://motion
 npm install motion
 ```
 
-> [!IMPORTANT]
-> If you are still using the old `framer-motion` package you need to upgrade to `motion` as `react-modal-sheet` is now built on top of the new `motion` package. **Version `v3.5.0` and older are compatible with `framer-motion`**.
-
 ---
 
 <details>
   <summary><strong>📚 Table of contents</strong></summary>
   
+  - [What's new in v5](#whats-new-in-v5)
   - [Usage](#-usage)
   - [Props](#%EF%B8%8F-props)
   - [Methods and properties](#%EF%B8%8F-methods-and-properties)
@@ -48,6 +47,37 @@ npm install motion
   - [Accessibility](#%EF%B8%8F-accessibility)
   - [Troubleshooting](#-troubleshooting)
 </details>
+
+---
+
+## 🎉 What's new in v5
+
+Version 5 introduces several major improvements and breaking changes:
+
+### 🔄 Breaking Changes
+
+- **Removed `Sheet.Scroller`**: Scrolling is now handled automatically by `Sheet.Content`
+- **Snap point order reversed**: Snap points now use ascending order (e.g., `[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
+  - This aligns better with other bottom sheet libraries and makes more intuitive sense
+- **Detent prop values changed**:
+  - `"full-height"` → `"default"`
+  - `"content-height"` → `"content"`
+  - New `"full"` detent for viewport-filling sheets
+
+### ✨ New Features
+
+- **Built-in keyboard avoidance**: Best-effort automatic virtual keyboard handling with the `avoidKeyboard` prop
+- **Enhanced scroll control**: Dynamic `disableScroll` and `disableDrag` functions with scroll state
+- **Improved snap point handling**: Better snap point calculation and more natural snapping between points
+- **New sheet properties**: Access `height` and `yInverted` motion values via ref
+- **Prevent dismissal**: New `disableDismiss` prop to prevent sheet from being closed by user gestures
+
+### 🔧 Migration from v4
+
+1. Remove all `Sheet.Scroller` components - content is now scrollable by default
+2. Reverse your snap point arrays: `[1, 0.5, 0]` → `[0, 0.5, 1]`
+3. Update detent props: `detent="full-height"` → `detent="default"`
+4. Review virtual keyboard handling - it's now automatic with `avoidKeyboard={true}`
 
 ---
 
@@ -78,34 +108,36 @@ function Example() {
 
 The `Sheet` component follows the [Compound Component pattern](https://kentcdodds.com/blog/compound-components-with-react-hooks) in order to provide a flexible yet powerful API for creating highly customizable bottom sheet components.
 
-Since the final bottom sheet is composed from smaller building blocks (`Container`, `Content`, `Scroller`, `Header`, and `Backdrop`) you are in total control over the rendering output. So for example, if you don't want to have any backdrop in your sheet then you can just skip rendering it instead of passing some prop like `renderBackdrop={false}` to the main sheet component. Cool huh? 😎
+Since the final bottom sheet is composed from smaller building blocks (`Container`, `Content`, `Header`, and `Backdrop`) you are in total control over the rendering output. So for example, if you don't want to have any backdrop in your sheet then you can just skip rendering it instead of passing some prop like `renderBackdrop={false}` to the main sheet component. Cool huh? 😎
 
-Also, by constructing the sheet from smaller pieces makes it easier to apply any necessary accessibility related properties to the right components without requiring the main sheet component to be aware of them. You can read more about accessibility in the [Accessibility](#Accessibility) section.
+Also, by constructing the sheet from smaller pieces makes it easier to apply any necessary accessibility related properties to the right components without requiring the main sheet component to be aware of them. You can read more about accessibility in the Accessibility section below.
 
 ## 🎛️ Props
 
-| Name                    | Required | Default                              | Description                                                                                                                                                                                                                                                                      |
-| ----------------------- | -------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `children`              | yes      |                                      | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                                                                                                                                                                      |
-| `isOpen`                | yes      |                                      | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                                                                         |
-| `onClose`               | yes      |                                      | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                                                                 |
-| `disableDrag`           | no       | false                                | Disable drag for the whole sheet.                                                                                                                                                                                                                                                |
-| `disableScrollLocking`  | no       | false                                | Disable scroll locking for the `body` element while sheet is open. Can be useful if you face issues with input elements and the iOS virtual keyboard. See related [issue](https://github.com/Temzasse/react-modal-sheet/issues/135).                                             |
-| `detent`                | no       | `'full-height'`                      | The [detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados) in which the sheet should be in when opened. Available values: `'full-height'` or `'content-height'`.                                                      |
-| `onOpenStart`           | no       |                                      | Callback fn that is called when the sheet opening animation starts.                                                                                                                                                                                                              |
-| `onOpenEnd`             | no       |                                      | Callback fn that is called when the sheet opening animation is completed.                                                                                                                                                                                                        |
-| `onCloseStart`          | no       |                                      | Callback fn that is called when the sheet closing animation starts.                                                                                                                                                                                                              |
-| `onCloseEnd`            | no       |                                      | Callback fn that is called when the sheet closing animation is completed.                                                                                                                                                                                                        |
-| `onSnap`                | no       |                                      | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop.                                                                                                                                               |
-| `snapPoints`            | no       |                                      | Eg. `[-50, 0.5, 100, 0]` - where positive values are pixels from the bottom of the sheet and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of sheet height. **Prefer using `1` for representing a snap point for a fully visible sheet.** |
-| `initialSnap`           | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                                                               |
-| `modalEffectRootId`     | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables [iOS modal effect](#-ios-modal-view-effect).                                                                                                                                                            |
-| `modalEffectThreshold`  | no       | 0                                    | Threshold value between 0-1 which determines when the iOS modal effect will start while dragging the sheet - `0` corresponding to the start of the drag (0% has been dragged into view) and `1` corresponding to the end of the drag (100% of the sheet is visible).             |
-| `tweenConfig`           | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://motion.dev/docs/react-transitions#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                                                                  |
-| `mountPoint`            | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                                                               |
-| `prefersReducedMotion`  | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                                                               |
-| `dragVelocityThreshold` | no       | 500                                  | How fast the sheet must be flicked down to close. Higher values make the sheet harder to close.                                                                                                                                                                                  |
-| `dragCloseThreshold`    | no       | 0.6                                  | The portion of the sheet which must be dragged off-screen before it will close.                                                                                                                                                                                                  |
+| Name                    | Required | Default                              | Description                                                                                                                                                                                                                                                                                                                     |
+| ----------------------- | -------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`              | yes      |                                      | Use `Sheet.Container/Content/Header/Backdrop` to compose your bottom sheet.                                                                                                                                                                                                                                                     |
+| `isOpen`                | yes      |                                      | Boolean that indicates whether the sheet is open or not.                                                                                                                                                                                                                                                                        |
+| `onClose`               | yes      |                                      | Callback fn that is called when the sheet is closed by the user.                                                                                                                                                                                                                                                                |
+| `avoidKeyboard`         | no       | true                                 | Automatically avoid the virtual keyboard by adding bottom padding when the keyboard is open. Only works on mobile devices with [Virtual Keyboard](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) or [Visual Viewport](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) API support. |
+| `disableDrag`           | no       | false                                | Disable drag for the whole sheet.                                                                                                                                                                                                                                                                                               |
+| `disableDismiss`        | no       | false                                | Disable dismissing the sheet via dragging or high velocity swipe. When enabled, the sheet can only be closed programmatically.                                                                                                                                                                                                  |
+| `disableScrollLocking`  | no       | false                                | Disable scroll locking for the `body` element while sheet is open. Can be useful if you face issues with input elements and the iOS virtual keyboard. See related [issue](https://github.com/Temzasse/react-modal-sheet/issues/135).                                                                                            |
+| `detent`                | no       | `'default'`                          | The [detent](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados) in which the sheet should be in when opened. Available values: `'default'`, `'content'`, or `'full'`.                                                                                                     |
+| `onOpenStart`           | no       |                                      | Callback fn that is called when the sheet opening animation starts.                                                                                                                                                                                                                                                             |
+| `onOpenEnd`             | no       |                                      | Callback fn that is called when the sheet opening animation is completed.                                                                                                                                                                                                                                                       |
+| `onCloseStart`          | no       |                                      | Callback fn that is called when the sheet closing animation starts.                                                                                                                                                                                                                                                             |
+| `onCloseEnd`            | no       |                                      | Callback fn that is called when the sheet closing animation is completed.                                                                                                                                                                                                                                                       |
+| `onSnap`                | no       |                                      | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop.                                                                                                                                                                                              |
+| `snapPoints`            | no       |                                      | Eg. `[0, 0.5, 100, 1]` - where positive values are pixels from the bottom of the sheet and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of sheet height. **Must be in ascending order and should include 0 (closed) and 1 (fully open).**                                               |
+| `initialSnap`           | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                                                                                                              |
+| `modalEffectRootId`     | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables [iOS modal effect](#-ios-modal-view-effect).                                                                                                                                                                                                           |
+| `modalEffectThreshold`  | no       | 0                                    | Threshold value between 0-1 which determines when the iOS modal effect will start while dragging the sheet - `0` corresponding to the start of the drag (0% has been dragged into view) and `1` corresponding to the end of the drag (100% of the sheet is visible).                                                            |
+| `tweenConfig`           | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://motion.dev/docs/react-transitions#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                                                                                                                 |
+| `mountPoint`            | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                                                                                                              |
+| `prefersReducedMotion`  | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                                                                                                              |
+| `dragVelocityThreshold` | no       | 500                                  | How fast the sheet must be flicked down to close. Higher values make the sheet harder to close.                                                                                                                                                                                                                                 |
+| `dragCloseThreshold`    | no       | 0.6                                  | The portion of the sheet which must be dragged off-screen before it will close.                                                                                                                                                                                                                                                 |
 
 ## ⚙️ Methods and properties
 
@@ -117,9 +149,9 @@ Imperative method that can be accessed via a ref for snapping to a snap point in
 import { Sheet, SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
 
-const snapPoints = [1, 0.5, 0];
+const snapPoints = [0, 0.5, 1];
 
-function Example() {
+function SnapExample() {
   const [isOpen, setOpen] = useState(false);
   const ref = useRef<SheetRef>(null);
   const snapTo = (i: number) => ref.current?.snapTo(i);
@@ -144,7 +176,6 @@ function Example() {
             <button onClick={() => snapTo(0)}>Snap to index 0</button>
             <button onClick={() => snapTo(1)}>Snap to index 1</button>
             <button onClick={() => snapTo(2)}>Snap to index 2</button>
-            <button onClick={() => snapTo(3)}>Snap to index 3</button>
           </Sheet.Content>
         </Sheet.Container>
       </Sheet>
@@ -153,49 +184,43 @@ function Example() {
 }
 ```
 
-### Motion value `y`
+### Motion values `y`, `yInverted` and `height`
 
-The `y` value is an internal `MotionValue` that represents the distance to the top most position of the sheet when it is fully open. So for example the `y` value is zero when the sheet is completely open.
+The `y` value is an internal [MotionValue](https://motion.dev/docs/react-motion-value) that represents the distance to the top most position of the sheet when it is fully open. So for example the `y` value is zero when the sheet is completely open.
 
-Similarly to the `snapTo` method the `y` value can be accessed via a ref.
+The `yInverted` value is the inverse of the `y` value and represents the distance from the bottom of the sheet. This can be useful for certain animations or calculations.
 
-The `y` value can be useful for certain situtations, eg. when you want to combine snap points with scrollable sheet content and ensure that the content stays properly scrollable at any snap point.
+The `height` value represents the current height of the sheet in pixels.
 
-Below you can see a simplified example of this situation:
+All these values can be accessed via a ref, similar to the `snapTo` method.
+
+Below you can see an example of how to use these values:
 
 ```tsx
 import { Sheet, SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
 
-const snapPoints = [1, 0.5, 0];
-
-function Example() {
+function RefExample() {
   const [isOpen, setOpen] = useState(false);
   const ref = useRef<SheetRef>(null);
+
+  function doSomething() {
+    console.log('> Current y value:', ref.current?.y.get());
+    console.log('> Current yInverted value:', ref.current?.yInverted.get());
+    console.log('> Current height value:', ref.current?.height);
+  }
 
   return (
     <>
       <button onClick={() => setOpen(true)}>Open sheet</button>
 
-      <Sheet
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        initialSnap={1}
-        snapPoints={snapPoints}
-      >
+      <Sheet ref={ref} isOpen={isOpen} onClose={() => setOpen(false)}>
         <Sheet.Container>
-          {/**
-           * Since `Sheet.Content` is a `motion.div` it can receive motion values
-           * in it's style prop which allows us to utilise the exposed `y` value.
-           *
-           * By syncing the padding bottom with the `y` motion value we introduce
-           * an offset that ensures that the sheet content can be scrolled all the
-           * way to the bottom in every snap point.
-           */}
-          <Sheet.Content style={{ paddingBottom: ref.current?.y }}>
-            <Sheet.Scroller draggableAt="both">
-              {/* Some content here that makes the sheet content scrollable */}
-            </Sheet.Scroller>
+          <Sheet.Content>
+            <motion.div style={{ paddingBottom: ref.current?.y }}>
+              Use animated y value in some way
+            </motion.div>
+            {/* Your content here */}
           </Sheet.Content>
         </Sheet.Container>
       </Sheet>
@@ -204,30 +229,21 @@ function Example() {
 }
 ```
 
-> [!NOTE]
-> As this use case is quite a common one, the `Sheet.Scroller` component has a built-in prop called `autoPadding` which automatically keeps the bottom padding in sync with the animated `y` value.
->
-> See [Automatic padding with snap points](#automatic-padding-with-snap-points) for more details.
-
 ### Detents
 
-By default the sheet will take the full height of the page minus top padding and safe area inset. If you want the sheet height to be based on it's content you can pass `detent="content-height"` prop to the `Sheet` component:
+By default the sheet will take the full height of the page minus top padding and safe area inset. The `detent` prop controls the sheet's height behavior:
+
+- `"default"` - Sheet takes full height minus safe areas (default behavior)
+- `"content"` - Sheet height is based on its content
+- `"full"` - Sheet takes the entire viewport height with no safe area insets
 
 ```tsx
-function Example() {
-  const [isOpen, setOpen] = useState(false);
-
+function DetentExample() {
   return (
-    <Sheet
-      isOpen={isOpen}
-      onClose={() => setOpen(false)}
-      detent="content-height"
-    >
+    <Sheet detent="content">
       <Sheet.Container>
         <Sheet.Content>
-          <Sheet.Scroller>
-            <div style={{ height: 200 }}>Some content</div>
-          </Sheet.Scroller>
+          <div style={{ height: 200 }}>Some content</div>
         </Sheet.Content>
       </Sheet.Container>
     </Sheet>
@@ -235,9 +251,9 @@ function Example() {
 }
 ```
 
-If the sheet height changes dynamically the sheet will grow until it hits the maximum full height after which it becomes scrollable.
+When using `detent="content"` and the sheet height changes dynamically, the sheet will grow until it hits the maximum default height, after which it becomes scrollable.
 
-It is possible to use snap points with `detent="content-height"` **but** the snap points are restricted by the content height. For example if one of the snap points is 800px and the sheet height is only 700px then snapping to the 800px snap point would only snap to 700px since otherwise the sheet would become detached from the bottom.
+It is possible to use snap points with `detent="content"` **but** the snap points are restricted by the content height. For example if one of the snap points is 800px and the sheet height is only 700px then snapping to the 800px snap point would only snap to 700px since otherwise the sheet would become detached from the bottom.
 
 > ℹ️ If you are wondering where the term `detent` comes from it's from Apple's [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados).
 
@@ -269,29 +285,17 @@ Sheet header acts as a drag target and has a dragging direction indicator. Rende
 
 ### `Sheet.Content`
 
-Sheet content acts as a drag target and can be used in conjunction with `Sheet.Scroller` to make sure that content which doesn't fit inside the sheet becomes scrollable.
+Sheet content acts as a drag target and handles scrollable content internally. It automatically manages scroll behavior and keyboard avoidance.
 
-> 🖥 Rendered element: `motion.div`.
+> 🖥 Rendered element: `motion.div` (with internal scroller).
 
 #### Content props
 
-| Name          | Required | Default | Description                         |
-| ------------- | -------- | ------- | ----------------------------------- |
-| `disableDrag` | no       | false   | Disable drag for the sheet content. |
-
-### `Sheet.Scroller`
-
-Sheet scroller can be used to make the whole sheet content or parts of it scrollable in a way that drag gestures are properly disabled and enabled based on the scroll state. See the [Scrolling on touch devices](#scrolling-on-touch-devices) section for more details.
-
-> 🖥 Rendered element: `motion.div`.
-
-#### Scroller props
-
-| Name            | Required | Default | Description                                                                                                                                              |
-| --------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `draggableAt`   | no       | `"top"` | Should the drag be enabled when the element is scrolled either to the top, bottom, or both. Available values: `top`, `bottom`, `both`.                   |
-| `disableScroll` | no       | false   | Disable scrolling. This can be combined with snap points to make the sheet scroller only scrollable at a given snap point (usually the top position).    |
-| `autoPadding`   | no       | false   | Automatically apply padding bottom to the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point. |
+| Name            | Required | Default | Description                                                                                                                                                                                 |
+| --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disableDrag`   | no       | false   | Disable drag for the sheet content. Can be a boolean or a function that receives `{ scrollPosition, currentSnap }` and returns a boolean for dynamic control.                               |
+| `disableScroll` | no       | false   | Disable scrolling. Can be a boolean or a function that receives `{ scrollPosition, currentSnap }` and returns a boolean. Useful for making content only scrollable at specific snap points. |
+| `scrollRef`     | no       |         | Optional ref to the internal scroll container for accessing scroll methods.                                                                                                                 |
 
 ### `Sheet.Backdrop`
 
@@ -301,37 +305,48 @@ Sheet backdrop is a translucent overlay that helps to separate the sheet from it
 
 > 🖥 Rendered element: `motion.div` or `motion.button`.
 
-## ✨ Advanced usage
+## ✨ Advanced behaviors
 
 ### ⌨️ Virtual keyboard avoidance
 
-A common problem with React Modal Sheet is that since the sheet is rendered as a fixed positioned element it doesn't move when the virtual keyboard is opened which can lead to the keyboard covering the input elements.
+React Modal Sheet v5 includes built-in virtual keyboard avoidance that works automatically on mobile devices.
+When the `avoidKeyboard` prop is enabled (which is the default), the sheet will automatically add bottom padding to avoid the virtual keyboard covering input elements.
 
-Handling the virtual keyboard on mobile devices can be quite tricky. It doesn't help that the Web doesn't yet have widely supported APIs for working with the virtual keyboard.
+```tsx
+function KeyboardExample() {
+  return (
+    <Sheet avoidKeyboard>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>
+          <input placeholder="Your input here" />
+          <textarea placeholder="Your message here" />
+          {/* More form elements */}
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
 
-**⚠️ Note: This library does not provide any official built-in solution for keyboard avoidance!**
+The keyboard avoidance feature:
 
-This is because it is not possible for the library to know how your sheet content is structured and how the sheet should behave when the keyboard is opened.
+- Uses the `env(keyboard-inset-height)` from [Virtual Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) and fallbacks to [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) and custom `keyboard-inset-height` CSS environment variable
+- Works automatically on mobile devices with virtual keyboard support
+- Applies dynamic padding to keep content visible when the keyboard opens
+- Disables drag gestures while the keyboard is open to prevent glitches
 
-However, there are some strategies that you can use to handle the virtual keyboard:
+If you need to disable keyboard avoidance, set `avoidKeyboard={false}`.
 
-1. Design your sheet content in a way that the input elements are positioned at the top of the sheet so that they are not covered by the keyboard. This is the easiest solution and if you look at popular mobile apps you can see that they often have input elements at the top of the screen exactly for this reason.
+> [!NOTE]
+> If your sheet content is very long and some inputs are below the keyboard even after adding the padding, you might need to scroll the content into view manually when an input is focused.
 
-2. Listen to changes in the `visualViewport`, see [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API), and change styles like padding on the sheet content to move the input up when the keyboard is opened. See the `AvoidKeyboard` component [code](example/components/AvoidKeyboard.tsx) and [demo](https://temzasse.github.io/react-modal-sheet/#/avoid-keyboard) in the example app for a simple example of this. The example is based on a custom `useAnimatedVirtualKeyboard` hook which you can copy to your project at your own risk. **Note that at least on iOS there is a noticeable delay when the keyboard is opened and when the `resize` event is fired for the `visualViewport`**.
+### 📱 Scrolling behavior
 
-3. Use the experimental [VirtualKeyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) to detect when the virtual keyboard is opened and adjust the sheet content accordingly. **Note that this API is not yet widely supported in browsers, but it will most likely produce the best result.**
+The `Sheet.Content` component manages scroll interactions internally and provides several ways to control scrolling:
 
-### 📱 Scrolling on touch devices
-
-Scrolling and dragging are **the same** gesture on touch devices which can create problems when you want to have scrollable content inside the sheet. React Modal Sheet provides a `Sheet.Scroller` component that is able to automatically disable and enable dragging inside the `Sheet.Content` component based on the scroll state. There are three modes for the `Sheet.Scroller` reflected in the `draggableAt` prop:
-
-1. Enable dragging when the scroller is not yet scrolled - it is at the `top` position.
-2. Enable dragging when the scroller is scrolled all the way to the bottom - it is at the `bottom` position.
-3. Enable dragging in `both` positions.
-
-The scroller component is in-between these states when the user has scrolled only some amount. Dragging is always **disabled** in this in-between state in order to avoid it getting mixed with dragging gestures. The `Sheet.Scroller` component applies the special handling only for touch devices.
-
-The default value for the `draggableAt` prop is `top` which should be a good default for most use cases. You shouldn't need `bottom` or `both` unless you have scrollable content inside a sheet that also has snap points.
+#### Basic scrollable content
 
 ```tsx
 function ScrollableExample() {
@@ -340,7 +355,8 @@ function ScrollableExample() {
       <Sheet.Container>
         <Sheet.Header />
         <Sheet.Content>
-          <Sheet.Scroller>{/*...*/}</Sheet.Scroller>
+          {/* Long content that needs scrolling */}
+          <div style={{ height: '200vh' }}>Long content here...</div>
         </Sheet.Content>
       </Sheet.Container>
       <Sheet.Backdrop />
@@ -349,31 +365,23 @@ function ScrollableExample() {
 }
 ```
 
-#### Disabling scroll manually
+#### Controlling scroll behavior with snap points
 
-You can also disable scrolling manually by passing `disableScroll` prop to the `Sheet.Scroller` component. This can be useful if you want to have a scrollable sheet but only at a certain snap point.
-
-For example, if you have a snap point at the top of the sheet and you want to make the content scrollable only when the sheet is at that snap point, you can do the following:
+You can disable scrolling conditionally using the `disableScroll` prop. This is useful when you want content to be scrollable only at certain snap points:
 
 ```tsx
-const snapPoints = [1, 0.5, 0];
-const initialSnap = 1;
+const snapPoints = [0, 0.5, 1];
 
-function DisableScrollExample() {
-  const [currentSnap, setCurrentSnap] = useState(initialSnap);
-
+function ConditionalScrollExample() {
   return (
-    <Sheet
-      initialSnap={initialSnap}
-      snapPoints={snapPoints}
-      onSnap={setCurrentSnap}
-    >
+    <Sheet snapPoints={snapPoints} initialSnap={1}>
       <Sheet.Container>
         <Sheet.Header />
-        <Sheet.Content>
-          <Sheet.Scroller draggableAt="top" disableScroll={currentSnap !== 0}>
-            {/*...*/}
-          </Sheet.Scroller>
+        <Sheet.Content
+          // Only allow scrolling when at the top snap point (index 2)
+          disableScroll={(state) => state.currentSnap !== 2}
+        >
+          <div style={{ height: '200vh' }}>Long content here...</div>
         </Sheet.Content>
       </Sheet.Container>
       <Sheet.Backdrop />
@@ -382,28 +390,21 @@ function DisableScrollExample() {
 }
 ```
 
-#### Automatic padding with snap points
+#### Dynamic drag control
 
-If you are using snap points and want to make sure that the content is scrollable at all snap points you can use the `autoPadding` prop on the `Sheet.Scroller` component.
-
-This will automatically apply padding to the bottom of the scroller based on the dragged distance to ensure that content can be scrolled to the bottom at any snap point.
+Similarly, you can control when dragging is enabled based on scroll position or snap point:
 
 ```tsx
-import { Sheet } from 'react-modal-sheet';
-import { useState } from 'react';
-
-const snapPoints = [-50, 0.5, 0];
-const initialSnap = 1;
-
-function AutoPaddingExample() {
+function DynamicDragExample() {
   return (
-    <Sheet initialSnap={initialSnap} snapPoints={snapPoints}>
+    <Sheet>
       <Sheet.Container>
         <Sheet.Header />
-        <Sheet.Content>
-          <Sheet.Scroller autoPadding draggableAt="both">
-            {/*...*/}
-          </Sheet.Scroller>
+        <Sheet.Content
+          // Disable drag when not scrolled to top
+          disableDrag={(state) => state.scrollPosition !== 'top'}
+        >
+          <div style={{ height: '200vh' }}>Long content here...</div>
         </Sheet.Content>
       </Sheet.Container>
       <Sheet.Backdrop />
@@ -412,15 +413,17 @@ function AutoPaddingExample() {
 }
 ```
 
-> [!NOTE]
-> For backwards compatibility the `autoPadding` prop is disabled by default but it will be enabled by default in the next major version.
+The scroll state provides:
+
+- `scrollPosition`: `'top'`, `'bottom'`, `'middle'`, or `undefined`
+- `currentSnap`: Current snap point index (if using snap points)
 
 ### 🪟 iOS Modal View effect
 
 In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to the main app element to highlight the modality of the bottom sheet. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
 
-| ![](media/3.gif) | ![](media/4.gif) |
-| :--------------: | :--------------: |
+| ![iOS Modal Effect Demo 1](media/example-apple-music.gif) | ![iOS Modal Effect Demo 2](media/example-snap-points.gif) |
+| :-------------------------------------------------------: | :-------------------------------------------------------: |
 
 To enable this effect you can provide the id of the root element where your application is mounted:
 
@@ -475,7 +478,44 @@ function Example() {
 
 You can add your own styles or override the default sheet styles via the exposed class names. Note that you might need to use `!important` for style overrides since the inner styles are applied as inline styles which have higher specificity.
 
+### CSS Modules
+
+```tsx
+import styles from './styles.css';
+
+function Example() {
+  return (
+    <Sheet>
+      <Sheet.Container className={styles.sheetContainer}>
+        <Sheet.Header className={styles.sheetHeader} />
+        <Sheet.Content className={styles.sheetContent}>{/*...*/}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop className={styles.sheetBackdrop} />
+    </Sheet>
+  );
+}
+```
+
+```css
+/* styles.css */
+
+.sheetContainer {
+  /* custom styles */
+}
+.sheetHeader {
+  /* custom styles */
+}
+.sheetContent {
+  /* custom styles */
+}
+.sheetBackdrop {
+  /* custom styles */
+}
+```
+
 #### Vanilla CSS
+
+You can also use vanilla CSS to override the styles by targeting the exposed class names:
 
 ```css
 .react-modal-sheet-backdrop {
@@ -498,46 +538,51 @@ You can add your own styles or override the default sheet styles via the exposed
 #### CSS-in-JS
 
 ```tsx
-import { Sheet } from 'react-modal-sheet';
-import { styled } from 'styled-components';
-import { useState } from 'react';
-
-const CustomSheet = styled(Sheet)`
-  .react-modal-sheet-backdrop {
-    /* custom styles */
-  }
-  .react-modal-sheet-container {
-    /* custom styles */
-  }
-  .react-modal-sheet-header {
-    /* custom styles */
-  }
-  .react-modal-sheet-drag-indicator {
-    /* custom styles */
-  }
-  .react-modal-sheet-content {
-    /* custom styles */
-  }
-`;
+import { styled } from 'styled-components'; // or emotion, pandacss, etc.
 
 function Example() {
-  const [isOpen, setOpen] = useState(false);
-
   return (
-    <>
-      <button onClick={() => setOpen(true)}>Open sheet</button>
-
-      <CustomSheet isOpen={isOpen} onClose={() => setOpen(false)}>
-        <Sheet.Container>
-          <Sheet.Header />
-          <Sheet.Content>{/*...*/}</Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop />
-      </CustomSheet>
-    </>
+    <Sheet>
+      <SheetContainer>
+        <SheetHeader />
+        <SheetContent>{/*...*/}</SheetContent>
+      </SheetContainer>
+      <SheetBackdrop />
+    </Sheet>
   );
 }
+
+const SheetContainer = styled(Sheet.Container)`
+  /* custom styles */
+`;
+
+const SheetHeader = styled(Sheet.Header)`
+  /* custom styles */
+`;
+
+const SheetContent = styled(Sheet.Content)`
+  /* custom styles */
+`;
+
+const SheetBackdrop = styled(Sheet.Backdrop)`
+  /* custom styles */
+`;
 ```
+
+### Custom styles example
+
+You can customize the sheet quite a lot if you get creative with the styles.
+
+Here's an example how a totally custom sheet could look like:
+
+<p align="center">
+  <img width="355" height="768" src="media/example-custom-styles.gif">
+</p>
+
+See the [CustomStyles](https://github.com/Temzasse/react-modal-sheet/blob/main/example/src/components/CustomStyles.tsx) component to view the full implementation of the above example.
+
+> [!IMPORTANT]
+> Wrapping the sheet components with custom elements or components can have unexpected results since the default sheet styles provided by the library rely on the sheet parts being direct children of each other. Some behavious like keyboard avoidance or scroll handling might not work as expected if the sheet parts are not direct children of each other or if you customize the styles too much.
 
 ## ♿️ Accessibility
 
@@ -633,4 +678,12 @@ In your projects it might make sense to build a reusable bottom sheet that has a
 
 ### The sheet doesn't open when using `StrictMode`
 
-If you are using React [StrictMode](https://react.dev/reference/react/StrictMode) the sheet animations might not work as expected. This seems to be an issue in the `motion` library and I haven't been able to find a good solution for it yet. You see all `motion` issues related to the `StrictMode` [here](https://github.com/motiondivision/motion/issues?q=is%3Aissue+StrictMode). Easiest solution is to just not to use `StrictMode` 🤷‍♂️
+If you are using React `StrictMode` the sheet animations might not work as expected. This seems to be an issue in the `motion` library and I haven't been able to find a good solution for it yet. You can see all `motion` issues related to the `StrictMode` [here](https://github.com/motiondivision/motion/issues?q=is%3Aissue+StrictMode). Easiest solution is to just not use `StrictMode` 🤷‍♂️
+
+### Upgrading from v4 to v5
+
+If you're experiencing issues after upgrading, check the "What's new in v5" section above for breaking changes. The most common issues are:
+
+1. **Snap points not working**: Ensure your snap points are in ascending order (`[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
+2. **Scrolling issues**: Remove `Sheet.Scroller` components as scrolling is now handled by `Sheet.Content`
+3. **Detent errors**: Update detent prop values (`"full-height"` → `"default"`, `"content-height"` → `"content"`)

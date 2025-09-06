@@ -1,36 +1,39 @@
-import React, { forwardRef } from 'react';
 import { motion, useTransform } from 'motion/react';
+import React, { forwardRef } from 'react';
 
-import { type SheetDraggableProps } from './types';
 import { useSheetContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
-import { mergeRefs } from './utils';
 import { styles } from './styles';
+import { type SheetDraggableProps } from './types';
+import { mergeRefs } from './utils';
 
 export const SheetHeader = forwardRef<any, SheetDraggableProps>(
   ({ children, style, disableDrag, ...rest }, ref) => {
-    const { indicatorRotation, dragProps } = useSheetContext();
-    const { constraintsRef, onMeasureDragConstraints } = useDragConstraints();
-    const _dragProps = disableDrag ? undefined : dragProps;
+    const sheetContext = useSheetContext();
+    const dragConstraints = useDragConstraints();
+    const dragProps =
+      disableDrag || sheetContext.disableDrag
+        ? undefined
+        : sheetContext.dragProps;
 
     const indicator1Transform = useTransform(
-      indicatorRotation,
+      sheetContext.indicatorRotation,
       (r) => `translateX(2px) rotate(${r}deg)`
     );
 
     const indicator2Transform = useTransform(
-      indicatorRotation,
+      sheetContext.indicatorRotation,
       (r) => `translateX(-2px) rotate(${-1 * r}deg)`
     );
 
     return (
       <motion.div
         {...rest}
-        ref={mergeRefs([ref, constraintsRef])}
+        ref={mergeRefs([ref, dragConstraints.ref])}
         style={{ ...styles.headerWrapper, ...style }}
-        {..._dragProps}
-        dragConstraints={constraintsRef}
-        onMeasureDragConstraints={onMeasureDragConstraints}
+        {...dragProps}
+        dragConstraints={dragConstraints.ref}
+        onMeasureDragConstraints={dragConstraints.onMeasure}
       >
         {children || (
           <div className="react-modal-sheet-header" style={styles.header}>

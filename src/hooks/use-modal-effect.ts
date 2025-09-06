@@ -1,24 +1,33 @@
-import { transform, type MotionValue } from 'motion';
+import { type MotionValue, transform } from 'motion';
 import { type RefObject } from 'react';
 
+import type { SheetDetent, SheetSnapPoint } from '../types';
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 import { useSafeAreaInsets } from './use-safe-area-insets';
-import { getSheetHeight, getSnapPoints } from '../utils';
 
 export function useModalEffect({
   y,
-  rootId,
-  sheetRef,
-  snapPointsProp,
+  detent,
+  rootId: _rootId,
+  sheetHeight,
+  snapPoints,
   startThreshold,
 }: {
   y: MotionValue<number>;
+  detent: SheetDetent;
   rootId?: string;
-  sheetRef: RefObject<HTMLDivElement | null>;
-  snapPointsProp?: number[];
+  sheetHeight: number;
+  snapPoints: SheetSnapPoint[];
   startThreshold?: number;
 }) {
   const insetTop = useSafeAreaInsets().top;
+
+  let rootId: string | undefined = _rootId;
+
+  if (rootId && detent === 'full') {
+    console.warn('Using "full" detent with modal effect is not supported.');
+    rootId = undefined;
+  }
 
   // Cleanup on unmount
   useIsomorphicLayoutEffect(() => {
@@ -33,15 +42,7 @@ export function useModalEffect({
     const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
     if (!root) return;
 
-    let sheetHeight = 0;
-
     const removeStartListener = y.on('animationStart', () => {
-      /**
-       * Only calculate the sheet height when the animation starts to avoid
-       * unnecessary layout calculations when y value changes.
-       */
-      sheetHeight = getSheetHeight(sheetRef);
-
       // biome-ignore lint/style/noNonNullAssertion: root is always defined here
       setupModalEffect(rootId!);
     });
@@ -55,17 +56,13 @@ export function useModalEffect({
 
       let progress = Math.max(0, 1 - yValue / sheetHeight);
 
-      const snapPoints = snapPointsProp
-        ? getSnapPoints({ snapPointsProp, sheetHeight })
-        : undefined;
-
       /**
        * Start the effect only if we have dragged over the second snap point
        * to make the effect more natural as the sheet will reach it's final
        * position when the user drags it over the second snap point.
        */
       const snapThresholdPoint =
-        snapPoints && snapPoints.length > 1 ? snapPoints[1] : undefined;
+        snapPoints.length > 1 ? snapPoints[snapPoints.length - 2] : undefined;
 
       /**
        * If we have snap points, we need to calculate the progress percentage
@@ -74,8 +71,7 @@ export function useModalEffect({
        * and its end is different.
        */
       if (snapThresholdPoint !== undefined) {
-        const snapThresholdValue =
-          sheetHeight - Math.min(snapThresholdPoint, sheetHeight);
+        const snapThresholdValue = snapThresholdPoint.snapValueY;
 
         if (yValue <= snapThresholdValue) {
           progress = (snapThresholdValue - yValue) / snapThresholdValue;
@@ -132,7 +128,7 @@ export function useModalEffect({
       removeCompleteListener();
       removeCancelListener();
     };
-  }, [y, rootId, insetTop, startThreshold, snapPointsProp]);
+  }, [y, rootId, insetTop, startThreshold, sheetHeight]);
 }
 
 function setupModalEffect(rootId: string) {

@@ -1,39 +1,46 @@
+import { type MotionStyle, motion } from 'motion/react';
 import React, { forwardRef } from 'react';
-import { motion } from 'motion/react';
 
-import { type SheetContainerProps } from './types';
+import { DEFAULT_HEIGHT } from './constants';
 import { useSheetContext } from './context';
-import { useEventCallbacks } from './hooks/use-event-callbacks';
-import { MAX_HEIGHT } from './constants';
-import { mergeRefs } from './utils';
 import { styles } from './styles';
+import { type SheetContainerProps } from './types';
+import { mergeRefs } from './utils';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
   ({ children, style, className = '', ...rest }, ref) => {
-    const {
-      y,
-      isOpen,
-      callbacks,
-      sheetRef,
-      windowHeight,
-      detent,
-      animationOptions,
-    } = useSheetContext();
+    const sheetContext = useSheetContext();
 
-    const { handleAnimationComplete } = useEventCallbacks(isOpen, callbacks);
+    const containerStyle: MotionStyle = {
+      ...styles.container,
+      ...style,
+      y: sheetContext.y,
+    };
 
-    const height = detent === 'full-height' ? MAX_HEIGHT : undefined;
-    const maxHeight = detent === 'content-height' ? MAX_HEIGHT : undefined;
+    if (sheetContext.detent === 'default') {
+      containerStyle.height = DEFAULT_HEIGHT;
+    }
+
+    if (sheetContext.detent === 'full') {
+      containerStyle.height = '100%';
+      containerStyle.maxHeight = '100%';
+    }
+
+    if (sheetContext.detent === 'content') {
+      containerStyle.height = 'auto';
+      containerStyle.maxHeight = DEFAULT_HEIGHT;
+    }
 
     return (
       <motion.div
         {...rest}
-        ref={mergeRefs([sheetRef, ref])}
+        ref={mergeRefs([
+          ref,
+          sheetContext.sheetRef,
+          sheetContext.sheetBoundsRef,
+        ])}
         className={`react-modal-sheet-container ${className}`}
-        style={{ ...styles.container, height, maxHeight, ...style, y }}
-        initial={{ y: windowHeight }}
-        exit={{ y: windowHeight, transition: animationOptions }}
-        onAnimationComplete={handleAnimationComplete}
+        style={containerStyle}
       >
         {children}
       </motion.div>

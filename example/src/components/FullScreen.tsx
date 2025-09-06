@@ -1,8 +1,8 @@
-import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
-import { ExampleLayout } from './ExampleLayout';
 import { BoxList } from './BoxList';
+import { ExampleLayout } from './ExampleLayout';
 
 export function FullScreen() {
   return (
@@ -11,13 +11,11 @@ export function FullScreen() {
       description="Sheet that fills the entire screen."
     >
       {({ isOpen, close }) => (
-        <Sheet isOpen={isOpen} onClose={close}>
+        <Sheet detent="full" isOpen={isOpen} onClose={close}>
           <SheetContainer>
             <Sheet.Header />
             <Sheet.Content>
-              <Sheet.Scroller>
-                <BoxList count={50} />
-              </Sheet.Scroller>
+              <BoxList count={50} />
             </Sheet.Content>
           </SheetContainer>
         </Sheet>
@@ -27,6 +25,5 @@ export function FullScreen() {
 }
 
 const SheetContainer = styled(Sheet.Container)`
-  height: 100vh !important;
   border-radius: 0 !important;
 `;
