@@ -1,5 +1,5 @@
 <p align='center'>
-  <img src="media/banner.jpg" alt="React Modal Sheet logo"/>
+  <img src="media/hero.jpg" alt="React Modal Sheet logo"/>
 <p/>
 
 <div align="center" >
@@ -10,12 +10,13 @@
   <br/>
   <img alt="npm version" src="https://img.shields.io/npm/v/react-modal-sheet?style=for-the-badge">
   <img alt="npm license" src="https://img.shields.io/npm/l/react-modal-sheet?style=for-the-badge">
+  <img alt="npm downloads" src="https://img.shields.io/npm/dm/react-modal-sheet?style=for-the-badge">
   <br/>
   <br/>
 </div>
 
 | ![](media/example-apple-maps.gif) | ![](media/example-apple-music.gif) | ![](media/example-snap-points.gif) | ![](media/example-scrollable.gif) |
-| :--------------: | :--------------: | :--------------: | :--------------: |
+| :-------------------------------: | :--------------------------------: | :--------------------------------: | :-------------------------------: |
 
 ## 📦 Installation
 
@@ -441,7 +442,7 @@ The scroll state provides:
 In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to the main app element to highlight the modality of the bottom sheet. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.
 
 | ![iOS Modal Effect Demo 1](media/example-apple-music.gif) | ![iOS Modal Effect Demo 2](media/example-snap-points.gif) |
-| :-------------------------------------: | :-------------------------------------: |
+| :-------------------------------------------------------: | :-------------------------------------------------------: |
 
 To enable this effect you can provide the id of the root element where your application is mounted:
 
