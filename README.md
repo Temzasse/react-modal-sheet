@@ -151,7 +151,7 @@ import { useState, useRef } from 'react';
 
 const snapPoints = [0, 0.5, 1];
 
-function Example() {
+function SnapExample() {
   const [isOpen, setOpen] = useState(false);
   const ref = useRef<SheetRef>(null);
   const snapTo = (i: number) => ref.current?.snapTo(i);
@@ -200,29 +200,26 @@ Below you can see an example of how to use these values:
 import { Sheet, SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
 
-const snapPoints = [0, 0.5, 1];
-
-function Example() {
+function RefExample() {
   const [isOpen, setOpen] = useState(false);
   const ref = useRef<SheetRef>(null);
+
+  function doSomething() {
+    console.log('> Current y value:', ref.current?.y.get());
+    console.log('> Current yInverted value:', ref.current?.yInverted.get());
+    console.log('> Current height value:', ref.current?.height);
+  }
 
   return (
     <>
       <button onClick={() => setOpen(true)}>Open sheet</button>
 
-      <Sheet
-        ref={ref}
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        initialSnap={1}
-        snapPoints={snapPoints}
-      >
+      <Sheet ref={ref} isOpen={isOpen} onClose={() => setOpen(false)}>
         <Sheet.Container>
           <Sheet.Content>
             <motion.div style={{ paddingBottom: ref.current?.y }}>
-              Use animated y value
+              Use animated y value in some way
             </motion.div>
-            <div>Sheet height: {ref.current?.height}px</div>
             {/* Your content here */}
           </Sheet.Content>
         </Sheet.Container>
@@ -241,11 +238,9 @@ By default the sheet will take the full height of the page minus top padding and
 - `"full"` - Sheet takes the entire viewport height with no safe area insets
 
 ```tsx
-function Example() {
-  const [isOpen, setOpen] = useState(false);
-
+function DetentExample() {
   return (
-    <Sheet isOpen={isOpen} onClose={() => setOpen(false)} detent="content">
+    <Sheet detent="content">
       <Sheet.Container>
         <Sheet.Content>
           <div style={{ height: 200 }}>Some content</div>
@@ -319,14 +314,8 @@ When the `avoidKeyboard` prop is enabled (which is the default), the sheet will 
 
 ```tsx
 function KeyboardExample() {
-  const [isOpen, setOpen] = useState(false);
-
   return (
-    <Sheet
-      isOpen={isOpen}
-      onClose={() => setOpen(false)}
-      avoidKeyboard={true} // This is the default
-    >
+    <Sheet avoidKeyboard>
       <Sheet.Container>
         <Sheet.Header />
         <Sheet.Content>
@@ -362,7 +351,7 @@ The `Sheet.Content` component manages scroll interactions internally and provide
 ```tsx
 function ScrollableExample() {
   return (
-    <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
+    <Sheet>
       <Sheet.Container>
         <Sheet.Header />
         <Sheet.Content>
@@ -385,12 +374,7 @@ const snapPoints = [0, 0.5, 1];
 
 function ConditionalScrollExample() {
   return (
-    <Sheet
-      isOpen={isOpen}
-      onClose={() => setOpen(false)}
-      snapPoints={snapPoints}
-      initialSnap={1}
-    >
+    <Sheet snapPoints={snapPoints} initialSnap={1}>
       <Sheet.Container>
         <Sheet.Header />
         <Sheet.Content
@@ -413,7 +397,7 @@ Similarly, you can control when dragging is enabled based on scroll position or 
 ```tsx
 function DynamicDragExample() {
   return (
-    <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
+    <Sheet>
       <Sheet.Container>
         <Sheet.Header />
         <Sheet.Content
@@ -494,6 +478,39 @@ function Example() {
 
 You can add your own styles or override the default sheet styles via the exposed class names. Note that you might need to use `!important` for style overrides since the inner styles are applied as inline styles which have higher specificity.
 
+### CSS Modules
+
+```tsx
+import styles from './styles.css';
+
+function Example() {
+  return (
+    <Sheet>
+      <Sheet.Container className={styles.sheetContainer}>
+        <Sheet.Header className={styles.sheetHeader} />
+        <Sheet.Content className={styles.sheetContent}>{/*...*/}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop className={styles.sheetBackdrop} />
+    </Sheet>
+  );
+}
+```
+
+```css
+.sheetContainer {
+  /* custom styles */
+}
+.sheetHeader {
+  /* custom styles */
+}
+.sheetContent {
+  /* custom styles */
+}
+.sheetBackdrop {
+  /* custom styles */
+}
+```
+
 #### Vanilla CSS
 
 ```css
@@ -517,46 +534,44 @@ You can add your own styles or override the default sheet styles via the exposed
 #### CSS-in-JS
 
 ```tsx
-import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
-import { useState } from 'react';
-
-const CustomSheet = styled(Sheet)`
-  .react-modal-sheet-backdrop {
-    /* custom styles */
-  }
-  .react-modal-sheet-container {
-    /* custom styles */
-  }
-  .react-modal-sheet-header {
-    /* custom styles */
-  }
-  .react-modal-sheet-drag-indicator {
-    /* custom styles */
-  }
-  .react-modal-sheet-content {
-    /* custom styles */
-  }
-`;
 
 function Example() {
-  const [isOpen, setOpen] = useState(false);
-
   return (
-    <>
-      <button onClick={() => setOpen(true)}>Open sheet</button>
-
-      <CustomSheet isOpen={isOpen} onClose={() => setOpen(false)}>
-        <Sheet.Container>
-          <Sheet.Header />
-          <Sheet.Content>{/*...*/}</Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop />
-      </CustomSheet>
-    </>
+    <Sheet>
+      <SheetContainer>
+        <SheetHeader />
+        <SheetContent>{/*...*/}</SheetContent>
+      </SheetContainer>
+      <SheetBackdrop />
+    </Sheet>
   );
 }
+
+const SheetContainer = styled(Sheet.Container)`
+  /* custom styles */
+`;
+
+const SheetHeader = styled(Sheet.Header)`
+  /* custom styles */
+`;
+
+const SheetContent = styled(Sheet.Content)`
+  /* custom styles */
+`;
+
+const SheetBackdrop = styled(Sheet.Backdrop)`
+  /* custom styles */
+`;
 ```
+
+You can customize the sheet quite a lot if you get creative with the styles.
+
+Here's an example how a totally custom sheet could look like:
+
+<p align="center">
+  <img width="355" height="768" src="media/example-custom-styles.gif">
+</p>
 
 ## ♿️ Accessibility
 

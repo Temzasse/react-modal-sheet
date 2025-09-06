@@ -40,6 +40,7 @@ export function CustomStyles() {
 
 const SheetContainer = styled(Sheet.Container)`
   padding: 16px;
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
   background-color: transparent !important;
   box-shadow: none !important;
 `;
