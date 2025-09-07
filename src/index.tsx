@@ -3,6 +3,7 @@ import type { MotionValue } from 'motion/react';
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetContainer } from './SheetContainer';
 import { SheetContent } from './SheetContent';
+import { SheetDragIndicator } from './SheetDragIndicator';
 import { SheetHeader } from './SheetHeader';
 import { Sheet as SheetBase } from './sheet';
 import type { SheetCompound } from './types';
@@ -17,16 +18,18 @@ export interface SheetRef {
 export const Sheet: SheetCompound = Object.assign(SheetBase, {
   Container: SheetContainer,
   Header: SheetHeader,
+  DragIndicator: SheetDragIndicator,
   Content: SheetContent,
   Backdrop: SheetBackdrop,
 });
 
 // Export types
 export type {
-  SheetHeaderProps,
-  SheetContentProps,
   SheetBackdropProps,
   SheetContainerProps,
+  SheetContentProps,
+  SheetDragIndicatorProps,
+  SheetHeaderProps,
   SheetProps,
   SheetSnapPoint,
   SheetStateInfo,

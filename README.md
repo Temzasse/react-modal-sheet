@@ -284,6 +284,35 @@ Sheet header acts as a drag target and has a dragging direction indicator. Rende
 | ------------- | -------- | ------- | ---------------------------------- |
 | `disableDrag` | no       | false   | Disable drag for the sheet header. |
 
+### `Sheet.DragIndicator`
+
+Sheet drag indicator renders two small animated lines that indicate the dragging direction. This component is automatically included in `Sheet.Header` but can be used standalone for custom header designs. The indicator lines animate with the sheet's drag state to provide visual feedback.
+
+> 🖥 Rendered element: Two `motion.span` elements.
+
+#### Usage example
+
+```tsx
+function CustomHeaderExample() {
+  return (
+    <Sheet>
+      <Sheet.Container>
+        <Sheet.Header>
+          <div style={{ padding: '16px', textAlign: 'center' }}>
+            <h2>Custom Header</h2>
+            <Sheet.DragIndicator />
+          </div>
+        </Sheet.Header>
+        <Sheet.Content>
+          <p>Sheet content goes here...</p>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
 ### `Sheet.Content`
 
 Sheet content acts as a drag target and handles scrollable content internally. It automatically manages scroll behavior and keyboard avoidance.
@@ -581,6 +610,12 @@ You can also use vanilla CSS to override the styles by targeting the exposed cla
   /* custom styles */
 }
 .react-modal-sheet-header {
+  /* custom styles */
+}
+.react-modal-sheet-header-container {
+  /* custom styles */
+}
+.react-modal-sheet-drag-indicator-container {
   /* custom styles */
 }
 .react-modal-sheet-drag-indicator {

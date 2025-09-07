@@ -3,6 +3,7 @@ import {
   type ComponentPropsWithoutRef,
   type ForwardRefExoticComponent,
   type FunctionComponent,
+  type HTMLAttributes,
   type ReactNode,
   type RefAttributes,
   type RefObject,
@@ -80,7 +81,8 @@ export type SheetContentProps = MotionDivProps &
 
 export type SheetBackdropProps = MotionCommonProps & CommonProps;
 
-export type SheetDragIndicatorProps = MotionCommonProps & CommonProps;
+export type SheetDragIndicatorProps = HTMLAttributes<HTMLDivElement> &
+  CommonProps;
 
 export interface SheetDragProps {
   drag: 'y';
@@ -145,6 +147,7 @@ type ContentComponent = ForwardRefExoticComponent<
 interface SheetCompoundComponent {
   Container: ContainerComponent;
   Header: HeaderComponent;
+  DragIndicator: FunctionComponent<SheetDragIndicatorProps>;
   Content: ContentComponent;
   Backdrop: BackdropComponent;
 }

@@ -9,7 +9,10 @@ import { type SheetHeaderProps } from './types';
 import { applyStyles, mergeRefs } from './utils';
 
 export const SheetHeader = forwardRef<any, SheetHeaderProps>(
-  ({ children, style, disableDrag, unstyled, ...rest }, ref) => {
+  (
+    { children, style, disableDrag, unstyled, className = '', ...rest },
+    ref
+  ) => {
     const sheetContext = useSheetContext();
     const dragConstraints = useDragConstraints();
     const dragProps =
@@ -31,6 +34,7 @@ export const SheetHeader = forwardRef<any, SheetHeaderProps>(
         {...rest}
         ref={mergeRefs([ref, dragConstraints.ref])}
         style={headerWrapperStyle}
+        className={`react-modal-sheet-header-container ${className}`}
         {...dragProps}
         dragConstraints={dragConstraints.ref}
         onMeasureDragConstraints={dragConstraints.onMeasure}

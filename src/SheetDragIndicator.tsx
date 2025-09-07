@@ -26,24 +26,27 @@ export function SheetDragIndicator({
 
   const isUnstyled = unstyled ?? sheetContext.unstyled;
 
-  const indicatorStyle = {
-    ...styles.indicator,
-    ...applyStyles(styles.indicator, isUnstyled),
+  const indicatorWrapperStyle = {
+    ...applyStyles(styles.indicatorWrapper, isUnstyled),
     ...style,
   };
 
+  const indicatorStyle = applyStyles(styles.indicator, isUnstyled);
+
   return (
-    <>
+    <div
+      className={`react-modal-sheet-drag-indicator-container ${className}`}
+      style={indicatorWrapperStyle}
+      {...rest}
+    >
       <motion.span
-        className={`react-modal-sheet-drag-indicator ${className}`}
+        className="react-modal-sheet-drag-indicator"
         style={{ ...indicatorStyle, transform: indicator1Transform }}
-        {...rest}
       />
       <motion.span
-        className={`react-modal-sheet-drag-indicator ${className}`}
+        className="react-modal-sheet-drag-indicator"
         style={{ ...indicatorStyle, transform: indicator2Transform }}
-        {...rest}
       />
-    </>
+    </div>
   );
 }

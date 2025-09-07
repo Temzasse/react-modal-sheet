@@ -66,8 +66,16 @@ export const styles = {
       justifyContent: 'center',
     },
   },
+  indicatorWrapper: {
+    base: {
+      display: 'flex',
+    },
+    decorative: {},
+  },
   indicator: {
-    base: {},
+    base: {
+      display: 'inline-block',
+    },
     decorative: {
       width: '18px',
       height: '4px',

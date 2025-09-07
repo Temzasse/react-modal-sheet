@@ -14,9 +14,12 @@ export function CustomStyles() {
         <Sheet isOpen={isOpen} onClose={close} detent="content" unstyled>
           <SheetContainer>
             <SheetWrapper>
-              <Sheet.Header>
+              <SheetHeader>
                 <HeaderImage />
-              </Sheet.Header>
+                <DragIndicatorWrapper>
+                  <Sheet.DragIndicator unstyled={false} />
+                </DragIndicatorWrapper>
+              </SheetHeader>
               <SheetContent>
                 <Title>Custom styles</Title>
                 <Paragraph>
@@ -50,6 +53,17 @@ const SheetWrapper = styled.div`
     0 1px 2px rgba(0, 0, 0, 0.2),
     0 12px 20px rgba(0, 0, 0, 0.3);
   background-color: #fff;
+`;
+
+const SheetHeader = styled(Sheet.Header)`
+  position: relative;
+`;
+
+const DragIndicatorWrapper = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const SheetContent = styled(Sheet.Content)`
