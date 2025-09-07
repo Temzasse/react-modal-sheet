@@ -138,6 +138,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `prefersReducedMotion`  | no       | false                                | Skip sheet animations (sheet instantly snaps to desired location).                                                                                                                                                                                                                                                              |
 | `dragVelocityThreshold` | no       | 500                                  | How fast the sheet must be flicked down to close. Higher values make the sheet harder to close.                                                                                                                                                                                                                                 |
 | `dragCloseThreshold`    | no       | 0.6                                  | The portion of the sheet which must be dragged off-screen before it will close.                                                                                                                                                                                                                                                 |
+| `unstyled`              | no       | false                                | Remove all decorative styles and only apply base functional styles. Useful when you want to completely customize the sheet appearance.                                                                                                                                                                                          |
 
 ## ⚙️ Methods and properties
 
@@ -477,6 +478,61 @@ function Example() {
 ### Custom styles
 
 You can add your own styles or override the default sheet styles via the exposed class names. Note that you might need to use `!important` for style overrides since the inner styles are applied as inline styles which have higher specificity.
+
+#### Unstyled mode
+
+For complete control over the sheet's appearance, you can use the `unstyled` prop to remove all decorative styles while keeping only the essential functional styles.
+
+When `unstyled={true}` is set on the root `Sheet` component, it removes decorative styles like: border radius, shadows, and background colors:
+
+```tsx
+function UnstyledExample() {
+  return (
+    <Sheet unstyled>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>{/* Your content */}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+The `unstyled` prop can also be applied to individual sheet components to selectively remove their decorative styles:
+
+```tsx
+function SelectiveUnstyledExample() {
+  return (
+    <Sheet>
+      <Sheet.Container unstyled>
+        <Sheet.Header />
+        <Sheet.Content>{/* Your content */}</Sheet.Content>
+      </Sheet.Container>
+      {/* Keep the backdrop styled */}
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+This is particularly useful when building custom designs or when integrating with design systems that require complete control over styling.
+
+You can also remove all styles at the root level and then override it for individual components if you want to keep some default styles:
+
+```tsx
+function MixedUnstyledExample() {
+  return (
+    <Sheet unstyled>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>{/* Your content */}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop unstyled={false} />
+    </Sheet>
+  );
+}
+```
 
 ### CSS Modules
 

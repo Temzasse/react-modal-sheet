@@ -1,5 +1,4 @@
-import { useRef, useState } from 'react';
-import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
 import { ExampleLayout } from './ExampleLayout';
@@ -12,7 +11,7 @@ export function CustomStyles() {
       description="Sheet that has non-traditional bottom sheet styles."
     >
       {({ isOpen, close }) => (
-        <Sheet isOpen={isOpen} onClose={close} detent="content">
+        <Sheet isOpen={isOpen} onClose={close} detent="content" unstyled>
           <SheetContainer>
             <SheetWrapper>
               <Sheet.Header>
@@ -31,7 +30,7 @@ export function CustomStyles() {
               </SheetContent>
             </SheetWrapper>
           </SheetContainer>
-          <Sheet.Backdrop onTap={close} />
+          <Sheet.Backdrop onTap={close} unstyled={false} />
         </Sheet>
       )}
     </ExampleLayout>
@@ -39,10 +38,9 @@ export function CustomStyles() {
 }
 
 const SheetContainer = styled(Sheet.Container)`
-  padding: 16px;
+  padding-inline: 16px;
+  padding-top: 16px;
   padding-bottom: max(env(safe-area-inset-bottom), 16px);
-  background-color: transparent !important;
-  box-shadow: none !important;
 `;
 
 const SheetWrapper = styled.div`

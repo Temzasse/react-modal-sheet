@@ -1,14 +1,15 @@
-import { motion, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
+import { SheetDragIndicator } from './SheetDragIndicator';
 import { useSheetContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
 import { styles } from './styles';
-import { type SheetDraggableProps } from './types';
-import { mergeRefs } from './utils';
+import { type SheetHeaderProps } from './types';
+import { applyStyles, mergeRefs } from './utils';
 
-export const SheetHeader = forwardRef<any, SheetDraggableProps>(
-  ({ children, style, disableDrag, ...rest }, ref) => {
+export const SheetHeader = forwardRef<any, SheetHeaderProps>(
+  ({ children, style, disableDrag, unstyled, ...rest }, ref) => {
     const sheetContext = useSheetContext();
     const dragConstraints = useDragConstraints();
     const dragProps =
@@ -16,35 +17,27 @@ export const SheetHeader = forwardRef<any, SheetDraggableProps>(
         ? undefined
         : sheetContext.dragProps;
 
-    const indicator1Transform = useTransform(
-      sheetContext.indicatorRotation,
-      (r) => `translateX(2px) rotate(${r}deg)`
-    );
+    const isUnstyled = unstyled ?? sheetContext.unstyled;
 
-    const indicator2Transform = useTransform(
-      sheetContext.indicatorRotation,
-      (r) => `translateX(-2px) rotate(${-1 * r}deg)`
-    );
+    const headerWrapperStyle = {
+      ...applyStyles(styles.headerWrapper, isUnstyled),
+      ...style,
+    };
+
+    const headerStyle = applyStyles(styles.header, isUnstyled);
 
     return (
       <motion.div
         {...rest}
         ref={mergeRefs([ref, dragConstraints.ref])}
-        style={{ ...styles.headerWrapper, ...style }}
+        style={headerWrapperStyle}
         {...dragProps}
         dragConstraints={dragConstraints.ref}
         onMeasureDragConstraints={dragConstraints.onMeasure}
       >
         {children || (
-          <div className="react-modal-sheet-header" style={styles.header}>
-            <motion.span
-              className="react-modal-sheet-drag-indicator"
-              style={{ ...styles.indicator, transform: indicator1Transform }}
-            />
-            <motion.span
-              className="react-modal-sheet-drag-indicator"
-              style={{ ...styles.indicator, transform: indicator2Transform }}
-            />
+          <div className="react-modal-sheet-header" style={headerStyle}>
+            <SheetDragIndicator />
           </div>
         )}
       </motion.div>

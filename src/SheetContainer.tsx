@@ -5,14 +5,16 @@ import { DEFAULT_HEIGHT } from './constants';
 import { useSheetContext } from './context';
 import { styles } from './styles';
 import { type SheetContainerProps } from './types';
-import { mergeRefs } from './utils';
+import { applyStyles, mergeRefs } from './utils';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
-  ({ children, style, className = '', ...rest }, ref) => {
+  ({ children, style, className = '', unstyled, ...rest }, ref) => {
     const sheetContext = useSheetContext();
 
+    const isUnstyled = unstyled ?? sheetContext.unstyled;
+
     const containerStyle: MotionStyle = {
-      ...styles.container,
+      ...applyStyles(styles.container, isUnstyled),
       ...style,
       y: sheetContext.y,
     };

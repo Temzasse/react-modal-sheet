@@ -1,5 +1,12 @@
-import { type ForwardedRef, type RefCallback, type RefObject } from 'react';
+import { type CSSProperties, type ForwardedRef, type RefCallback } from 'react';
 import { IS_SSR } from './constants';
+
+export function applyStyles(
+  styles: { base: CSSProperties; decorative: CSSProperties },
+  unstyled: boolean
+) {
+  return unstyled ? styles.base : { ...styles.base, ...styles.decorative };
+}
 
 export function isAscendingOrder(arr: number[]) {
   for (let i = 0; i < arr.length; i++) {

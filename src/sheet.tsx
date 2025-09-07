@@ -37,6 +37,7 @@ import {
 } from './snap';
 import { styles } from './styles';
 import { type SheetContextType, type SheetProps } from './types';
+import { applyStyles } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
@@ -45,20 +46,21 @@ export const Sheet = forwardRef<any, SheetProps>(
       children,
       className = '',
       detent = 'default',
+      disableDismiss = false,
       disableDrag: disableDragProp = false,
       disableScrollLocking = false,
-      disableDismiss = false,
       dragCloseThreshold = DEFAULT_DRAG_CLOSE_THRESHOLD,
       dragVelocityThreshold = DEFAULT_DRAG_VELOCITY_THRESHOLD,
+      initialSnap,
       isOpen,
       modalEffectRootId,
       modalEffectThreshold,
       mountPoint,
       prefersReducedMotion = false,
       snapPoints: snapPointsProp,
-      initialSnap,
       style,
       tweenConfig = DEFAULT_TWEEN_CONFIG,
+      unstyled = false,
       onOpenStart,
       onOpenEnd,
       onClose,
@@ -337,6 +339,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       avoidKeyboard,
       sheetBoundsRef,
       sheetRef,
+      unstyled,
       y,
     };
 
@@ -347,7 +350,12 @@ export const Sheet = forwardRef<any, SheetProps>(
           ref={ref}
           data-sheet-state={state}
           className={`react-modal-sheet-root ${className}`}
-          style={{ ...styles.root, zIndex, visibility, ...style }}
+          style={{
+            ...applyStyles(styles.root, unstyled),
+            zIndex,
+            visibility,
+            ...style,
+          }}
         >
           {state !== 'closed' ? children : null}
         </motion.div>

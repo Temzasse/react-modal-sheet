@@ -1,69 +1,102 @@
-import { type Properties } from 'csstype';
+import type { CSSProperties } from 'react';
 
 export const styles = {
   root: {
-    position: 'fixed',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    overflow: 'hidden',
-    pointerEvents: 'none',
+    base: {
+      position: 'fixed',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      overflow: 'hidden',
+      pointerEvents: 'none',
+    },
+    decorative: {},
   },
   backdrop: {
-    zIndex: 1,
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    touchAction: 'none',
-    border: 'none',
-    userSelect: 'none',
-    WebkitTapHighlightColor: 'transparent',
+    base: {
+      zIndex: 1,
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      touchAction: 'none',
+      userSelect: 'none',
+    },
+    decorative: {
+      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+      border: 'none',
+      WebkitTapHighlightColor: 'transparent',
+    },
   },
   container: {
-    zIndex: 2,
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    width: '100%',
-    backgroundColor: '#fff',
-    borderTopRightRadius: '8px',
-    borderTopLeftRadius: '8px',
-    boxShadow: '0px -2px 16px rgba(0, 0, 0, 0.3)',
-    display: 'flex',
-    flexDirection: 'column',
-    pointerEvents: 'auto',
+    base: {
+      zIndex: 2,
+      position: 'absolute',
+      left: 0,
+      bottom: 0,
+      width: '100%',
+      pointerEvents: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    decorative: {
+      backgroundColor: '#fff',
+      borderTopRightRadius: '8px',
+      borderTopLeftRadius: '8px',
+      boxShadow: '0px -2px 16px rgba(0, 0, 0, 0.3)',
+    },
   },
   headerWrapper: {
-    width: '100%',
+    base: {
+      width: '100%',
+    },
+    decorative: {},
   },
   header: {
-    height: '40px',
-    width: '100%',
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    base: {
+      width: '100%',
+      position: 'relative',
+    },
+    decorative: {
+      height: '40px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
   },
   indicator: {
-    width: '18px',
-    height: '4px',
-    borderRadius: '99px',
-    backgroundColor: '#ddd',
+    base: {},
+    decorative: {
+      width: '18px',
+      height: '4px',
+      borderRadius: '99px',
+      backgroundColor: '#ddd',
+    },
   },
   content: {
-    flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '0px',
-    position: 'relative',
+    base: {
+      minHeight: '0px',
+      position: 'relative',
+      flexGrow: 1,
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    decorative: {},
   },
   scroller: {
-    height: '100%',
-    overflowY: 'auto',
-    overscrollBehaviorY: 'none',
+    base: {
+      height: '100%',
+      overflowY: 'auto',
+      overscrollBehaviorY: 'none',
+    },
+    decorative: {},
   },
-} satisfies Record<string, Properties>;
+} satisfies Record<
+  string,
+  {
+    base: CSSProperties;
+    decorative: CSSProperties;
+  }
+>;

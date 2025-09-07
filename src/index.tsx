@@ -1,12 +1,11 @@
 import type { MotionValue } from 'motion/react';
-import type { RefObject } from 'react';
 
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetContainer } from './SheetContainer';
 import { SheetContent } from './SheetContent';
 import { SheetHeader } from './SheetHeader';
 import { Sheet as SheetBase } from './sheet';
-import type { SheetCompound, SheetDraggableProps } from './types';
+import type { SheetCompound } from './types';
 
 export interface SheetRef {
   y: MotionValue<number>;
@@ -23,9 +22,9 @@ export const Sheet: SheetCompound = Object.assign(SheetBase, {
 });
 
 // Export types
-export type SheetHeaderProps = SheetDraggableProps;
-export type SheetContentProps = SheetDraggableProps;
 export type {
+  SheetHeaderProps,
+  SheetContentProps,
   SheetBackdropProps,
   SheetContainerProps,
   SheetProps,

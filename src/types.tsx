@@ -1,6 +1,8 @@
 import {
+  type CSSProperties,
   type ComponentPropsWithoutRef,
   type ForwardRefExoticComponent,
+  type FunctionComponent,
   type ReactNode,
   type RefAttributes,
   type RefObject,
@@ -11,16 +13,19 @@ import {
   type EasingDefinition,
   type MotionProps,
   type MotionValue,
-  type Transition,
   type motion,
 } from 'motion/react';
-import type { RectReadOnly } from 'react-use-measure';
 
 export type SheetDetent = 'default' | 'full' | 'content';
 
-type CommonProps = MotionProps & {
+type CommonProps = {
   className?: string;
+  style?: CSSProperties;
+  unstyled?: boolean;
 };
+
+type MotionCommonProps = Omit<MotionProps, 'initial' | 'animate' | 'exit'> &
+  CommonProps;
 
 type MotionDivProps = ComponentPropsWithoutRef<typeof motion.div>;
 
@@ -30,6 +35,7 @@ export interface SheetTweenConfig {
 }
 
 export type SheetProps = {
+  unstyled?: boolean;
   avoidKeyboard?: boolean;
   children: ReactNode;
   detent?: SheetDetent;
@@ -54,22 +60,27 @@ export type SheetProps = {
   onSnap?: (index: number) => void;
 } & MotionDivProps;
 
-export type SheetContainerProps = Omit<
-  CommonProps,
-  'initial' | 'animate' | 'exit' | 'onAnimationComplete'
-> & {
-  children: ReactNode;
-};
+export type SheetContainerProps = MotionCommonProps &
+  CommonProps & {
+    children: ReactNode;
+  };
 
-export type SheetDraggableProps = MotionDivProps & {
-  children?: ReactNode;
-  disableDrag?: boolean;
-};
+export type SheetHeaderProps = MotionDivProps &
+  CommonProps & {
+    children?: ReactNode;
+    disableDrag?: boolean;
+  };
 
-export type SheetBackdropProps = Omit<
-  CommonProps,
-  'initial' | 'animate' | 'exit'
->;
+export type SheetContentProps = MotionDivProps &
+  CommonProps & {
+    disableDrag?: boolean | ((args: SheetStateInfo) => boolean);
+    disableScroll?: boolean | ((args: SheetStateInfo) => boolean);
+    scrollRef?: RefObject<HTMLDivElement | null>;
+  };
+
+export type SheetBackdropProps = MotionCommonProps & CommonProps;
+
+export type SheetDragIndicatorProps = MotionCommonProps & CommonProps;
 
 export interface SheetDragProps {
   drag: 'y';
@@ -84,12 +95,6 @@ export interface SheetDragProps {
 export type SheetStateInfo = {
   scrollPosition?: 'top' | 'bottom' | 'middle';
   currentSnap?: number;
-};
-
-export type SheetContentScrollableProps = MotionDivProps & {
-  disableDrag?: boolean | ((args: SheetStateInfo) => boolean);
-  disableScroll?: boolean | ((args: SheetStateInfo) => boolean);
-  scrollRef?: RefObject<HTMLDivElement | null>;
 };
 
 export type SheetSnapPoint = {
@@ -107,6 +112,7 @@ export interface SheetContextType {
   avoidKeyboard: boolean;
   sheetBoundsRef: (node: HTMLDivElement | null) => void;
   sheetRef: RefObject<any>;
+  unstyled: boolean;
   y: MotionValue<any>;
 }
 
@@ -116,30 +122,30 @@ export interface SheetScrollerContextType {
   setDragEnabled: () => void;
 }
 
+type SheetComponent = ForwardRefExoticComponent<
+  SheetProps & RefAttributes<any>
+>;
+
 type ContainerComponent = ForwardRefExoticComponent<
   SheetContainerProps & RefAttributes<any>
 >;
 
-type DraggableComponent = ForwardRefExoticComponent<
-  SheetDraggableProps & RefAttributes<any>
+type HeaderComponent = ForwardRefExoticComponent<
+  SheetHeaderProps & RefAttributes<any>
 >;
 
 type BackdropComponent = ForwardRefExoticComponent<
   SheetBackdropProps & RefAttributes<any>
 >;
 
-type SheetComponent = ForwardRefExoticComponent<
-  SheetProps & RefAttributes<any>
->;
-
-type ContentScrollableComponent = ForwardRefExoticComponent<
-  SheetContentScrollableProps & RefAttributes<any>
+type ContentComponent = ForwardRefExoticComponent<
+  SheetContentProps & RefAttributes<any>
 >;
 
 interface SheetCompoundComponent {
   Container: ContainerComponent;
-  Header: DraggableComponent;
-  Content: ContentScrollableComponent;
+  Header: HeaderComponent;
+  Content: ContentComponent;
   Backdrop: BackdropComponent;
 }
 

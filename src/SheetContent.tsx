@@ -5,10 +5,10 @@ import { useSheetContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
 import { useScrollPosition } from './hooks/use-scroll-position';
 import { styles } from './styles';
-import { type SheetContentScrollableProps } from './types';
-import { mergeRefs } from './utils';
+import { type SheetContentProps } from './types';
+import { applyStyles, mergeRefs } from './utils';
 
-export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
+export const SheetContent = forwardRef<any, SheetContentProps>(
   (
     {
       disableScroll: disableScrollProp,
@@ -17,6 +17,7 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
       style: styleProp,
       className = '',
       scrollRef: scrollRefProp = null,
+      unstyled,
       ...rest
     },
     ref
@@ -56,14 +57,14 @@ export const SheetContent = forwardRef<any, SheetContentScrollableProps>(
         ? undefined
         : sheetContext.dragProps;
 
+    const isUnstyled = unstyled ?? sheetContext.unstyled;
+
     const contentStyle: MotionStyle = {
-      ...styles.content,
+      ...applyStyles(styles.content, isUnstyled),
       ...styleProp,
     };
 
-    const scrollStyle: MotionStyle = {
-      ...styles.scroller,
-    };
+    const scrollStyle: MotionStyle = applyStyles(styles.scroller, isUnstyled);
 
     if (sheetContext.avoidKeyboard) {
       scrollStyle.paddingBottom =
