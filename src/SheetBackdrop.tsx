@@ -25,7 +25,7 @@ export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
 
     return (
       <Comp
-        {...rest}
+        {...(rest as any)}
         ref={ref}
         className={`react-modal-sheet-backdrop ${className}`}
         style={backdropStyle}

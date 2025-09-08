@@ -28,9 +28,11 @@ export type {
   SheetBackdropProps,
   SheetContainerProps,
   SheetContentProps,
+  SheetDetent,
   SheetDragIndicatorProps,
   SheetHeaderProps,
   SheetProps,
   SheetSnapPoint,
   SheetStateInfo,
+  SheetTweenConfig,
 } from './types';

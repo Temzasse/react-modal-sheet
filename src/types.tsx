@@ -21,14 +21,13 @@ export type SheetDetent = 'default' | 'full' | 'content';
 
 type CommonProps = {
   className?: string;
-  style?: CSSProperties;
   unstyled?: boolean;
 };
 
-type MotionCommonProps = Omit<MotionProps, 'initial' | 'animate' | 'exit'> &
-  CommonProps;
-
-type MotionDivProps = ComponentPropsWithoutRef<typeof motion.div>;
+type MotionCommonProps = Omit<
+  ComponentPropsWithoutRef<typeof motion.div>,
+  'initial' | 'animate' | 'exit'
+>;
 
 export interface SheetTweenConfig {
   ease: EasingDefinition;
@@ -59,20 +58,20 @@ export type SheetProps = {
   onOpenEnd?: () => void;
   onOpenStart?: () => void;
   onSnap?: (index: number) => void;
-} & MotionDivProps;
+} & MotionCommonProps;
 
 export type SheetContainerProps = MotionCommonProps &
   CommonProps & {
     children: ReactNode;
   };
 
-export type SheetHeaderProps = MotionDivProps &
+export type SheetHeaderProps = MotionCommonProps &
   CommonProps & {
     children?: ReactNode;
     disableDrag?: boolean;
   };
 
-export type SheetContentProps = MotionDivProps &
+export type SheetContentProps = MotionCommonProps &
   CommonProps & {
     disableDrag?: boolean | ((args: SheetStateInfo) => boolean);
     disableScroll?: boolean | ((args: SheetStateInfo) => boolean);
