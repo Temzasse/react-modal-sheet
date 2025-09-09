@@ -1,7 +1,23 @@
 {
+  "root": false,
   "extends": ["../biome.json"],
   "files": {
-    "ignore": ["dist"],
-    "include": ["src", "index.html", "vite.config.mts"]
+    "includes": ["**/src/**", "**/index.html", "**/vite.config.mts", "!**/dist"]
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
+      }
+    }
   }
 }

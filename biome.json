@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -7,8 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [],
-    "include": ["src", "test"]
+    "includes": ["**/src/**", "**/test/**"]
   },
   "formatter": {
     "enabled": true,
@@ -21,18 +20,15 @@
     "attributePosition": "auto",
     "bracketSpacing": true
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": false,
-      "a11y": { "noBlankTarget": "error" },
+      "a11y": {},
       "complexity": {
         "noBannedTypes": "error",
         "noExtraBooleanCast": "error",
-        "noMultipleSpacesInRegularExpressionLiterals": "error",
         "noStaticOnlyClass": "error",
         "noUselessCatch": "error",
         "noUselessConstructor": "error",
@@ -43,10 +39,11 @@
         "noUselessTypeConstraint": "error",
         "noUselessUndefinedInitialization": "error",
         "noVoid": "error",
-        "noWith": "error",
         "useLiteralKeys": "error",
         "useOptionalChain": "error",
-        "useRegexLiterals": "error"
+        "useRegexLiterals": "error",
+        "noAdjacentSpacesInRegex": "error",
+        "noCommaOperator": "error"
       },
       "correctness": {
         "noChildrenProp": "error",
@@ -57,7 +54,6 @@
         "noGlobalObjectCalls": "error",
         "noInvalidConstructorSuper": "error",
         "noInvalidUseBeforeDeclaration": "error",
-        "noNewSymbol": "error",
         "noPrecisionLoss": "error",
         "noSelfAssign": "error",
         "noSwitchDeclarations": "error",
@@ -66,21 +62,21 @@
         "noUnreachableSuper": "error",
         "noUnsafeFinally": "error",
         "noUnusedVariables": "error",
-        "useArrayLiterals": "off",
         "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "error",
         "useIsNan": "error",
-        "useJsxKeyInIterable": "error"
+        "useJsxKeyInIterable": "error",
+        "noInvalidBuiltinInstantiation": "error",
+        "useValidTypeof": "error"
       },
       "security": {
         "noDangerouslySetInnerHtmlWithChildren": "error",
-        "noGlobalEval": "error"
+        "noGlobalEval": "error",
+        "noBlankTarget": "error"
       },
       "style": {
-        "noCommaOperator": "error",
         "noNamespace": "error",
         "noNonNullAssertion": "error",
-        "noVar": "warn",
         "noYodaExpression": "error",
         "useBlockStatements": "off",
         "useConsistentArrayType": {
@@ -94,7 +90,8 @@
         "useNamingConvention": "off",
         "useShorthandFunctionType": "error",
         "useSingleVarDeclarator": "error",
-        "useThrowOnlyError": "off"
+        "useThrowOnlyError": "off",
+        "useArrayLiterals": "off"
       },
       "suspicious": {
         "noAssignInExpressions": "error",
@@ -129,10 +126,11 @@
         "noSparseArray": "error",
         "noUnsafeNegation": "error",
         "useDefaultSwitchClauseLast": "error",
-        "useValidTypeof": "error"
+        "noWith": "error",
+        "noVar": "warn"
       }
     },
-    "ignore": ["**/vitest.config.js", "**/tsup.config.ts"]
+    "includes": ["**", "!**/vitest.config.js", "!**/tsup.config.ts"]
   },
   "javascript": {
     "formatter": {
