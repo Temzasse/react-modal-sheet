@@ -1,77 +1,77 @@
-import { styled } from 'styled-components';
-import { FaPlay, FaForward, FaRandom } from 'react-icons/fa';
-import { motion } from 'motion/react';
+import { styled } from "styled-components";
+import { FaPlay, FaForward, FaRandom } from "react-icons/fa";
+import { motion } from "motion/react";
 
-import { type Album as AlbumType } from './data';
-import { MoreButton } from './common';
+import type { Album as AlbumType } from "./data";
+import { MoreButton } from "./common";
 
 export function Album({
-  album,
-  currentSong,
-  isPlayerOpen,
-  onSongClick,
-  onMiniPlayerClick,
+	album,
+	currentSong,
+	isPlayerOpen,
+	onSongClick,
+	onMiniPlayerClick,
 }: {
-  album: AlbumType;
-  currentSong: string;
-  isPlayerOpen: boolean;
-  onSongClick: (song: string) => void;
-  onMiniPlayerClick: () => void;
+	album: AlbumType;
+	currentSong: string;
+	isPlayerOpen: boolean;
+	onSongClick: (song: string) => void;
+	onMiniPlayerClick: () => void;
 }) {
-  return (
-    <Wrapper>
-      <Content>
-        <Header>
-          <ImageWrapper>
-            <Image src={album.image} />
-          </ImageWrapper>
+	return (
+		<Wrapper>
+			<Content>
+				<Header>
+					<ImageWrapper>
+						<Image src={album.image} />
+					</ImageWrapper>
 
-          <Details>
-            <AlbumName>{album.name}</AlbumName>
-            <AlbumArtist>{album.artist}</AlbumArtist>
-            <AlbumInfo>
-              {album.genre} &middot; {album.year}
-            </AlbumInfo>
-            <div style={{ flex: 1 }} />
-            <MoreButton />
-          </Details>
-        </Header>
+					<Details>
+						<AlbumName>{album.name}</AlbumName>
+						<AlbumArtist>{album.artist}</AlbumArtist>
+						<AlbumInfo>
+							{album.genre} &middot; {album.year}
+						</AlbumInfo>
+						<div style={{ flex: 1 }} />
+						<MoreButton />
+					</Details>
+				</Header>
 
-        <Controls>
-          <ControlButton>
-            <FaPlay size={12} />
-            <span>Play</span>
-          </ControlButton>
+				<Controls>
+					<ControlButton>
+						<FaPlay size={12} />
+						<span>Play</span>
+					</ControlButton>
 
-          <ControlButton>
-            <FaRandom size={14} />
-            <span>Shuffle</span>
-          </ControlButton>
-        </Controls>
+					<ControlButton>
+						<FaRandom size={14} />
+						<span>Shuffle</span>
+					</ControlButton>
+				</Controls>
 
-        <SongList>
-          {album.songs.map((song, index) => (
-            <SongListItem key={song} onClick={() => onSongClick(song)}>
-              <span>{index + 1}</span>
-              <div>{song}</div>
-            </SongListItem>
-          ))}
-        </SongList>
-      </Content>
+				<SongList>
+					{album.songs.map((song, index) => (
+						<SongListItem key={song} onClick={() => onSongClick(song)}>
+							<span>{index + 1}</span>
+							<div>{song}</div>
+						</SongListItem>
+					))}
+				</SongList>
+			</Content>
 
-      {!isPlayerOpen && (
-        <MiniPlayer>
-          <MiniPlayerButton onClick={onMiniPlayerClick}>
-            <MiniImage src={album.image} />
-            <MiniSongName>{currentSong}</MiniSongName>
-            <FaPlay size={20} />
-            <div style={{ width: 24 }} />
-            <FaForward size={20} />
-          </MiniPlayerButton>
-        </MiniPlayer>
-      )}
-    </Wrapper>
-  );
+			{!isPlayerOpen && (
+				<MiniPlayer>
+					<MiniPlayerButton onClick={onMiniPlayerClick}>
+						<MiniImage src={album.image} />
+						<MiniSongName>{currentSong}</MiniSongName>
+						<FaPlay size={20} />
+						<div style={{ width: 24 }} />
+						<FaForward size={20} />
+					</MiniPlayerButton>
+				</MiniPlayer>
+			)}
+		</Wrapper>
+	);
 }
 
 const Wrapper = styled.div`

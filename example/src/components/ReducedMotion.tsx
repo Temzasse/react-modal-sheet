@@ -1,33 +1,33 @@
-import { Sheet } from 'react-modal-sheet';
-import { styled } from 'styled-components';
+import { Sheet } from "react-modal-sheet";
+import { styled } from "styled-components";
 
-import { ExampleLayout } from './ExampleLayout';
+import { ExampleLayout } from "./ExampleLayout";
 
 export function ReducedMotion() {
-  return (
-    <ExampleLayout
-      title="Reduced Motion"
-      description="Sheet that has reduced motion."
-    >
-      {({ isOpen, close }) => (
-        <Sheet isOpen={isOpen} onClose={close} prefersReducedMotion>
-          <Sheet.Container>
-            <Sheet.Header />
-            <Sheet.Content>
-              <BoxList>
-                {Array.from({ length: 50 })
-                  .fill(1)
-                  .map((_, i) => (
-                    <Box key={i}>{i}</Box>
-                  ))}
-              </BoxList>
-            </Sheet.Content>
-          </Sheet.Container>
-          <Sheet.Backdrop />
-        </Sheet>
-      )}
-    </ExampleLayout>
-  );
+	return (
+		<ExampleLayout
+			title="Reduced Motion"
+			description="Sheet that has reduced motion."
+		>
+			{({ isOpen, close }) => (
+				<Sheet isOpen={isOpen} onClose={close} prefersReducedMotion>
+					<Sheet.Container>
+						<Sheet.Header />
+						<Sheet.Content>
+							<BoxList>
+								{Array.from({ length: 50 })
+									.fill(1)
+									.map((_, i) => (
+										<Box key={i}>{i}</Box>
+									))}
+							</BoxList>
+						</Sheet.Content>
+					</Sheet.Container>
+					<Sheet.Backdrop />
+				</Sheet>
+			)}
+		</ExampleLayout>
+	);
 }
 
 const BoxList = styled.div`
