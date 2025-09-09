@@ -28,7 +28,14 @@ export function DisableDrag() {
 									{Array.from({ length: 20 })
 										.fill(1)
 										.map((_, i) => (
-											<Box key={i}>{i}</Box>
+											<Box
+												key={
+													// biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
+													i
+												}
+											>
+												{i}
+											</Box>
 										))}
 								</BoxList>
 							</Content>

@@ -18,7 +18,14 @@ export function ReducedMotion() {
 								{Array.from({ length: 50 })
 									.fill(1)
 									.map((_, i) => (
-										<Box key={i}>{i}</Box>
+										<Box
+											key={
+												// biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
+												i
+											}
+										>
+											{i}
+										</Box>
 									))}
 							</BoxList>
 						</Sheet.Content>

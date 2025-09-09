@@ -30,7 +30,10 @@ export function ShadowDOM() {
 									>
 										{Array.from({ length: 50 }).map((_, i) => (
 											<div
-												key={i}
+												key={
+													// biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
+													i
+												}
 												style={{
 													backgroundColor: "#eee",
 													borderRadius: "12px",

@@ -10,6 +10,7 @@ export function useMetaThemeColor({
 	from?: string;
 	to: string;
 }) {
+	// biome-ignore lint/correctness/useExhaustiveDependencies: It was here before Biome 2
 	useLayoutEffect(() => {
 		const meta = document.querySelector('meta[name="theme-color"]');
 		if (!meta) return;
@@ -23,7 +24,7 @@ export function useMetaThemeColor({
 				meta.setAttribute("content", current);
 			};
 		}
-	}, [when]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [when]);
 }
 
 export function useVirtualKeyboard() {
@@ -70,13 +71,14 @@ export function useAnimatedVirtualKeyboard() {
 	const { isKeyboardOpen, keyboardHeight } = useVirtualKeyboard();
 	const animatedKeyboardHeight = useMotionValue(keyboardHeight);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: It was here before Biome 2
 	useEffect(() => {
 		if (isKeyboardOpen) {
 			animate(animatedKeyboardHeight, keyboardHeight);
 		} else {
 			animate(animatedKeyboardHeight, 0);
 		}
-	}, [isKeyboardOpen, keyboardHeight]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [isKeyboardOpen, keyboardHeight]);
 
 	return { keyboardHeight: animatedKeyboardHeight, isKeyboardOpen };
 }
