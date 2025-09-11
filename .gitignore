@@ -7,3 +7,4 @@ dist
 .yalc
 yalc.lock
 .vite
+.idea

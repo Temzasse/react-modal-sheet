@@ -1,12 +1,12 @@
-import { styled } from 'styled-components';
-import { FaEllipsisH } from 'react-icons/fa';
+import { styled } from "styled-components";
+import { FaEllipsisH } from "react-icons/fa";
 
 export function MoreButton() {
-  return (
-    <AlbumMoreButton>
-      <FaEllipsisH size={16} />
-    </AlbumMoreButton>
-  );
+	return (
+		<AlbumMoreButton>
+			<FaEllipsisH size={16} />
+		</AlbumMoreButton>
+	);
 }
 
 const AlbumMoreButton = styled.div`

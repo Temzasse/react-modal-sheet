@@ -1,48 +1,48 @@
-import { useState } from 'react';
-import { Sheet } from 'react-modal-sheet';
-import { styled } from 'styled-components';
+import { useState } from "react";
+import { Sheet } from "react-modal-sheet";
+import { styled } from "styled-components";
 
-import { useMetaThemeColor } from '../hooks';
-import { Album } from './Album';
-import { Player } from './Player';
-import { album } from './data';
+import { useMetaThemeColor } from "../hooks";
+import { Album } from "./Album";
+import { Player } from "./Player";
+import { album } from "./data";
 
 export function AppleMusic() {
-  const [isPlayerOpen, setPlayerOpen] = useState(false);
-  // biome-ignore lint/style/noNonNullAssertion: songs are static
-  const [currentSong, setCurrentSong] = useState(album.songs[0]!);
+	const [isPlayerOpen, setPlayerOpen] = useState(false);
+	// biome-ignore lint/style/noNonNullAssertion: songs are static
+	const [currentSong, setCurrentSong] = useState(album.songs[0]!);
 
-  const openPlayer = () => setPlayerOpen(true);
-  const closePlayer = () => setPlayerOpen(false);
+	const openPlayer = () => setPlayerOpen(true);
+	const closePlayer = () => setPlayerOpen(false);
 
-  useMetaThemeColor({ when: isPlayerOpen, from: '#111', to: '#000' });
-  useMetaThemeColor({ to: '#111' });
+	useMetaThemeColor({ when: isPlayerOpen, from: "#111", to: "#000" });
+	useMetaThemeColor({ to: "#111" });
 
-  return (
-    <>
-      <Album
-        album={album}
-        currentSong={currentSong}
-        isPlayerOpen={isPlayerOpen}
-        onMiniPlayerClick={openPlayer}
-        onSongClick={setCurrentSong}
-      />
+	return (
+		<>
+			<Album
+				album={album}
+				currentSong={currentSong}
+				isPlayerOpen={isPlayerOpen}
+				onMiniPlayerClick={openPlayer}
+				onSongClick={setCurrentSong}
+			/>
 
-      <PlayerSheet
-        isOpen={isPlayerOpen}
-        onClose={closePlayer}
-        modalEffectRootId="root"
-      >
-        <Sheet.Container>
-          <Sheet.Header />
-          <Sheet.Content>
-            <Player album={album} song={currentSong} />
-          </Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop />
-      </PlayerSheet>
-    </>
-  );
+			<PlayerSheet
+				isOpen={isPlayerOpen}
+				onClose={closePlayer}
+				modalEffectRootId="root"
+			>
+				<Sheet.Container>
+					<Sheet.Header />
+					<Sheet.Content>
+						<Player album={album} song={currentSong} />
+					</Sheet.Content>
+				</Sheet.Container>
+				<Sheet.Backdrop />
+			</PlayerSheet>
+		</>
+	);
 }
 
 const PlayerSheet = styled(Sheet)`

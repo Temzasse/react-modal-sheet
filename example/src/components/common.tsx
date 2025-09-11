@@ -1,22 +1,22 @@
-import { useRef } from 'react';
-import { type AriaButtonProps, useButton } from 'react-aria';
-import styled, { createGlobalStyle } from 'styled-components';
+import { useRef } from "react";
+import { type AriaButtonProps, useButton } from "react-aria";
+import styled, { createGlobalStyle } from "styled-components";
 
 export function Button({
-  children,
-  className,
-  ...rest
+	children,
+	className,
+	...rest
 }: AriaButtonProps & {
-  className?: string;
+	className?: string;
 }) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const { buttonProps } = useButton(rest, buttonRef);
+	const buttonRef = useRef<HTMLButtonElement>(null);
+	const { buttonProps } = useButton(rest, buttonRef);
 
-  return (
-    <ButtonBase {...buttonProps} ref={buttonRef} className={className}>
-      {children}
-    </ButtonBase>
-  );
+	return (
+		<ButtonBase {...buttonProps} ref={buttonRef} className={className}>
+			{children}
+		</ButtonBase>
+	);
 }
 
 const ButtonBase = styled.button`

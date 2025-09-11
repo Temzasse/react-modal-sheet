@@ -1,30 +1,30 @@
-import { useRef } from 'react';
-import { styled } from 'styled-components';
-import { FiX as CloseIcon } from 'react-icons/fi';
-import { useButton } from 'react-aria';
+import { useRef } from "react";
+import { styled } from "styled-components";
+import { FiX as CloseIcon } from "react-icons/fi";
+import { useButton } from "react-aria";
 
 export function NewMessageHeader({
-  sheetState,
-  titleProps,
+	sheetState,
+	titleProps,
 }: {
-  sheetState: any;
-  titleProps: any;
+	sheetState: any;
+	titleProps: any;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const closeButton = useButton(
-    { onPress: sheetState.close, 'aria-label': 'Close bottom sheet' },
-    ref
-  ); // prettier-ignore
+	const ref = useRef<HTMLButtonElement>(null);
+	const closeButton = useButton(
+		{ onPress: sheetState.close, "aria-label": "Close bottom sheet" },
+		ref,
+	); // prettier-ignore
 
-  return (
-    <Wrapper>
-      <CloseWrapper {...closeButton.buttonProps} ref={ref}>
-        <CloseIcon size={24} color="#fff" />
-      </CloseWrapper>
+	return (
+		<Wrapper>
+			<CloseWrapper {...closeButton.buttonProps} ref={ref}>
+				<CloseIcon size={24} color="#fff" />
+			</CloseWrapper>
 
-      <Title {...titleProps}>New Message</Title>
-    </Wrapper>
-  );
+			<Title {...titleProps}>New Message</Title>
+		</Wrapper>
+	);
 }
 
 const Wrapper = styled.div`

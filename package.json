@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.17.4",
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.2.3",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
     "@vitejs/plugin-react": "4.4.1",

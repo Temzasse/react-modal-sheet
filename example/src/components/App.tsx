@@ -1,275 +1,275 @@
-import { MdAccessibility as A11yIcon } from 'react-icons/md';
-import { Link, Route, Routes } from 'react-router';
-import { styled } from 'styled-components';
+import { MdAccessibility as A11yIcon } from "react-icons/md";
+import { Link, Route, Routes } from "react-router";
+import { styled } from "styled-components";
 
 import {
-  FaMap as AppleMapIcon,
-  FaMusic as AppleMusicIcon,
-  FaMobile,
-  FaWalking,
-  FaKeyboard as KeyboardIcon,
-  FaLock as LockIcon,
-  FaMoon as MoonIcon,
-  FaPaintBrush as PaintIcon,
-  FaScroll as ScrollIcon
-} from 'react-icons/fa';
+	FaMap as AppleMapIcon,
+	FaMusic as AppleMusicIcon,
+	FaMobile,
+	FaWalking,
+	FaKeyboard as KeyboardIcon,
+	FaLock as LockIcon,
+	FaMoon as MoonIcon,
+	FaPaintBrush as PaintIcon,
+	FaScroll as ScrollIcon,
+} from "react-icons/fa";
 
 import {
-  AiOutlineColumnHeight as HeightIcon,
-  AiOutlineSlack as SlackIcon,
-  AiOutlineControl as SnapIcon,
-} from 'react-icons/ai';
+	AiOutlineColumnHeight as HeightIcon,
+	AiOutlineSlack as SlackIcon,
+	AiOutlineControl as SnapIcon,
+} from "react-icons/ai";
 
-import { AvoidKeyboard } from './AvoidKeyboard';
-import { ContentHeight } from './ContentHeight';
-import { CustomStyles } from './CustomStyles';
-import { DisableDrag } from './DisableDrag';
-import { FullScreen } from './FullScreen';
-import { ReducedMotion } from './ReducedMotion';
-import { Scrollable } from './Scrollable';
-import { ScrollableSnapPoints } from './ScrollableSnapPoints';
-import { ShadowDOM } from './ShadowDOM';
-import { SnapPoints } from './SnapPoints';
-import { A11y } from './a11y';
-import { AppleMaps } from './apple-maps';
-import { AppleMusic } from './apple-music';
-import { DarkMode, Screen, ScrollView } from './common';
-import { SlackMessage } from './slack-message';
+import { AvoidKeyboard } from "./AvoidKeyboard";
+import { ContentHeight } from "./ContentHeight";
+import { CustomStyles } from "./CustomStyles";
+import { DisableDrag } from "./DisableDrag";
+import { FullScreen } from "./FullScreen";
+import { ReducedMotion } from "./ReducedMotion";
+import { Scrollable } from "./Scrollable";
+import { ScrollableSnapPoints } from "./ScrollableSnapPoints";
+import { ShadowDOM } from "./ShadowDOM";
+import { SnapPoints } from "./SnapPoints";
+import { A11y } from "./a11y";
+import { AppleMaps } from "./apple-maps";
+import { AppleMusic } from "./apple-music";
+import { DarkMode, Screen, ScrollView } from "./common";
+import { SlackMessage } from "./slack-message";
 
 export function App() {
-  return (
-    <ScrollView>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Screen>
-              <ExampleSelector />
-            </Screen>
-          }
-        />
-        <Route
-          path="snap-points/*"
-          element={
-            <Screen>
-              <SnapPoints />
-            </Screen>
-          }
-        />
-        <Route
-          path="scrollable-snap-points/*"
-          element={
-            <Screen>
-              <ScrollableSnapPoints />
-            </Screen>
-          }
-        />
-        <Route
-          path="scrollable/*"
-          element={
-            <Screen>
-              <Scrollable />
-            </Screen>
-          }
-        />
-        <Route
-          path="avoid-keyboard/*"
-          element={
-            <Screen>
-              <AvoidKeyboard />
-            </Screen>
-          }
-        />
-        <Route
-          path="content-height/*"
-          element={
-            <Screen>
-              <ContentHeight />
-            </Screen>
-          }
-        />
-        <Route
-          path="custom-styles/*"
-          element={
-            <Screen>
-              <CustomStyles />
-            </Screen>
-          }
-        />
-        <Route
-          path="apple-music/*"
-          element={
-            <Screen>
-              <AppleMusic />
-              <DarkMode />
-            </Screen>
-          }
-        />
-        <Route
-          path="apple-maps/*"
-          element={
-            <Screen>
-              <AppleMaps />
-              <DarkMode />
-            </Screen>
-          }
-        />
-        <Route
-          path="slack-message/*"
-          element={
-            <Screen>
-              <SlackMessage />
-              <DarkMode />
-            </Screen>
-          }
-        />
-        <Route
-          path="a11y/*"
-          element={
-            <Screen>
-              <A11y />
-            </Screen>
-          }
-        />
-        <Route
-          path="disable-drag/*"
-          element={
-            <Screen>
-              <DisableDrag />
-            </Screen>
-          }
-        />
-        <Route
-          path="reduced-motion/*"
-          element={
-            <Screen>
-              <ReducedMotion />
-            </Screen>
-          }
-        />
-        <Route
-          path="full-screen/*"
-          element={
-            <Screen>
-              <FullScreen />
-            </Screen>
-          }
-        />
-        <Route
-          path="shadow-dom/*"
-          element={
-            <Screen>
-              <ShadowDOM />
-            </Screen>
-          }
-        />
-      </Routes>
-    </ScrollView>
-  );
+	return (
+		<ScrollView>
+			<Routes>
+				<Route
+					path="/"
+					element={
+						<Screen>
+							<ExampleSelector />
+						</Screen>
+					}
+				/>
+				<Route
+					path="snap-points/*"
+					element={
+						<Screen>
+							<SnapPoints />
+						</Screen>
+					}
+				/>
+				<Route
+					path="scrollable-snap-points/*"
+					element={
+						<Screen>
+							<ScrollableSnapPoints />
+						</Screen>
+					}
+				/>
+				<Route
+					path="scrollable/*"
+					element={
+						<Screen>
+							<Scrollable />
+						</Screen>
+					}
+				/>
+				<Route
+					path="avoid-keyboard/*"
+					element={
+						<Screen>
+							<AvoidKeyboard />
+						</Screen>
+					}
+				/>
+				<Route
+					path="content-height/*"
+					element={
+						<Screen>
+							<ContentHeight />
+						</Screen>
+					}
+				/>
+				<Route
+					path="custom-styles/*"
+					element={
+						<Screen>
+							<CustomStyles />
+						</Screen>
+					}
+				/>
+				<Route
+					path="apple-music/*"
+					element={
+						<Screen>
+							<AppleMusic />
+							<DarkMode />
+						</Screen>
+					}
+				/>
+				<Route
+					path="apple-maps/*"
+					element={
+						<Screen>
+							<AppleMaps />
+							<DarkMode />
+						</Screen>
+					}
+				/>
+				<Route
+					path="slack-message/*"
+					element={
+						<Screen>
+							<SlackMessage />
+							<DarkMode />
+						</Screen>
+					}
+				/>
+				<Route
+					path="a11y/*"
+					element={
+						<Screen>
+							<A11y />
+						</Screen>
+					}
+				/>
+				<Route
+					path="disable-drag/*"
+					element={
+						<Screen>
+							<DisableDrag />
+						</Screen>
+					}
+				/>
+				<Route
+					path="reduced-motion/*"
+					element={
+						<Screen>
+							<ReducedMotion />
+						</Screen>
+					}
+				/>
+				<Route
+					path="full-screen/*"
+					element={
+						<Screen>
+							<FullScreen />
+						</Screen>
+					}
+				/>
+				<Route
+					path="shadow-dom/*"
+					element={
+						<Screen>
+							<ShadowDOM />
+						</Screen>
+					}
+				/>
+			</Routes>
+		</ScrollView>
+	);
 }
 
 const ExampleSelector = () => {
-  return (
-    <ExampleLinks>
-      <li>
-        <ExampleLink to="snap-points">
-          <SnapIcon size={48} />
-          <span>Snap points</span>
-        </ExampleLink>
-      </li>
+	return (
+		<ExampleLinks>
+			<li>
+				<ExampleLink to="snap-points">
+					<SnapIcon size={48} />
+					<span>Snap points</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="content-height">
-          <HeightIcon size={48} />
-          <span>Use Content Height</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="content-height">
+					<HeightIcon size={48} />
+					<span>Use Content Height</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="custom-styles">
-          <PaintIcon size={32} />
-          <span>Custom Styles</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="custom-styles">
+					<PaintIcon size={32} />
+					<span>Custom Styles</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="scrollable">
-          <ScrollIcon size={48} />
-          <span>Scrollable</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="scrollable">
+					<ScrollIcon size={48} />
+					<span>Scrollable</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="avoid-keyboard">
-          <KeyboardIcon size={48} />
-          <span>Avoid keyboard</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="avoid-keyboard">
+					<KeyboardIcon size={48} />
+					<span>Avoid keyboard</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="scrollable-snap-points">
-          <ScrollIcon size={48} />
-          <span>Scrollable (with snap points)</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="scrollable-snap-points">
+					<ScrollIcon size={48} />
+					<span>Scrollable (with snap points)</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="disable-drag">
-          <LockIcon size={48} />
-          <span>Disable drag</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="disable-drag">
+					<LockIcon size={48} />
+					<span>Disable drag</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="apple-music">
-          <AppleMusicIcon size={48} />
-          <span>Apple Music</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="apple-music">
+					<AppleMusicIcon size={48} />
+					<span>Apple Music</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="apple-maps">
-          <AppleMapIcon size={48} />
-          <span>Apple Maps</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="apple-maps">
+					<AppleMapIcon size={48} />
+					<span>Apple Maps</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="slack-message">
-          <SlackIcon size={48} />
-          <span>Slack Message</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="slack-message">
+					<SlackIcon size={48} />
+					<span>Slack Message</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="a11y">
-          <A11yIcon size={48} />
-          <span>Accessible Sheet</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="a11y">
+					<A11yIcon size={48} />
+					<span>Accessible Sheet</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="reduced-motion">
-          <FaWalking size={48} />
-          <span>Reduced Motion</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="reduced-motion">
+					<FaWalking size={48} />
+					<span>Reduced Motion</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="full-screen">
-          <FaMobile size={48} />
-          <span>Full screen</span>
-        </ExampleLink>
-      </li>
+			<li>
+				<ExampleLink to="full-screen">
+					<FaMobile size={48} />
+					<span>Full screen</span>
+				</ExampleLink>
+			</li>
 
-      <li>
-        <ExampleLink to="shadow-dom">
-          <MoonIcon size={48} />
-          <span>Shadow DOM</span>
-        </ExampleLink>
-      </li>
-    </ExampleLinks>
-  );
+			<li>
+				<ExampleLink to="shadow-dom">
+					<MoonIcon size={48} />
+					<span>Shadow DOM</span>
+				</ExampleLink>
+			</li>
+		</ExampleLinks>
+	);
 };
 
 const ExampleLinks = styled.ul`
