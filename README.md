@@ -778,3 +778,41 @@ If you're experiencing issues after upgrading, check the "What's new in v5" sect
 1. **Snap points not working**: Ensure your snap points are in ascending order (`[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
 2. **Scrolling issues**: Remove `Sheet.Scroller` components as scrolling is now handled by `Sheet.Content`
 3. **Detent errors**: Update detent prop values (`"full-height"` → `"default"`, `"content-height"` → `"content"`)
+
+## 🤝 Contributing
+
+If you find a bug or have a feature request please open an issue. If you want to contribute code please open a pull request.
+
+You can build and run the library and the example app locally like this:
+
+1. First install [yalc](https://github.com/wclr/yalc) globally for managing local package dependencies.
+
+```sh
+npm i yalc -g
+```
+
+2. Install deps + configure yalc.
+
+```sh
+npm install
+npm run build
+npm run link
+```
+
+3. Start a watcher for building the library.
+
+```sh
+npm run dev
+```
+
+4. Run dev server for the example app (do this in another terminal).
+
+```sh
+cd example
+npm run dev
+```
+
+5. Open http://localhost:5173/ to see the examples. Now if you make edits to the library code the example app will automatically refresh.
+
+> [!TIP]
+> If you want to test the example app on your phone you can run the example app with `npm run dev:host` and then open your computer's local IP address in your phone's browser. Make sure your phone is on the same network as your computer.
