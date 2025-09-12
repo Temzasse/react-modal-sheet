@@ -43,8 +43,24 @@ export function computeSnapPoints({
   snapPointsProp: number[];
   sheetHeight: number;
 }): SheetSnapPoint[] {
+  if (snapPointsProp[0] !== 0) {
+    console.error(
+      'First snap point should be 0 to ensure the sheet can be fully closed. ' +
+        `Got: [${snapPointsProp.join(', ')}]`
+    );
+    snapPointsProp.unshift(0);
+  }
+
+  if (snapPointsProp[snapPointsProp.length - 1] !== 1) {
+    console.error(
+      'Last snap point should be 1 to ensure the sheet can be fully opened. ' +
+        `Got: [${snapPointsProp.join(', ')}]`
+    );
+    snapPointsProp.push(1);
+  }
+
   if (sheetHeight <= 0) {
-    console.warn(
+    console.error(
       `Sheet height is ${sheetHeight}, cannot compute snap points. ` +
         'Make sure the sheet is mounted and has a valid height.'
     );
