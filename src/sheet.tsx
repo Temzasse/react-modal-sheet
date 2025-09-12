@@ -1,8 +1,8 @@
 import {
-  type DragHandler,
-  type Transition,
   animate,
+  type DragHandler,
   motion,
+  type Transition,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -37,7 +37,7 @@ import {
 } from './snap';
 import { styles } from './styles';
 import { type SheetContextType, type SheetProps } from './types';
-import { applyStyles } from './utils';
+import { applyStyles, waitForElement } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
@@ -297,6 +297,13 @@ export const Sheet = forwardRef<any, SheetProps>(
       isOpen,
       onOpen: async () => {
         onOpenStart?.();
+
+        /**
+         * This is not very React-y but we need to wait for the sheet
+         * but we need to wait for the sheet to be rendered and visible
+         * before we can measure it and animate it to the initial snap point.
+         */
+        await waitForElement('react-modal-sheet-container');
 
         const initialSnapPoint =
           initialSnap !== undefined ? getSnapPoint(initialSnap) : null;

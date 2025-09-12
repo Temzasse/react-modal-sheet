@@ -67,3 +67,24 @@ const isIPad = cached(function () {
 export const isIOS = cached(function () {
   return isIPhone() || isIPad();
 });
+
+/** Wait for an element to be rendered and visible */
+export function waitForElement(
+  className: string,
+  interval = 50,
+  maxAttempts = 20
+) {
+  return new Promise<HTMLElement | null>((resolve) => {
+    let attempts = 0;
+    const timer = setInterval(() => {
+      const element = document.getElementsByClassName(
+        className
+      )[0] as HTMLElement;
+      attempts++;
+      if (element || attempts >= maxAttempts) {
+        clearInterval(timer);
+        resolve(element);
+      }
+    }, interval);
+  });
+}
