@@ -1,9 +1,8 @@
 import { useRef, useState } from "react";
 import { Sheet, type SheetRef } from "react-modal-sheet";
 import { styled } from "styled-components";
-
-import { ExampleLayout } from "./ExampleLayout";
 import { Button } from "./common";
+import { ExampleLayout } from "./ExampleLayout";
 
 const snapPoints = [0, 200, 1];
 const lastSnap = snapPoints.length - 1;
@@ -33,8 +32,9 @@ export function ContentHeight() {
 							disableScroll={(state) => state.currentSnap !== lastSnap}
 						>
 							<BoxList>
-								<Button onPress={() => snapTo(0)}>Snap to top</Button>
+								<Button onPress={() => snapTo(2)}>Snap to top</Button>
 								<Button onPress={() => snapTo(1)}>Snap to bottom</Button>
+								<Button onPress={() => snapTo(0)}>Close</Button>
 								<Button onPress={() => setBoxes((prev) => prev + 1)}>
 									Add box
 								</Button>
