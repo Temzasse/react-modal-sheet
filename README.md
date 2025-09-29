@@ -333,6 +333,10 @@ Sheet backdrop is a translucent overlay that helps to separate the sheet from it
 
 **⚠️ Note:** as the element is a motion component you need to use [`onTap`](https://motion.dev/docs/react-gestures#tap) instead of `onClick` if you want to add a click handler to it.
 
+| Name               | Required | Default | Description                                                                                                                                                                                 |
+| ------------------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disableAnimation` | no       | false   | Disable backdrop defaults animation.                                                                                                                                                        |
+
 > 🖥 Rendered element: `motion.div` or `motion.button`.
 
 ## ✨ Advanced behaviors
