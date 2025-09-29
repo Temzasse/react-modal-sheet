@@ -1,5 +1,4 @@
 import {
-  type CSSProperties,
   type ComponentPropsWithoutRef,
   type ForwardRefExoticComponent,
   type FunctionComponent,
@@ -12,7 +11,6 @@ import {
 import {
   type DragHandler,
   type EasingDefinition,
-  type MotionProps,
   type MotionValue,
   type motion,
 } from 'motion/react';
@@ -24,10 +22,9 @@ type CommonProps = {
   unstyled?: boolean;
 };
 
-type MotionCommonProps = Omit<
-  ComponentPropsWithoutRef<typeof motion.div>,
-  'initial' | 'animate' | 'exit'
->;
+type MotionProps = ComponentPropsWithoutRef<typeof motion.div>;
+
+type MotionCommonProps = Omit<MotionProps, 'initial' | 'animate' | 'exit'>;
 
 export interface SheetTweenConfig {
   ease: EasingDefinition;
@@ -78,7 +75,10 @@ export type SheetContentProps = MotionCommonProps &
     scrollRef?: RefObject<HTMLDivElement | null>;
   };
 
-export type SheetBackdropProps = MotionCommonProps & CommonProps;
+export type SheetBackdropProps = MotionProps &
+  CommonProps & {
+    disableAnimation?: boolean;
+  };
 
 export type SheetDragIndicatorProps = HTMLAttributes<HTMLDivElement> &
   CommonProps;

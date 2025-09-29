@@ -1,4 +1,4 @@
-import { type MotionStyle, motion } from 'motion/react';
+import { MotionProps, type MotionStyle, motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
 import { useSheetContext } from './context';
@@ -9,7 +9,10 @@ import { applyStyles } from './utils';
 const isClickable = (props: any) => !!props.onClick || !!props.onTap;
 
 export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
-  ({ style, className = '', unstyled, ...rest }, ref) => {
+  (
+    { style, className = '', unstyled, disableAnimation = false, ...rest },
+    ref
+  ) => {
     const sheetContext = useSheetContext();
     const clickable = isClickable(rest);
     const Comp = clickable ? motion.button : motion.div;
@@ -23,16 +26,22 @@ export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
       pointerEvents,
     };
 
+    const animationProps: MotionProps = disableAnimation
+      ? {}
+      : {
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          exit: { opacity: 0 },
+          transition: { duration: 1 },
+        };
+
     return (
       <Comp
         {...(rest as any)}
         ref={ref}
         className={`react-modal-sheet-backdrop ${className}`}
         style={backdropStyle}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1 }}
+        {...animationProps}
       />
     );
   }
