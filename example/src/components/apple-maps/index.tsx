@@ -13,8 +13,8 @@ import { Link } from "react-router";
 import styled from "styled-components";
 import bgImg from "./map-bg.jpeg";
 
-const snapPoints = [100, 0.5, 1];
-const initialSnap = 0;
+const snapPoints = [0,100, 0.5, 1];
+const initialSnap = 1;
 const lastSnap = snapPoints.length - 1;
 
 export function AppleMaps() {
