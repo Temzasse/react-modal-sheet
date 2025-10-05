@@ -16,6 +16,8 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
       children,
       style: styleProp,
       className = '',
+      scrollClassName = '',
+      scrollStyle: scrollStyleProp,
       scrollRef: scrollRefProp = null,
       unstyled,
       ...rest
@@ -86,9 +88,9 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
         onMeasureDragConstraints={dragConstraints.onMeasure}
       >
         <motion.div
-          ref={mergeRefs([scroll.ref, scrollRefProp])}
-          style={scrollStyle}
-          className="react-modal-sheet-content-scroller"
+          ref={mergeRefs([scroll.scrollRef, scrollRefProp])}
+          style={{ ...scrollStyle, ...scrollStyleProp }}
+          className={`react-modal-sheet-content-scroller ${scrollClassName}`}
         >
           {children}
         </motion.div>
