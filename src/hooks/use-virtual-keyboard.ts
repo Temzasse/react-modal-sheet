@@ -8,34 +8,68 @@ type VirtualKeyboardState = {
 
 type UseVirtualKeyboardOptions = {
   /**
-   * Ref to the container element to apply `keyboard-inset-height` CSS variable updates (required)
+   * Ref to the container element to apply `keyboard-inset-height` CSS variable updates.
+   * @default document.documentElement
    */
-  containerRef: RefObject<HTMLDivElement | null>;
+  containerRef?: RefObject<HTMLElement | null>;
   /**
-   * Enable or disable the hook entirely (default: true)
+   * Enable or disable the hook entirely.
+   * @default true
    */
   isEnabled?: boolean;
   /**
-   * Minimum pixel height difference to consider the keyboard visible (default: 100px)
+   * Minimum pixel height difference to consider the keyboard visible.
+   * @default 100
    */
   visualViewportThreshold?: number;
   /**
-   * Whether to treat contenteditable elements as text inputs (default: true)
+   * Whether to treat contenteditable elements as text inputs.
+   * @default true
    */
   includeContentEditable?: boolean;
   /**
-   * Delay in ms for debouncing viewport changes (default: 100ms)
+   * Delay in ms for debouncing viewport changes.
+   * @default 100
    */
   debounceDelay?: number;
 };
 
-export function useVirtualKeyboard({
-  containerRef,
-  isEnabled = true,
-  debounceDelay = 100,
-  includeContentEditable = true,
-  visualViewportThreshold = 100,
-}: UseVirtualKeyboardOptions) {
+/**
+ * A hook that detects virtual keyboard visibility and height.
+ * It listens to focus events and visual viewport changes to determine
+ * if a text input is focused and the keyboard is likely visible.
+ *
+ * It also sets the `--keyboard-inset-height` CSS variable on the specified container
+ * (or `:root` by default) to allow for easy styling adjustments when the keyboard is open.
+ *
+ * @param options Configuration options for the hook.
+ * @returns An object containing `isKeyboardOpen` and `keyboardHeight`.
+ *
+ * @example
+ * ```tsx
+ * import { useVirtualKeyboard } from 'react-modal-sheet';
+ *
+ * function MyComponent() {
+ *   const { isKeyboardOpen, keyboardHeight } = useVirtualKeyboard();
+ *
+ *   return (
+ *     <div>
+ *       <p>Keyboard is {isKeyboardOpen ? 'open' : 'closed'}</p>
+ *       <p>Keyboard height: {keyboardHeight}px</p>
+ *    </div>
+ *  );
+ * }
+ * ```
+ */
+export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
+  const {
+    containerRef,
+    isEnabled = true,
+    debounceDelay = 100,
+    includeContentEditable = true,
+    visualViewportThreshold = 100,
+  } = options;
+
   const [state, setState] = useState<VirtualKeyboardState>({
     isVisible: false,
     height: 0,
@@ -61,10 +95,17 @@ export function useVirtualKeyboard({
     const vk = (navigator as any).virtualKeyboard;
 
     function setKeyboardInsetHeightEnv(height: number) {
-      containerRef.current?.style.setProperty(
-        '--keyboard-inset-height',
-        `${height}px`
-      );
+      const element = containerRef?.current || document.documentElement;
+
+      // Virtual Keyboard API is only available in secure context
+      if (window.isSecureContext) {
+        element.style.setProperty(
+          '--keyboard-inset-height',
+          `env(keyboard-inset-height, ${height}px)`
+        );
+      } else {
+        element.style.setProperty('--keyboard-inset-height', `${height}px`);
+      }
     }
 
     function handleFocusIn(e: FocusEvent) {

@@ -448,6 +448,82 @@ The scroll state provides:
 - `scrollPosition`: `'top'`, `'bottom'`, `'middle'`, or `undefined`
 - `currentSnap`: Current snap point index (if using snap points)
 
+#### Creating custom scrollers
+
+If you need more control over the scrollable area, eg. when you don't want the whole content area to be scrollable, you can disable the default scrolling behavior of the `Sheet.Content` and implement your own scroller with the help of `useScrollPosition` and `useVirtualKeyboard` utility hooks.
+
+> [!NOTE]
+> These hooks are internally used by the `Sheet.Content` component so you shouldn't need to use them unless you are implementing a custom scroller. However they are general purpose hooks so you can use them in other parts of your app as well if you want 😊
+
+```tsx
+import {
+  Sheet,
+  useScrollPosition,
+  useVirtualKeyboard,
+} from 'react-modal-sheet';
+
+function CustomScrollerExample() {
+  const [isOpen, setOpen] = useState(false);
+
+  const { scrollRef, scrollPosition } = useScrollPosition({
+    isEnabled: isOpen,
+  });
+
+  const { keyboardHeight } = useVirtualKeyboard({
+    isEnabled: isOpen,
+  });
+
+  /**
+   * If you use `var(--keyboard-inset-height)` CSS variable you can just call
+   * `useVirtualKeyboard()` without destructuring anything from it:
+   *
+   * useVirtualKeyboard({ isEnabled: isOpen });
+   */
+
+  return (
+    // Disable default keyboard avoidance
+    <Sheet avoidKeyboard={false} isOpen={isOpen} onClose={() => setOpen(false)}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Disable default scrolling
+          disableScroll
+          // Dragging is still managed by `Sheet.Content` so we control it here
+          disableDrag={scrollPosition !== 'top'}
+        >
+          <div
+            style={{
+              // Use CSS variable managed by `useVirtualKeyboard`
+              paddingBottom: 'var(--keyboard-inset-height)',
+              // Alternatively manually apply keyboard padding
+              paddingBottom: keyboardHeight,
+              // Some layout styles for custom content
+              height: '100%',
+              display: 'grid',
+              gridTemplateRows: 'auto 1fr auto',
+            }}
+          >
+            <div>Some content here...</div>
+
+            <div
+              // Pass ref to the custom scroller so we can track its scroll position
+              ref={scrollRef}
+              // Make it scrollable
+              style={{ overflowY: 'auto' }}
+            >
+              <div style={{ height: '400vh' }}>Long content here...</div>
+            </div>
+
+            <div>More content here...</div>
+          </div>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
 ### 🪟 iOS Modal View effect
 
 In addition to the `Sheet.Backdrop` it's possible to apply a scaling effect to the main app element to highlight the modality of the bottom sheet. This effect mimics the [iOS Modal View](https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/) presentation style to bring more focus to the sheet and add some delight to the user experience.

@@ -7,7 +7,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**/src/**", "**/test/**"]
+    "includes": [
+      "**/src/**",
+      "**/test/**",
+      "**/example/src/**",
+      "**/example-ssr/src/**"
+    ]
   },
   "formatter": {
     "enabled": true,

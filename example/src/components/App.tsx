@@ -1,7 +1,8 @@
-import { MdAccessibility as A11yIcon } from "react-icons/md";
-import { Link, Route, Routes } from "react-router";
-import { styled } from "styled-components";
-
+import {
+	AiOutlineColumnHeight as HeightIcon,
+	AiOutlineSlack as SlackIcon,
+	AiOutlineControl as SnapIcon,
+} from "react-icons/ai";
 import {
 	FaMap as AppleMapIcon,
 	FaMusic as AppleMusicIcon,
@@ -13,16 +14,19 @@ import {
 	FaPaintBrush as PaintIcon,
 	FaScroll as ScrollIcon,
 } from "react-icons/fa";
-
-import {
-	AiOutlineColumnHeight as HeightIcon,
-	AiOutlineSlack as SlackIcon,
-	AiOutlineControl as SnapIcon,
-} from "react-icons/ai";
+import { LuScrollText, LuWaypoints } from "react-icons/lu";
+import { MdAccessibility as A11yIcon } from "react-icons/md";
+import { Link, Route, Routes } from "react-router";
+import { styled } from "styled-components";
 
 import { AvoidKeyboard } from "./AvoidKeyboard";
+import { A11y } from "./a11y";
+import { AppleMaps } from "./apple-maps";
+import { AppleMusic } from "./apple-music";
 import { ContentHeight } from "./ContentHeight";
+import { CustomScroller } from "./CustomScroller";
 import { CustomStyles } from "./CustomStyles";
+import { DarkMode, Screen, ScrollView } from "./common";
 import { DisableDrag } from "./DisableDrag";
 import { FullScreen } from "./FullScreen";
 import { ReducedMotion } from "./ReducedMotion";
@@ -30,10 +34,6 @@ import { Scrollable } from "./Scrollable";
 import { ScrollableSnapPoints } from "./ScrollableSnapPoints";
 import { ShadowDOM } from "./ShadowDOM";
 import { SnapPoints } from "./SnapPoints";
-import { A11y } from "./a11y";
-import { AppleMaps } from "./apple-maps";
-import { AppleMusic } from "./apple-music";
-import { DarkMode, Screen, ScrollView } from "./common";
 import { SlackMessage } from "./slack-message";
 
 export function App() {
@@ -93,6 +93,14 @@ export function App() {
 					element={
 						<Screen>
 							<CustomStyles />
+						</Screen>
+					}
+				/>
+				<Route
+					path="custom-scroller/*"
+					element={
+						<Screen>
+							<CustomScroller />
 						</Screen>
 					}
 				/>
@@ -200,6 +208,13 @@ const ExampleSelector = () => {
 			</li>
 
 			<li>
+				<ExampleLink to="custom-scroller">
+					<LuScrollText size={48} />
+					<span>Custom Scroller</span>
+				</ExampleLink>
+			</li>
+
+			<li>
 				<ExampleLink to="avoid-keyboard">
 					<KeyboardIcon size={48} />
 					<span>Avoid keyboard</span>
@@ -208,7 +223,7 @@ const ExampleSelector = () => {
 
 			<li>
 				<ExampleLink to="scrollable-snap-points">
-					<ScrollIcon size={48} />
+					<LuWaypoints size={48} />
 					<span>Scrollable (with snap points)</span>
 				</ExampleLink>
 			</li>
