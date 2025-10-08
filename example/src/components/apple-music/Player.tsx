@@ -1,71 +1,71 @@
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
 import {
-	FaPlay,
-	FaForward,
-	FaBackward,
-	FaVolumeOff,
-	FaVolumeUp,
-	FaListUl,
-	FaPodcast,
-	FaFire,
-} from "react-icons/fa";
+  FaPlay,
+  FaForward,
+  FaBackward,
+  FaVolumeOff,
+  FaVolumeUp,
+  FaListUl,
+  FaPodcast,
+  FaFire,
+} from 'react-icons/fa';
 
-import type { Album as AlbumType } from "./data";
-import { MoreButton } from "./common";
+import type { Album as AlbumType } from './data';
+import { MoreButton } from './common';
 
 export function Player({ song, album }: { song: string; album: AlbumType }) {
-	return (
-		<Wrapper>
-			<AlbumImage>
-				<ImageWrapper>
-					<Image src={album.image} />
-				</ImageWrapper>
-			</AlbumImage>
+  return (
+    <Wrapper>
+      <AlbumImage>
+        <ImageWrapper>
+          <Image src={album.image} />
+        </ImageWrapper>
+      </AlbumImage>
 
-			<MainContent>
-				<SongInfoWrapper>
-					<SongInfo>
-						<SongName>{song}</SongName>
-						<ArtistName>{album.artist}</ArtistName>
-					</SongInfo>
-					<MoreButton />
-				</SongInfoWrapper>
+      <MainContent>
+        <SongInfoWrapper>
+          <SongInfo>
+            <SongName>{song}</SongName>
+            <ArtistName>{album.artist}</ArtistName>
+          </SongInfo>
+          <MoreButton />
+        </SongInfoWrapper>
 
-				<Track>
-					<TrackTimeline />
-					<TrackTimeInfo>
-						<span>0.00</span>
-						<span>-4.00</span>
-					</TrackTimeInfo>
-				</Track>
+        <Track>
+          <TrackTimeline />
+          <TrackTimeInfo>
+            <span>0.00</span>
+            <span>-4.00</span>
+          </TrackTimeInfo>
+        </Track>
 
-				<Controls>
-					<Control onClick={() => console.log("Prev song")}>
-						<FaBackward size={32} />
-					</Control>
-					<Control onClick={() => console.log("Play / Pause")}>
-						<FaPlay size={32} />
-					</Control>
-					<Control onClick={() => console.log("Next song")}>
-						<FaForward size={32} />
-					</Control>
-				</Controls>
+        <Controls>
+          <Control onClick={() => console.log('Prev song')}>
+            <FaBackward size={32} />
+          </Control>
+          <Control onClick={() => console.log('Play / Pause')}>
+            <FaPlay size={32} />
+          </Control>
+          <Control onClick={() => console.log('Next song')}>
+            <FaForward size={32} />
+          </Control>
+        </Controls>
 
-				<VolumeControl>
-					<FaVolumeOff size={12} />
-					<VolumeSlider type="range" />
-					<FaVolumeUp size={12} />
-				</VolumeControl>
+        <VolumeControl>
+          <FaVolumeOff size={12} />
+          <VolumeSlider type="range" />
+          <FaVolumeUp size={12} />
+        </VolumeControl>
 
-				<IconButtons>
-					<FaFire size={20} color="#333" />
-					<FaPodcast size={20} color="#73ffd3" />
-					<FaListUl size={20} color="#73ffd3" />
-				</IconButtons>
-			</MainContent>
-		</Wrapper>
-	);
+        <IconButtons>
+          <FaFire size={20} color="#333" />
+          <FaPodcast size={20} color="#73ffd3" />
+          <FaListUl size={20} color="#73ffd3" />
+        </IconButtons>
+      </MainContent>
+    </Wrapper>
+  );
 }
 
 const Wrapper = styled.div`

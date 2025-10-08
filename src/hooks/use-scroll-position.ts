@@ -15,13 +15,13 @@ type UseScrollPositionOptions = {
 
 /**
  * Hook to track the scroll position of an element.
- * 
+ *
  * The scroll position can be 'top', 'bottom', 'middle', or undefined if the content is not scrollable.
  * The hook provides a `scrollRef` callback to assign to the scrollable element.
- * 
+ *
  * Note that the scroll position is only updated when the user stops scrolling
  * for a short moment (debounced). You can set `debounceDelay` to `0` to disable debouncing entirely.
- * 
+ *
  * @param options Configuration options for the hook.
  * @returns An object containing the `scrollRef` callback and the current `scrollPosition`.
  *

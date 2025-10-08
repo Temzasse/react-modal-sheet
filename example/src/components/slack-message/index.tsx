@@ -1,104 +1,104 @@
-import { useRef } from "react";
-import { FiEdit as MessageIcon, FiSearch as SearchIcon } from "react-icons/fi";
-import { Sheet } from "react-modal-sheet";
-import { useOverlayTriggerState } from "react-stately";
-import { styled } from "styled-components";
+import { useRef } from 'react';
+import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
+import { Sheet } from 'react-modal-sheet';
+import { useOverlayTriggerState } from 'react-stately';
+import { styled } from 'styled-components';
 
 import {
-	FocusScope,
-	OverlayProvider,
-	useButton,
-	useDialog,
-	useModal,
-	useOverlay,
-} from "react-aria";
+  FocusScope,
+  OverlayProvider,
+  useButton,
+  useDialog,
+  useModal,
+  useOverlay,
+} from 'react-aria';
 
-import { ScrollView } from "../common";
-import { useMetaThemeColor } from "../hooks";
-import { NewMessageContent } from "./NewMessageContent";
-import { NewMessageHeader } from "./NewMessageHeader";
+import { ScrollView } from '../common';
+import { useMetaThemeColor } from '../hooks';
+import { NewMessageContent } from './NewMessageContent';
+import { NewMessageHeader } from './NewMessageHeader';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
 export function SlackMessage() {
-	const sheetState = useOverlayTriggerState({});
-	const inputRef = useRef<HTMLInputElement>(null);
-	const openButtonRef = useRef<HTMLButtonElement>(null);
-	const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
-	const focusInput = () => inputRef.current?.focus();
+  const sheetState = useOverlayTriggerState({});
+  const inputRef = useRef<HTMLInputElement>(null);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
+  const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
+  const focusInput = () => inputRef.current?.focus();
 
-	useMetaThemeColor({ when: sheetState.isOpen, from: "#111", to: "#000" });
-	useMetaThemeColor({ to: "#111" });
+  useMetaThemeColor({ when: sheetState.isOpen, from: '#111', to: '#000' });
+  useMetaThemeColor({ to: '#111' });
 
-	return (
-		<ScrollView>
-			<Wrapper>
-				<Topbar>
-					<Logo />
-					<WorkspaceTitle>A11y Workspace</WorkspaceTitle>
-					<SearchIcon size={20} />
-				</Topbar>
+  return (
+    <ScrollView>
+      <Wrapper>
+        <Topbar>
+          <Logo />
+          <WorkspaceTitle>A11y Workspace</WorkspaceTitle>
+          <SearchIcon size={20} />
+        </Topbar>
 
-				<Content>
-					<Fab {...openButton.buttonProps} ref={openButtonRef}>
-						<MessageIcon size={20} color="#fff" />
-					</Fab>
-				</Content>
+        <Content>
+          <Fab {...openButton.buttonProps} ref={openButtonRef}>
+            <MessageIcon size={20} color="#fff" />
+          </Fab>
+        </Content>
 
-				<MessageSheet
-					isOpen={sheetState.isOpen}
-					onOpenEnd={focusInput}
-					onClose={sheetState.close}
-					modalEffectRootId="root"
-				>
-					<OverlayProvider>
-						<FocusScope contain autoFocus={false} restoreFocus>
-							<MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
-						</FocusScope>
-					</OverlayProvider>
-				</MessageSheet>
-			</Wrapper>
-		</ScrollView>
-	);
+        <MessageSheet
+          isOpen={sheetState.isOpen}
+          onOpenEnd={focusInput}
+          onClose={sheetState.close}
+          modalEffectRootId="root"
+        >
+          <OverlayProvider>
+            <FocusScope contain autoFocus={false} restoreFocus>
+              <MessageSheetComp sheetState={sheetState} inputRef={inputRef} />
+            </FocusScope>
+          </OverlayProvider>
+        </MessageSheet>
+      </Wrapper>
+    </ScrollView>
+  );
 }
 
 const MessageSheetComp = ({
-	sheetState,
-	inputRef,
+  sheetState,
+  inputRef,
 }: {
-	sheetState: any;
-	inputRef: any;
+  sheetState: any;
+  inputRef: any;
 }) => {
-	const ref = useRef<HTMLDivElement>(null);
-	const dialog = useDialog({}, ref);
-	const overlay = useOverlay(
-		{ onClose: sheetState.close, isOpen: true, isDismissable: true },
-		ref,
-	);
+  const ref = useRef<HTMLDivElement>(null);
+  const dialog = useDialog({}, ref);
+  const overlay = useOverlay(
+    { onClose: sheetState.close, isOpen: true, isDismissable: true },
+    ref
+  );
 
-	useModal();
+  useModal();
 
-	// HACK: some props from React Aria need to be cast to `any`
-	// since they conflict with the Motion props
-	return (
-		<>
-			<Sheet.Container
-				{...overlay.overlayProps}
-				{...(dialog.dialogProps as any)}
-				ref={ref}
-			>
-				<Sheet.Header>
-					<NewMessageHeader
-						sheetState={sheetState}
-						titleProps={dialog.titleProps}
-					/>
-				</Sheet.Header>
-				<Sheet.Content>
-					<NewMessageContent inputRef={inputRef} />
-				</Sheet.Content>
-			</Sheet.Container>
-		</>
-	);
+  // HACK: some props from React Aria need to be cast to `any`
+  // since they conflict with the Motion props
+  return (
+    <>
+      <Sheet.Container
+        {...overlay.overlayProps}
+        {...(dialog.dialogProps as any)}
+        ref={ref}
+      >
+        <Sheet.Header>
+          <NewMessageHeader
+            sheetState={sheetState}
+            titleProps={dialog.titleProps}
+          />
+        </Sheet.Header>
+        <Sheet.Content>
+          <NewMessageContent inputRef={inputRef} />
+        </Sheet.Content>
+      </Sheet.Container>
+    </>
+  );
 };
 
 const Wrapper = styled.div`

@@ -1,64 +1,64 @@
-import { useRef, useState } from "react";
-import { styled } from "styled-components";
-import { Sheet } from "react-modal-sheet";
+import { useRef, useState } from 'react';
+import { styled } from 'styled-components';
+import { Sheet } from 'react-modal-sheet';
 
-import { ExampleLayout } from "./ExampleLayout";
+import { ExampleLayout } from './ExampleLayout';
 
 export function DisableDrag() {
-	const { isScrolling, onScroll } = useScrolling();
+  const { isScrolling, onScroll } = useScrolling();
 
-	return (
-		<ExampleLayout
-			title="Disable drag"
-			description="Disable drag for horizontal scrolling inside the sheet."
-		>
-			{({ isOpen, close }) => (
-				<Sheet isOpen={isOpen} onClose={close}>
-					<Sheet.Container>
-						<Sheet.Header />
-						<Sheet.Content disableDrag={isScrolling}>
-							<Content>
-								<div>
-									{isScrolling
-										? "Scrolling (drag disabled)"
-										: "Not scrolling (drag enabled)"}
-								</div>
+  return (
+    <ExampleLayout
+      title="Disable drag"
+      description="Disable drag for horizontal scrolling inside the sheet."
+    >
+      {({ isOpen, close }) => (
+        <Sheet isOpen={isOpen} onClose={close}>
+          <Sheet.Container>
+            <Sheet.Header />
+            <Sheet.Content disableDrag={isScrolling}>
+              <Content>
+                <div>
+                  {isScrolling
+                    ? 'Scrolling (drag disabled)'
+                    : 'Not scrolling (drag enabled)'}
+                </div>
 
-								<BoxList onScroll={onScroll}>
-									{Array.from({ length: 20 })
-										.fill(1)
-										.map((_, i) => (
-											<Box
-												key={
-													// biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
-													i
-												}
-											>
-												{i}
-											</Box>
-										))}
-								</BoxList>
-							</Content>
-						</Sheet.Content>
-					</Sheet.Container>
-					<Sheet.Backdrop />
-				</Sheet>
-			)}
-		</ExampleLayout>
-	);
+                <BoxList onScroll={onScroll}>
+                  {Array.from({ length: 20 })
+                    .fill(1)
+                    .map((_, i) => (
+                      <Box
+                        key={
+                          // biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
+                          i
+                        }
+                      >
+                        {i}
+                      </Box>
+                    ))}
+                </BoxList>
+              </Content>
+            </Sheet.Content>
+          </Sheet.Container>
+          <Sheet.Backdrop />
+        </Sheet>
+      )}
+    </ExampleLayout>
+  );
 }
 
 function useScrolling() {
-	const [isScrolling, setScrolling] = useState<boolean>(false);
-	const timeout = useRef<any>(undefined);
+  const [isScrolling, setScrolling] = useState<boolean>(false);
+  const timeout = useRef<any>(undefined);
 
-	const onScroll = () => {
-		setScrolling(true);
-		clearTimeout(timeout.current);
-		timeout.current = setTimeout(() => setScrolling(false), 150);
-	};
+  const onScroll = () => {
+    setScrolling(true);
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setScrolling(false), 150);
+  };
 
-	return { onScroll, isScrolling };
+  return { onScroll, isScrolling };
 }
 
 const Content = styled.div`

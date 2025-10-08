@@ -1,53 +1,53 @@
 import {
-	Sheet,
-	useScrollPosition,
-	useVirtualKeyboard,
-} from "react-modal-sheet";
-import styled from "styled-components";
-import { BoxList } from "./BoxList";
-import { ExampleLayout } from "./ExampleLayout";
+  Sheet,
+  useScrollPosition,
+  useVirtualKeyboard,
+} from 'react-modal-sheet';
+import styled from 'styled-components';
+import { BoxList } from './BoxList';
+import { ExampleLayout } from './ExampleLayout';
 
 export function CustomScroller() {
-	const { scrollRef, scrollPosition } = useScrollPosition();
+  const { scrollRef, scrollPosition } = useScrollPosition();
 
-	// This assigns the `--keyboard-inset-height` CSS variable to the `:root` element
-	useVirtualKeyboard();
+  // This assigns the `--keyboard-inset-height` CSS variable to the `:root` element
+  useVirtualKeyboard();
 
-	return (
-		<ExampleLayout
-			title="Custom Scroller"
-			description="Sheet that has a custom scroller."
-		>
-			{({ isOpen, close }) => (
-				/* Disable default keyboard avoidance */
-				<Sheet isOpen={isOpen} onClose={close} avoidKeyboard={false}>
-					<Sheet.Container>
-						<Sheet.Header />
+  return (
+    <ExampleLayout
+      title="Custom Scroller"
+      description="Sheet that has a custom scroller."
+    >
+      {({ isOpen, close }) => (
+        /* Disable default keyboard avoidance */
+        <Sheet isOpen={isOpen} onClose={close} avoidKeyboard={false}>
+          <Sheet.Container>
+            <Sheet.Header />
 
-						{/* Disable default content scrolling */}
-						<Sheet.Content disableScroll disableDrag={scrollPosition !== "top"}>
-							<Content>
-								<ContentHeader>
-									<Input type="text" placeholder="Focus me" />
-								</ContentHeader>
+            {/* Disable default content scrolling */}
+            <Sheet.Content disableScroll disableDrag={scrollPosition !== 'top'}>
+              <Content>
+                <ContentHeader>
+                  <Input type="text" placeholder="Focus me" />
+                </ContentHeader>
 
-								<Scroller ref={scrollRef}>
-									<ScrollPosition>
-										Scroll position: {scrollPosition}
-									</ScrollPosition>
-									<BoxList count={10} />
-								</Scroller>
+                <Scroller ref={scrollRef}>
+                  <ScrollPosition>
+                    Scroll position: {scrollPosition}
+                  </ScrollPosition>
+                  <BoxList count={10} />
+                </Scroller>
 
-								<ContentFooter onClick={close}>Close</ContentFooter>
-							</Content>
-						</Sheet.Content>
-					</Sheet.Container>
+                <ContentFooter onClick={close}>Close</ContentFooter>
+              </Content>
+            </Sheet.Content>
+          </Sheet.Container>
 
-					<Sheet.Backdrop />
-				</Sheet>
-			)}
-		</ExampleLayout>
-	);
+          <Sheet.Backdrop />
+        </Sheet>
+      )}
+    </ExampleLayout>
+  );
 }
 
 const Content = styled.div`
