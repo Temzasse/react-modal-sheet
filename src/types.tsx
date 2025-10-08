@@ -1,6 +1,13 @@
 import {
-  type CSSProperties,
+  type DragHandler,
+  type EasingDefinition,
+  type MotionProps,
+  type MotionValue,
+  type motion,
+} from 'motion/react';
+import {
   type ComponentPropsWithoutRef,
+  type CSSProperties,
   type ForwardRefExoticComponent,
   type FunctionComponent,
   type HTMLAttributes,
@@ -8,14 +15,6 @@ import {
   type RefAttributes,
   type RefObject,
 } from 'react';
-
-import {
-  type DragHandler,
-  type EasingDefinition,
-  type MotionProps,
-  type MotionValue,
-  type motion,
-} from 'motion/react';
 
 export type SheetDetent = 'default' | 'full' | 'content';
 
@@ -76,6 +75,8 @@ export type SheetContentProps = MotionCommonProps &
     disableDrag?: boolean | ((args: SheetStateInfo) => boolean);
     disableScroll?: boolean | ((args: SheetStateInfo) => boolean);
     scrollRef?: RefObject<HTMLDivElement | null>;
+    scrollClassName?: string;
+    scrollStyle?: CSSProperties;
   };
 
 export type SheetBackdropProps = MotionCommonProps & CommonProps;

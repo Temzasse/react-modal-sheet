@@ -23,6 +23,9 @@ export const Sheet: SheetCompound = Object.assign(SheetBase, {
   Backdrop: SheetBackdrop,
 });
 
+export { useScrollPosition } from './hooks/use-scroll-position';
+export { useVirtualKeyboard } from './hooks/use-virtual-keyboard';
+
 // Export types
 export type {
   SheetBackdropProps,

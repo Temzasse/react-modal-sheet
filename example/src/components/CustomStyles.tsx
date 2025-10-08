@@ -1,43 +1,43 @@
-import { Sheet } from "react-modal-sheet";
-import { styled } from "styled-components";
+import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
-import { ExampleLayout } from "./ExampleLayout";
-import { Button } from "./common";
+import { ExampleLayout } from './ExampleLayout';
+import { Button } from './common';
 
 export function CustomStyles() {
-	return (
-		<ExampleLayout
-			title="Custom styles"
-			description="Sheet that has non-traditional bottom sheet styles."
-		>
-			{({ isOpen, close }) => (
-				<Sheet isOpen={isOpen} onClose={close} detent="content" unstyled>
-					<SheetContainer>
-						<SheetWrapper>
-							<SheetHeader>
-								<HeaderImage />
-								<DragIndicatorWrapper>
-									<Sheet.DragIndicator unstyled={false} />
-								</DragIndicatorWrapper>
-							</SheetHeader>
-							<SheetContent>
-								<Title>Custom styles</Title>
-								<Paragraph>
-									This sheet has totally custom styles and its height is dynamic
-									based on the size of its content.
-								</Paragraph>
-								<Buttons>
-									<CancelButton onPress={close}>Cancel</CancelButton>
-									<Button onPress={close}>Confirm</Button>
-								</Buttons>
-							</SheetContent>
-						</SheetWrapper>
-					</SheetContainer>
-					<Sheet.Backdrop onTap={close} unstyled={false} />
-				</Sheet>
-			)}
-		</ExampleLayout>
-	);
+  return (
+    <ExampleLayout
+      title="Custom styles"
+      description="Sheet that has non-traditional bottom sheet styles."
+    >
+      {({ isOpen, close }) => (
+        <Sheet isOpen={isOpen} onClose={close} detent="content" unstyled>
+          <SheetContainer>
+            <SheetWrapper>
+              <SheetHeader>
+                <HeaderImage />
+                <DragIndicatorWrapper>
+                  <Sheet.DragIndicator unstyled={false} />
+                </DragIndicatorWrapper>
+              </SheetHeader>
+              <SheetContent>
+                <Title>Custom styles</Title>
+                <Paragraph>
+                  This sheet has totally custom styles and its height is dynamic
+                  based on the size of its content.
+                </Paragraph>
+                <Buttons>
+                  <CancelButton onPress={close}>Cancel</CancelButton>
+                  <Button onPress={close}>Confirm</Button>
+                </Buttons>
+              </SheetContent>
+            </SheetWrapper>
+          </SheetContainer>
+          <Sheet.Backdrop onTap={close} unstyled={false} />
+        </Sheet>
+      )}
+    </ExampleLayout>
+  );
 }
 
 const SheetContainer = styled(Sheet.Container)`

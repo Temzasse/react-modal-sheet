@@ -1,22 +1,22 @@
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
 export function BoxList({ count = 50 }: { count?: number }) {
-	return (
-		<Wrapper>
-			{Array.from({ length: count })
-				.fill(1)
-				.map((_, i) => (
-					<Box
-						key={
-							// biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
-							i
-						}
-					>
-						{i + 1}
-					</Box>
-				))}
-		</Wrapper>
-	);
+  return (
+    <Wrapper>
+      {Array.from({ length: count })
+        .fill(1)
+        .map((_, i) => (
+          <Box
+            key={
+              // biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
+              i
+            }
+          >
+            {i + 1}
+          </Box>
+        ))}
+    </Wrapper>
+  );
 }
 
 const Wrapper = styled.div`
@@ -38,4 +38,5 @@ const Box = styled.div`
   justify-content: center;
   font-weight: 700;
   font-size: 16px;
+	user-select: none;
 `;
