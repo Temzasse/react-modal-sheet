@@ -76,7 +76,7 @@ export type SheetContentProps = MotionCommonProps &
     disableScroll?: boolean | ((args: SheetStateInfo) => boolean);
     scrollRef?: RefObject<HTMLDivElement | null>;
     scrollClassName?: string;
-    scrollStyle?: CSSProperties;
+    scrollStyle?: MotionProps['style'];
   };
 
 export type SheetBackdropProps = MotionCommonProps & CommonProps;
