@@ -37,7 +37,7 @@ npm install motion
 <details>
   <summary><strong>📚 Table of contents</strong></summary>
   
-  - [What's new in v5](#whats-new-in-v5)
+  - [What's new in v5](#-whats-new-in-v5)
   - [Usage](#-usage)
   - [Props](#%EF%B8%8F-props)
   - [Methods and properties](#%EF%B8%8F-methods-and-properties)
@@ -57,6 +57,8 @@ Version 5 introduces several major improvements and breaking changes:
 ### 🔄 Breaking Changes
 
 - **Removed `Sheet.Scroller`**: Scrolling is now handled automatically by `Sheet.Content`
+  - See [Scrolling behavior](#-scrolling-behavior) section for details
+  - See [Making scrollable sheet content always reachable](#-making-scrollable-sheet-content-always-reachable) for guidance on how to implement auto padding behavior
 - **Snap point order reversed**: Snap points now use ascending order (e.g., `[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
   - This aligns better with other bottom sheet libraries and makes more intuitive sense
 - **Detent prop values changed**:
@@ -199,11 +201,17 @@ Below you can see an example of how to use these values:
 
 ```tsx
 import { Sheet, SheetRef } from 'react-modal-sheet';
+import { useTransform } from 'motion/react';
 import { useState, useRef } from 'react';
 
 function RefExample() {
   const [isOpen, setOpen] = useState(false);
   const ref = useRef<SheetRef>(null);
+
+  const background = useTransform(() => {
+    const y = ref.current?.y.get() ?? 0;
+    return y > 100 ? 'lightblue' : 'lightcoral';
+  });
 
   function doSomething() {
     console.log('> Current y value:', ref.current?.y.get());
@@ -218,10 +226,64 @@ function RefExample() {
       <Sheet ref={ref} isOpen={isOpen} onClose={() => setOpen(false)}>
         <Sheet.Container>
           <Sheet.Content>
-            <motion.div style={{ paddingBottom: ref.current?.y }}>
+            <motion.div style={{ background }}>
               Use animated y value in some way
             </motion.div>
             {/* Your content here */}
+          </Sheet.Content>
+        </Sheet.Container>
+      </Sheet>
+    </>
+  );
+}
+```
+
+#### Making scrollable sheet content always reachable
+
+One common use case for the `y` value is to apply padding bottom to the sheet content
+when the sheet is not fully open. This ensures that the content is always reachable even when the sheet is partially open, eg. when using snap points.
+
+> [!NOTE]
+> Prior to v5 this was a built-in behavior of `Sheet.Scroller` via `autoPadding` prop but since `Sheet.Scroller` has been removed in v5 in favor of `Sheet.Content` handling scrolling internally, you can now implement this behavior yourself with the help of the `y` motion value.
+>
+> Also take a look at the [Creating custom scrollers](#-creating-custom-scrollers) section for more advanced use cases when you need to implement your own scroller and potentially apply this padding behavior to that.
+
+```tsx
+import { Sheet, SheetRef } from 'react-modal-sheet';
+import { useTransform } from 'motion/react';
+import { useState, useRef } from 'react';
+
+const snapPoints = [0, 0.5, 1];
+
+function PaddingExample() {
+  const [isOpen, setOpen] = useState(false);
+  const ref = useRef<SheetRef>(null);
+
+  // Add padding bottom based on how far the sheet is from being fully open
+  const paddingBottom = useTransform(() => {
+    return ref.current?.y.get() ?? 0;
+  });
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open sheet</button>
+
+      <Sheet
+        ref={ref}
+        isOpen={isOpen}
+        onClose={() => setOpen(false)}
+        snapPoints={snapPoints}
+        initialSnap={1}
+      >
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content
+            style={{ paddingBottom }}
+            // 💡 Recommendation: disable drag for the content so that it doesn't interfere with scrolling
+            disableDrag
+          >
+            This content will always be reachable even when the sheet is not
+            fully open.
           </Sheet.Content>
         </Sheet.Container>
       </Sheet>
