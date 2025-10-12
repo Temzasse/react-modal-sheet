@@ -3,8 +3,8 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
 import { BoxList } from './BoxList';
-import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
+import { ExampleLayout } from './ExampleLayout';
 
 const snapPoints = [0, 170, 0.5, -200, 1];
 const initialSnap = 1;

@@ -56,21 +56,21 @@
     "react": ">=16"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.17.4",
-    "@biomejs/biome": "2.2.3",
-    "@types/react": "19.1.2",
-    "@types/react-dom": "19.1.2",
-    "@vitejs/plugin-react": "4.4.1",
+    "@arethetypeswrong/cli": "0.18.2",
+    "@biomejs/biome": "2.2.5",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.1",
+    "@vitejs/plugin-react": "5.0.4",
     "husky": "9.1.7",
-    "jsdom": "26.1.0",
-    "motion": "12.23.11",
+    "jsdom": "27.0.0",
+    "motion": "12.23.22",
     "npm-run-all": "4.1.5",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "tsup": "8.4.0",
-    "typescript": "5.8.3",
-    "vite": "6.3.3",
-    "vitest": "3.1.2"
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "tsup": "8.5.0",
+    "typescript": "5.9.3",
+    "vite": "7.1.9",
+    "vitest": "3.2.4"
   },
   "engines": {
     "node": ">=18"

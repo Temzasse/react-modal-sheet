@@ -18,25 +18,25 @@
     "generate:pwa": "pwa-assets-generator --preset minimal public/favicon.svg"
   },
   "dependencies": {
-    "motion": "12.23.11",
-    "react": "19.1.0",
-    "react-aria": "3.39.0",
-    "react-dom": "19.1.0",
+    "motion": "12.23.22",
+    "react": "19.2.0",
+    "react-aria": "3.44.0",
+    "react-dom": "19.2.0",
     "react-icons": "5.5.0",
     "react-modal-sheet": "file:.yalc/react-modal-sheet",
-    "react-router": "7.1.1",
-    "react-stately": "3.37.0",
-    "styled-components": "6.1.17"
+    "react-router": "7.9.3",
+    "react-stately": "3.42.0",
+    "styled-components": "6.1.19"
   },
   "devDependencies": {
-    "@types/react": "19.1.2",
-    "@types/react-dom": "19.1.2",
-    "@vite-pwa/assets-generator": "1.0.0",
-    "@vitejs/plugin-react": "4.4.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.1",
+    "@vite-pwa/assets-generator": "1.0.1",
+    "@vitejs/plugin-react": "5.0.4",
     "gh-pages": "6.3.0",
-    "typescript": "5.8.3",
-    "vite": "6.3.3",
-    "vite-plugin-pwa": "1.0.0",
-    "vite-plugin-restart": "0.4.2"
+    "typescript": "5.9.3",
+    "vite": "7.1.9",
+    "vite-plugin-pwa": "1.0.3",
+    "vite-plugin-restart": "1.0.0"
   }
 }
