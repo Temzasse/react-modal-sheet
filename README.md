@@ -58,7 +58,7 @@ Version 5 introduces several major improvements and breaking changes:
 
 - **Removed `Sheet.Scroller`**: Scrolling is now handled automatically by `Sheet.Content`
   - See [Scrolling behavior](#-scrolling-behavior) section for details
-  - See [Making scrollable sheet content always reachable](#-making-scrollable-sheet-content-always-reachable) for guidance on how to implement auto padding behavior
+  - See [Making scrollable sheet content always reachable](#making-scrollable-sheet-content-always-reachable) for guidance on how to implement auto padding behavior
 - **Snap point order reversed**: Snap points now use ascending order (e.g., `[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
   - This aligns better with other bottom sheet libraries and makes more intuitive sense
 - **Detent prop values changed**:
@@ -246,7 +246,7 @@ when the sheet is not fully open. This ensures that the content is always reacha
 > [!NOTE]
 > Prior to v5 this was a built-in behavior of `Sheet.Scroller` via `autoPadding` prop but since `Sheet.Scroller` has been removed in v5 in favor of `Sheet.Content` handling scrolling internally, you can now implement this behavior yourself with the help of the `y` motion value.
 >
-> Also take a look at the [Creating custom scrollers](#-creating-custom-scrollers) section for more advanced use cases when you need to implement your own scroller and potentially apply this padding behavior to that.
+> Also take a look at the [Creating custom scrollers](#creating-custom-scrollers) section for more advanced use cases when you need to implement your own scroller and potentially apply this padding behavior to that.
 
 ```tsx
 import { Sheet, SheetRef } from 'react-modal-sheet';
@@ -278,7 +278,8 @@ function PaddingExample() {
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content
-            style={{ paddingBottom }}
+            // 👇 Apply styles to the inner scroller element
+            scrollStyle={{ paddingBottom }}
             // 💡 Recommendation: disable drag for the content so that it doesn't interfere with scrolling
             disableDrag
           >
@@ -431,8 +432,41 @@ The keyboard avoidance feature:
 
 If you need to disable keyboard avoidance, set `avoidKeyboard={false}`.
 
-> [!NOTE]
+> [!IMPORTANT]
 > If your sheet content is very long and some inputs are below the keyboard even after adding the padding, you might need to scroll the content into view manually when an input is focused.
+
+#### Managing virtual keyboard manually
+
+If the built-in keyboard avoidance doesn't work for your use case, you can disable it with `avoidKeyboard={false}` and manage the keyboard state manually with the help of the `useVirtualKeyboard` hook.
+
+```tsx
+import { Sheet, useVirtualKeyboard } from 'react-modal-sheet';
+
+function ManualKeyboardExample() {
+  const [isOpen, setOpen] = useState(false);
+
+  // This hook manages the `--keyboard-inset-height` CSS variable for you
+  useVirtualKeyboard({ isEnabled: isOpen });
+
+  return (
+    // Disable default keyboard avoidance
+    <Sheet avoidKeyboard={false} isOpen={isOpen} onClose={() => setOpen(false)}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Apply keyboard height as padding bottom to keep content above the keyboard
+          style={{ paddingBottom: 'var(--keyboard-inset-height)' }}
+        >
+          {/* Your content here */}
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+For a more detailed example of using `useVirtualKeyboard` see the [Creating custom scrollers](#creating-custom-scrollers) section below.
 
 ### 📱 Scrolling behavior
 
@@ -557,7 +591,7 @@ function CustomScrollerExample() {
             style={{
               // Use CSS variable managed by `useVirtualKeyboard`
               paddingBottom: 'var(--keyboard-inset-height)',
-              // Alternatively manually apply keyboard padding
+              // Alternatively apply keyboard padding via pixel value (maybe you want to add some extra padding to it)
               paddingBottom: keyboardHeight,
               // Some layout styles for custom content
               height: '100%',
