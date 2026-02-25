@@ -81,6 +81,8 @@ export function useScrollPosition(options: UseScrollPositionOptions = {}) {
         position = 'middle';
       }
 
+      element.style.touchAction = isAtTop ? 'pan-down' : '';
+
       if (position === scrollPosition) return;
       setScrollPosition(position);
     }
