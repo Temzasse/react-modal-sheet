@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { debug } from '../debug';
+import { useStableCallback } from './use-stable-callback';
 
 type UseScrollPositionOptions = {
   /**
@@ -46,70 +48,80 @@ type UseScrollPositionOptions = {
 export function useScrollPosition(options: UseScrollPositionOptions = {}) {
   const { debounceDelay = 32, isEnabled = true } = options;
 
+  const scrollTimeoutRef = useRef<number | null>(null);
   const [element, setElement] = useState<HTMLElement | null>(null);
   const [scrollPosition, setScrollPosition] = useState<
     'top' | 'bottom' | 'middle' | undefined
   >(undefined);
 
+  const scrollRef = useMemo(
+    () => (element: HTMLElement | null) => {
+      setElement(element);
+    },
+    []
+  );
+
+  const determineScrollPosition = useStableCallback((element: HTMLElement) => {
+    const { scrollTop, scrollHeight, clientHeight } = element;
+    const isScrollable = scrollHeight > clientHeight;
+
+    if (!isScrollable) {
+      // Reset scroll position if the content is not scrollable anymore
+      if (scrollPosition) setScrollPosition(undefined);
+      return;
+    }
+
+    const isAtTop = scrollTop <= 0;
+    const isAtBottom =
+      Math.ceil(scrollHeight) - Math.ceil(scrollTop) ===
+      Math.ceil(clientHeight);
+
+    let position: 'top' | 'bottom' | 'middle';
+
+    if (isAtTop) {
+      position = 'top';
+    } else if (isAtBottom) {
+      position = 'bottom';
+    } else {
+      position = 'middle';
+    }
+
+    // Let browser only handle downward pan gestures (scrolling content up)
+    element.style.touchAction = isAtTop ? 'pan-down' : '';
+
+    if (position === scrollPosition) return;
+    setScrollPosition(position);
+  });
+
+  const onScroll = useStableCallback((event: Event) => {
+    if (event.currentTarget instanceof HTMLElement) {
+      const el = event.currentTarget;
+
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+
+      if (debounceDelay === 0) {
+        determineScrollPosition(el);
+      } else {
+        // Debounce the scroll handler
+        scrollTimeoutRef.current = setTimeout(
+          () => determineScrollPosition(el),
+          debounceDelay
+        );
+      }
+    }
+  });
+
+  const onTouchStart = useStableCallback((event: Event) => {
+    if (event.currentTarget instanceof HTMLElement) {
+      const element = event.currentTarget;
+      requestAnimationFrame(() => {
+        determineScrollPosition(element);
+      });
+    }
+  });
+
   useEffect(() => {
     if (!element || !isEnabled) return;
-
-    let scrollTimeout: number | null = null;
-
-    function determineScrollPosition(element: HTMLElement) {
-      const { scrollTop, scrollHeight, clientHeight } = element;
-      const isScrollable = scrollHeight > clientHeight;
-
-      if (!isScrollable) {
-        // Reset scroll position if the content is not scrollable anymore
-        if (scrollPosition) setScrollPosition(undefined);
-        return;
-      }
-
-      const isAtTop = scrollTop <= 0;
-      const isAtBottom =
-        Math.ceil(scrollHeight) - Math.ceil(scrollTop) ===
-        Math.ceil(clientHeight);
-
-      let position: 'top' | 'bottom' | 'middle';
-
-      if (isAtTop) {
-        position = 'top';
-      } else if (isAtBottom) {
-        position = 'bottom';
-      } else {
-        position = 'middle';
-      }
-
-      element.style.touchAction = isAtTop ? 'pan-down' : '';
-
-      if (position === scrollPosition) return;
-      setScrollPosition(position);
-    }
-
-    function onScroll(event: Event) {
-      if (event.currentTarget instanceof HTMLElement) {
-        const el = event.currentTarget;
-
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-
-        if (debounceDelay === 0) {
-          determineScrollPosition(el);
-        } else {
-          // Debounce the scroll handler
-          scrollTimeout = setTimeout(
-            () => determineScrollPosition(el),
-            debounceDelay
-          );
-        }
-      }
-    }
-
-    function onTouchStart(event: Event) {
-      if (event.currentTarget instanceof HTMLElement) {
-        determineScrollPosition(event.currentTarget);
-      }
-    }
 
     // Determine initial scroll position
     determineScrollPosition(element);
@@ -118,14 +130,14 @@ export function useScrollPosition(options: UseScrollPositionOptions = {}) {
     element.addEventListener('touchstart', onTouchStart);
 
     return () => {
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       element.removeEventListener('scroll', onScroll);
       element.removeEventListener('touchstart', onTouchStart);
     };
   }, [element, isEnabled]);
 
   return {
-    scrollRef: (element: HTMLElement | null) => setElement(element),
+    scrollRef,
     scrollPosition,
   };
 }
