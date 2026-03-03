@@ -26,7 +26,13 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
   ) => {
     const sheetContext = useSheetContext();
     const dragConstraints = useDragConstraints();
-    const scroll = useScrollPosition();
+
+    const scroll = useScrollPosition({
+      isEnabled:
+        typeof disableScrollProp === 'function'
+          ? true
+          : !Boolean(disableScrollProp),
+    });
 
     const disableScroll =
       typeof disableScrollProp === 'function'
@@ -78,6 +84,7 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
     }
 
     if (dragProps !== undefined) {
+      // Let browser only handle downward pan gestures (scrolling content up)
       scrollStyle.touchAction = 'pan-down';
     }
 
