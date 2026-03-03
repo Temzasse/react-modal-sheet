@@ -77,6 +77,10 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
       scrollStyle.overflowY = 'hidden';
     }
 
+    if (dragProps !== undefined) {
+      scrollStyle.touchAction = 'pan-down';
+    }
+
     return (
       <motion.div
         {...rest}
