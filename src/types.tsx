@@ -23,10 +23,9 @@ type CommonProps = {
   unstyled?: boolean;
 };
 
-type MotionCommonProps = Omit<
-  ComponentPropsWithoutRef<typeof motion.div>,
-  'initial' | 'animate' | 'exit'
->;
+type MotionDivProps = ComponentPropsWithoutRef<typeof motion.div>;
+
+type MotionCommonProps = Omit<MotionDivProps, 'initial' | 'animate' | 'exit'>;
 
 export interface SheetTweenConfig {
   ease: EasingDefinition;
@@ -79,7 +78,7 @@ export type SheetContentProps = MotionCommonProps &
     scrollStyle?: MotionProps['style'];
   };
 
-export type SheetBackdropProps = MotionCommonProps & CommonProps;
+export type SheetBackdropProps = MotionDivProps & CommonProps;
 
 export type SheetDragIndicatorProps = HTMLAttributes<HTMLDivElement> &
   CommonProps;

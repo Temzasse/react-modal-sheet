@@ -14,7 +14,6 @@ export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
     const clickable = isClickable(rest);
     const Comp = clickable ? motion.button : motion.div;
     const pointerEvents = clickable ? 'auto' : 'none';
-
     const isUnstyled = unstyled ?? sheetContext.unstyled;
 
     const backdropStyle: MotionStyle = {
@@ -25,14 +24,14 @@ export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
 
     return (
       <Comp
-        {...(rest as any)}
-        ref={ref}
-        className={`react-modal-sheet-backdrop ${className}`}
-        style={backdropStyle}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1 }}
+        {...(rest as any)}
+        ref={ref}
+        className={`react-modal-sheet-backdrop ${className}`}
+        style={backdropStyle}
       />
     );
   }
