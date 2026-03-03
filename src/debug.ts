@@ -25,8 +25,10 @@ export function debug(payload: any) {
     document.body.appendChild(debugElement);
 
     debugElement.addEventListener('click', () => {
-      debugElement!.style.display =
-        debugElement!.style.display === 'none' ? 'block' : 'none';
+      if (debugElement) {
+        debugElement.style.display =
+          debugElement.style.display === 'none' ? 'block' : 'none';
+      }
     });
   }
 

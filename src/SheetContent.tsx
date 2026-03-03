@@ -29,9 +29,7 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
 
     const scroll = useScrollPosition({
       isEnabled:
-        typeof disableScrollProp === 'function'
-          ? true
-          : !Boolean(disableScrollProp),
+        typeof disableScrollProp === 'function' ? true : !disableScrollProp,
     });
 
     const disableScroll =
