@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "jsx": "react",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true

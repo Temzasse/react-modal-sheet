@@ -6,14 +6,7 @@ export function BoxList({ count = 50 }: { count?: number }) {
       {Array.from({ length: count })
         .fill(1)
         .map((_, i) => (
-          <Box
-            key={
-              // biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
-              i
-            }
-          >
-            {i + 1}
-          </Box>
+          <Box key={i}>{i + 1}</Box>
         ))}
     </Wrapper>
   );

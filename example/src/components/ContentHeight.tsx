@@ -45,14 +45,7 @@ export function ContentHeight() {
                 </Button>
 
                 {Array.from({ length: boxes }).map((_, i) => (
-                  <Box
-                    key={
-                      // biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
-                      i
-                    }
-                  >
-                    {i}
-                  </Box>
+                  <Box key={i}>{i}</Box>
                 ))}
               </BoxList>
             </Sheet.Content>

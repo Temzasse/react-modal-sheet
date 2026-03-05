@@ -9,7 +9,6 @@ export function useMetaThemeColor({
   from?: string;
   to: string;
 }) {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: It was here before Biome 2
   useLayoutEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;

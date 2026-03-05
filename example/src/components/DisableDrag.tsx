@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { styled } from 'styled-components';
 import { Sheet } from 'react-modal-sheet';
+import { styled } from 'styled-components';
 
 import { ExampleLayout } from './ExampleLayout';
 
@@ -28,14 +28,7 @@ export function DisableDrag() {
                   {Array.from({ length: 20 })
                     .fill(1)
                     .map((_, i) => (
-                      <Box
-                        key={
-                          // biome-ignore lint/suspicious/noArrayIndexKey: It was here before Biome 2
-                          i
-                        }
-                      >
-                        {i}
-                      </Box>
+                      <Box key={i}>{i}</Box>
                     ))}
                 </BoxList>
               </Content>
