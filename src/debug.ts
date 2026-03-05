@@ -4,14 +4,14 @@
  * and hide it when that element is clicked. Create the element if it doesn't exist,
  * and update its content with the payload (any JSON data).
  */
-export function debug(payload: any) {
+export function debug(payload: any, placement: 'top' | 'bottom' = 'bottom') {
   let debugElement = document.getElementById('debug-element');
 
   if (!debugElement) {
     debugElement = document.createElement('div');
     debugElement.id = 'debug-element';
     debugElement.style.position = 'fixed';
-    debugElement.style.bottom = '0';
+    debugElement.style[placement] = '0';
     debugElement.style.left = '0';
     debugElement.style.width = '100%';
     debugElement.style.maxHeight = '50%';
