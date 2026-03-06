@@ -290,17 +290,33 @@ export const Sheet = forwardRef<any, SheetProps>(
         avoidKeyboard &&
         keyboard.isKeyboardOpen
       ) {
+        const focusedElement = document.activeElement as HTMLElement | null;
         const visibleSheetHeight = yInverted.get() - keyboard.keyboardHeight;
 
-        if (visibleSheetHeight <= 0) {
+        // If the keyboard is covering the sheet content, move the sheet up to reveal it
+        if (visibleSheetHeight <= 0 && focusedElement) {
           const currentY = y.get();
-          const adjustedY = Math.max(
-            // 50 for some extra spacing between keyboard and sheet content
-            currentY - Math.abs(visibleSheetHeight) - 50,
-            0
-          );
+          const diffY = Math.max(currentY - Math.abs(visibleSheetHeight), 0);
 
-          animate(y, adjustedY, animationOptions);
+          /**
+           * Get the position of the focused input relative to the sheet container
+           * and calculate how much we need to move the sheet up to ensure
+           * the focused input is visible above the keyboard.
+           *
+           * NOTE: RAF is needed to ensure the `top` values are correct.
+           */
+          requestAnimationFrame(() => {
+            const inputRect = focusedElement.getBoundingClientRect();
+            const sheetRect = sheetRef.current?.getBoundingClientRect();
+
+            let inputOffset = 0;
+
+            if (sheetRect) {
+              inputOffset = inputRect.top - sheetRect.top + inputRect.height;
+            }
+
+            animate(y, diffY - inputOffset, animationOptions);
+          });
 
           // When keyboard closes animate back to the original snap point
           return () => {
