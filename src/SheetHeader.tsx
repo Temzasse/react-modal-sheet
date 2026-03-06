@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
-import { SheetDragIndicator } from './SheetDragIndicator';
 import { useSheetContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
+import { SheetDragIndicator } from './SheetDragIndicator';
 import { styles } from './styles';
 import { type SheetHeaderProps } from './types';
 import { applyStyles, mergeRefs } from './utils';

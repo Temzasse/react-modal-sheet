@@ -1,8 +1,8 @@
 import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
-import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
+import { ExampleLayout } from './ExampleLayout';
 
 export function CustomStyles() {
   return (
@@ -26,6 +26,7 @@ export function CustomStyles() {
                   This sheet has totally custom styles and its height is dynamic
                   based on the size of its content.
                 </Paragraph>
+                <Input placeholder="Input field" />
                 <Buttons>
                   <CancelButton onPress={close}>Cancel</CancelButton>
                   <Button onPress={close}>Confirm</Button>
@@ -101,4 +102,18 @@ const Buttons = styled.div`
 const CancelButton = styled(Button)`
   background-color: #eee;
   color: #000;
+`;
+
+const Input = styled.input`
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  width: 100%;
+  margin-bottom: 8px;
+
+  &:focus {
+    border-color: #0070f3;
+  }
 `;

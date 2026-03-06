@@ -2,8 +2,8 @@ import { useRef } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
-import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
+import { ExampleLayout } from './ExampleLayout';
 
 export function AvoidKeyboard() {
   const sheetRef = useRef<SheetRef>(null);
@@ -15,7 +15,13 @@ export function AvoidKeyboard() {
       description="Note that keyboard avoidance only works on mobile devices!"
     >
       {({ isOpen, close }) => (
-        <Sheet ref={sheetRef} isOpen={isOpen} onClose={close} detent="content">
+        <Sheet
+          ref={sheetRef}
+          isOpen={isOpen}
+          onClose={close}
+          snapPoints={[0, 100, 300, 500, 1]}
+          initialSnap={1}
+        >
           <Sheet.Container>
             <Sheet.Header />
             <Sheet.Content>
@@ -27,12 +33,39 @@ export function AvoidKeyboard() {
                     alert('Form submitted!');
                   }}
                 >
-                  <Input name="firstName" placeholder="First name" />
-                  <Input name="lastName" placeholder="Last name" />
-                  <Input name="profession" placeholder="Profession" />
-                  <Input name="email" placeholder="Email" type="email" />
-                  <Input name="phone" placeholder="Phone number" type="tel" />
-                  <Input name="message" placeholder="Message" type="text" />
+                  <Input
+                    name="firstName"
+                    placeholder="First name"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="lastName"
+                    placeholder="Last name"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="profession"
+                    placeholder="Profession"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="email"
+                    placeholder="Email"
+                    type="email"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="phone"
+                    placeholder="Phone number"
+                    type="tel"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="message"
+                    placeholder="Message"
+                    type="text"
+                    enterKeyHint="done"
+                  />
                   <Button type="submit">Submit</Button>
                 </Form>
               </Content>

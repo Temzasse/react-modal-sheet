@@ -9,6 +9,7 @@ import {
 } from 'motion/react';
 import React, {
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -275,6 +276,39 @@ export const Sheet = forwardRef<any, SheetProps>(
       height: sheetHeight,
       snapTo,
     }));
+
+    /**
+     * If the keyboard is opened while we are in a snap point we need to ensure
+     * the sheet content is not covered by the keyboard due to being at a lower
+     * snap point. We move the sheet up enough to ensure the content is visible
+     * and move it back down when the keyboard closes.
+     */
+    useEffect(() => {
+      if (
+        isOpen &&
+        snapPoints.length > 0 &&
+        avoidKeyboard &&
+        keyboard.isKeyboardOpen
+      ) {
+        const visibleSheetHeight = yInverted.get() - keyboard.keyboardHeight;
+
+        if (visibleSheetHeight <= 0) {
+          const currentY = y.get();
+          const adjustedY = Math.max(
+            // 50 for some extra spacing between keyboard and sheet content
+            currentY - Math.abs(visibleSheetHeight) - 50,
+            0
+          );
+
+          animate(y, adjustedY, animationOptions);
+
+          // When keyboard closes animate back to the original snap point
+          return () => {
+            animate(y, currentY, animationOptions);
+          };
+        }
+      }
+    }, [isOpen, keyboard.isKeyboardOpen]);
 
     useModalEffect({
       y,

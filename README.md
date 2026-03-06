@@ -425,10 +425,11 @@ function KeyboardExample() {
 
 The keyboard avoidance feature:
 
-- Uses the `env(keyboard-inset-height)` from [Virtual Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) and fallbacks to [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) and custom `keyboard-inset-height` CSS environment variable
-- Works automatically on mobile devices with virtual keyboard support
-- Applies dynamic padding to keep content visible when the keyboard opens
-- Disables drag gestures while the keyboard is open to prevent glitches
+- Uses the `env(keyboard-inset-height)` from [Virtual Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) and fallbacks to [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) and custom `keyboard-inset-height` CSS environment variable.
+- Works automatically on mobile devices with virtual keyboard support.
+- Applies dynamic padding to keep content visible when the keyboard opens.
+- Disables drag gestures while the keyboard is open to prevent glitches.
+- When using snap points if the sheet is at a snap point that would be covered by the keyboard, **the sheet will be automatically moved up to ensure the content is visible and then moved back down when the keyboard closes.**
 
 If you need to disable keyboard avoidance, set `avoidKeyboard={false}`.
 
