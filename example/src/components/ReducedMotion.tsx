@@ -23,7 +23,7 @@ export function ReducedMotion() {
               </BoxList>
             </Sheet.Content>
           </Sheet.Container>
-          <Sheet.Backdrop />
+          <Sheet.Backdrop onTap={() => close()} />
         </Sheet>
       )}
     </ExampleLayout>

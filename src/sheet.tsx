@@ -394,6 +394,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       dragProps,
       indicatorRotation,
       avoidKeyboard,
+      prefersReducedMotion,
       sheetBoundsRef,
       sheetRef,
       unstyled,

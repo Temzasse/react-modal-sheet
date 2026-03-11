@@ -22,12 +22,18 @@ export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
       pointerEvents,
     };
 
+    const animationProps = sheetContext.prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          exit: { opacity: 0 },
+          transition: { duration: 1 },
+        };
+
     return (
       <Comp
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1 }}
+        {...animationProps}
         {...(rest as any)}
         ref={ref}
         className={`react-modal-sheet-backdrop ${className}`}

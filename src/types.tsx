@@ -111,6 +111,7 @@ export interface SheetContextType {
   dragProps?: SheetDragProps;
   indicatorRotation: MotionValue<number>;
   avoidKeyboard: boolean;
+  prefersReducedMotion: boolean;
   sheetBoundsRef: (node: HTMLDivElement | null) => void;
   sheetRef: RefObject<any>;
   unstyled: boolean;
