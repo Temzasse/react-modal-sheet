@@ -4,7 +4,7 @@
  * and hide it when that element is clicked. Create the element if it doesn't exist,
  * and update its content with the payload (any JSON data).
  */
-export function debug(payload: any, placement: 'top' | 'bottom' = 'bottom') {
+export function debug(payload: any, placement: 'top' | 'bottom' = 'top') {
   let debugElement = document.getElementById('debug-element');
 
   if (!debugElement) {
@@ -32,6 +32,7 @@ export function debug(payload: any, placement: 'top' | 'bottom' = 'bottom') {
     });
   }
 
-  debugElement.textContent = JSON.stringify(payload, null, 2);
+  const id = Math.random().toString(36).substring(2, 7);
+  debugElement.textContent = JSON.stringify(payload, null, 2) + ` (${id})`;
   debugElement.style.display = 'block';
 }
