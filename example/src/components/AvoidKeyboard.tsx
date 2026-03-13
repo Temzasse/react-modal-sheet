@@ -28,6 +28,7 @@ export function AvoidKeyboard() {
               <Content>
                 <Form
                   ref={formRef}
+                  enterKeyHint='next'
                   onSubmit={(e) => {
                     e.preventDefault();
                     alert('Form submitted!');
@@ -58,6 +59,17 @@ export function AvoidKeyboard() {
                     name="phone"
                     placeholder="Phone number"
                     type="tel"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="company"
+                    placeholder="Company"
+                    enterKeyHint="next"
+                  />
+                  <Input
+                    name="website"
+                    placeholder="Website"
+                    type="url"
                     enterKeyHint="next"
                   />
                   <Input

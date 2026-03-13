@@ -1,9 +1,9 @@
 import './index.css';
 
 import { StrictMode } from 'react';
+import { OverlayProvider } from 'react-aria';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router';
-import { OverlayProvider } from 'react-aria';
 
 import { App } from './components/App';
 

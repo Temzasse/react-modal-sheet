@@ -26,6 +26,7 @@ import {
 } from './constants';
 import { SheetContext } from './context';
 import { useDimensions } from './hooks/use-dimensions';
+import { useFocusedInput } from './hooks/use-focused-input';
 import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
 import { useSheetState } from './hooks/use-sheet-state';
@@ -277,55 +278,6 @@ export const Sheet = forwardRef<any, SheetProps>(
       snapTo,
     }));
 
-    /**
-     * If the keyboard is opened while we are in a snap point we need to ensure
-     * the sheet content is not covered by the keyboard due to being at a lower
-     * snap point. We move the sheet up enough to ensure the content is visible
-     * and move it back down when the keyboard closes.
-     */
-    useEffect(() => {
-      if (
-        isOpen &&
-        snapPoints.length > 0 &&
-        avoidKeyboard &&
-        keyboard.isKeyboardOpen
-      ) {
-        const focusedElement = document.activeElement as HTMLElement | null;
-        const visibleSheetHeight = yInverted.get() - keyboard.keyboardHeight;
-
-        // If the keyboard is covering the sheet content, move the sheet up to reveal it
-        if (visibleSheetHeight <= 0 && focusedElement) {
-          const currentY = y.get();
-          const diffY = Math.max(currentY - Math.abs(visibleSheetHeight), 0);
-
-          /**
-           * Get the position of the focused input relative to the sheet container
-           * and calculate how much we need to move the sheet up to ensure
-           * the focused input is visible above the keyboard.
-           *
-           * NOTE: RAF is needed to ensure the `top` values are correct.
-           */
-          requestAnimationFrame(() => {
-            const inputRect = focusedElement.getBoundingClientRect();
-            const sheetRect = sheetRef.current?.getBoundingClientRect();
-
-            let inputOffset = 0;
-
-            if (sheetRect) {
-              inputOffset = inputRect.top - sheetRect.top + inputRect.height;
-            }
-
-            animate(y, diffY - inputOffset, animationOptions);
-          });
-
-          // When keyboard closes animate back to the original snap point
-          return () => {
-            animate(y, currentY, animationOptions);
-          };
-        }
-      }
-    }, [isOpen, keyboard.isKeyboardOpen]);
-
     useModalEffect({
       y,
       detent,
@@ -342,6 +294,67 @@ export const Sheet = forwardRef<any, SheetProps>(
     usePreventScroll({
       isDisabled: disableScrollLocking || !isOpen,
     });
+
+    const focusedInput = useFocusedInput({
+      isEnabled: isOpen && avoidKeyboard,
+      sheetRef,
+    });
+
+    /**
+     * Keyboard avoidance.
+     *
+     * Move the sheet up when the keyboard opens if the sheet has snap points,
+     * and then scroll the focused input into view to make sure it's not covered
+     * by the keyboard.
+     */
+    useEffect(() => {
+      if (!isOpen || !avoidKeyboard) {
+        return;
+      }
+
+      async function adjustSheetForKeyboard() {
+        const sheetElement = sheetRef.current;
+
+        if (!sheetElement || !focusedInput || !keyboard.isKeyboardOpen) {
+          return;
+        }
+
+        /**
+         * If we have snap points and the sheet is currently snapped to a point
+         * that is being covered by the keyboard, we want to move the sheet up
+         * to reveal it.
+         */
+        const lastSnapPoint = snapPoints[snapPoints.length - 1];
+
+        if (lastSnapPoint) {
+          await animate(y, lastSnapPoint.snapValueY, animationOptions);
+          updateSnap(lastSnapPoint.snapIndex);
+        }
+
+        // Then scroll the focused input into view if it's covered by the keyboard
+        requestAnimationFrame(() => {
+          const inputRect = focusedInput.getBoundingClientRect();
+          const sheetRect = sheetElement.getBoundingClientRect();
+          const scroller = sheetElement.querySelector(
+            '.react-modal-sheet-content-scroller'
+          ) as HTMLElement;
+
+          const scrollTarget = Math.max(
+            inputRect.top -
+              sheetRect.top +
+              scroller.scrollTop -
+              inputRect.height,
+            0
+          );
+
+          requestAnimationFrame(() => {
+            scroller.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+          });
+        });
+      }
+
+      adjustSheetForKeyboard();
+    }, [isOpen, avoidKeyboard, keyboard.isKeyboardOpen, focusedInput]);
 
     const state = useSheetState({
       isOpen,

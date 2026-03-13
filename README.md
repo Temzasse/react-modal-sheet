@@ -423,18 +423,21 @@ function KeyboardExample() {
 }
 ```
 
-The keyboard avoidance feature:
+Virtual keyboard avoidance consists of several key features:
 
 - Uses the `env(keyboard-inset-height)` from [Virtual Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) and fallbacks to [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) and custom `keyboard-inset-height` CSS environment variable.
 - Works automatically on mobile devices with virtual keyboard support.
 - Applies dynamic padding to keep content visible when the keyboard opens.
+- Scrolls the focused input into view if it's covered by the keyboard.
 - Disables drag gestures while the keyboard is open to prevent glitches.
-- When using snap points if the sheet is at a snap point that would be covered by the keyboard, **the sheet will be automatically moved up to ensure the content is visible and then moved back down when the keyboard closes.**
+- When using snap points, the sheet will be automatically moved up to the last snap point to ensure that all content is reachable (even when the content is scrollable) within the sheet when the keyboard is open.
 
-If you need to disable keyboard avoidance, set `avoidKeyboard={false}`.
-
-> [!IMPORTANT]
-> If your sheet content is very long and some inputs are below the keyboard even after adding the padding, you might need to scroll the content into view manually when an input is focused.
+> [!NOTE]
+> Avoiding the virtual keyboard is a complex problem and the built-in avoidance may not work perfectly in all cases or on all devices. The library does its best to handle the most common scenarios but there may be edge cases where it doesn't work as expected.
+>
+> Mobile browsers, eg. Android Chrome, may try to automatically move the focused input into view when the keyboard opens which might interfere with the built-in keyboard avoidance behavior causing the sheet content to jump around.
+>
+> If you need to disable the built-in keyboard avoidance, set `avoidKeyboard={false}`.
 
 #### Managing virtual keyboard manually
 
