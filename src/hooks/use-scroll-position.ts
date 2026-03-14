@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { debug } from '../debug';
 import { useStableCallback } from './use-stable-callback';
 
 type UseScrollPositionOptions = {
