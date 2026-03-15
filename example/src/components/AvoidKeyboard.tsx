@@ -28,7 +28,7 @@ export function AvoidKeyboard() {
               <Content>
                 <Form
                   ref={formRef}
-                  enterKeyHint='next'
+                  enterKeyHint="next"
                   onSubmit={(e) => {
                     e.preventDefault();
                     alert('Form submitted!');

@@ -9,7 +9,6 @@ import {
 } from 'motion/react';
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -26,12 +25,11 @@ import {
 } from './constants';
 import { SheetContext } from './context';
 import { useDimensions } from './hooks/use-dimensions';
-import { useFocusedInput } from './hooks/use-focused-input';
+import { useKeyboardAvoidance } from './hooks/use-keyboard-avoidance';
 import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
 import { useSheetState } from './hooks/use-sheet-state';
 import { useStableCallback } from './hooks/use-stable-callback';
-import { useVirtualKeyboard } from './hooks/use-virtual-keyboard';
 import {
   computeSnapPoints,
   handleHighVelocityDrag,
@@ -39,7 +37,7 @@ import {
 } from './snap';
 import { styles } from './styles';
 import { type SheetContextType, type SheetProps } from './types';
-import { applyStyles, waitForElement } from './utils';
+import { applyStyles, waitForElement, willOpenKeyboard } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
@@ -98,14 +96,6 @@ export const Sheet = forwardRef<any, SheetProps>(
       ...(reduceMotion ? REDUCED_MOTION_TWEEN_CONFIG : tweenConfig),
     };
 
-    const keyboard = useVirtualKeyboard({
-      isEnabled: isOpen && avoidKeyboard,
-      containerRef: sheetRef,
-    });
-
-    // Disable drag if the keyboard is open to avoid weird behavior
-    const disableDrag = keyboard.isKeyboardOpen || disableDragProp;
-
     // +2 for tolerance in case the animated value is slightly off
     const zIndex = useTransform(y, (val) =>
       val + 2 >= closedY ? -1 : (style?.zIndex ?? 9999)
@@ -158,20 +148,68 @@ export const Sheet = forwardRef<any, SheetProps>(
       });
     });
 
-    const blurActiveInput = useStableCallback(() => {
-      // Find focused input inside the sheet and blur it when dragging starts
-      // to prevent a weird ghost caret "bug" on mobile
-      const focusedElement = document.activeElement as HTMLElement | null;
-      if (!focusedElement || !sheetRef.current) return;
+    const keyboard = useKeyboardAvoidance({
+      isEnabled: isOpen && avoidKeyboard,
+      containerRef: sheetRef,
+      onWillOpenKeyboard: async () => {
+        const lastSnapPoint = snapPoints[snapPoints.length - 1];
 
-      const isInput =
-        focusedElement.tagName === 'INPUT' ||
-        focusedElement.tagName === 'TEXTAREA';
+        /**
+         * If there are snap points and the sheet is not already at the last snap point,
+         * move it there to make sure the focused input is not covered by the keyboard
+         */
+        if (lastSnapPoint && lastSnapPoint.snapIndex !== currentSnap) {
+          await animate(y, lastSnapPoint.snapValueY, animationOptions);
+          updateSnap(lastSnapPoint.snapIndex);
+        }
+      },
+      onDidOpenKeyboard: (focusedElement) => {
+        const sheetElement = sheetRef.current;
+        if (!sheetElement) return;
+
+        const inputRect = focusedElement.getBoundingClientRect();
+        const containerRect = sheetElement.getBoundingClientRect();
+        const scroller = sheetElement.querySelector(
+          '.react-modal-sheet-content-scroller'
+        ) as HTMLElement;
+
+        const scrollTarget = Math.max(
+          inputRect.top -
+            containerRect.top +
+            scroller.scrollTop -
+            inputRect.height,
+          0
+        );
+
+        requestAnimationFrame(() => {
+          scroller.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+        });
+      },
+    });
+
+    // Disable drag if the keyboard is open to avoid weird behavior
+    const disableDrag = keyboard.isKeyboardOpen || disableDragProp;
+
+    const blurActiveInput = useStableCallback(() => {
+      /**
+       * Find focused input inside the sheet and blur it when dragging starts
+       * to prevent a weird ghost caret "bug" on mobile
+       */
+      const focusedElement = document.activeElement as HTMLElement | null;
 
       // Only blur the focused element if it's inside the sheet
-      if (isInput && sheetRef.current.contains(focusedElement)) {
+      if (
+        focusedElement &&
+        willOpenKeyboard(focusedElement) &&
+        sheetRef.current?.contains(focusedElement)
+      ) {
         focusedElement.blur();
       }
+    });
+
+    const onDragStart = useStableCallback<DragHandler>((event, info) => {
+      blurActiveInput();
+      onDragStartProp?.(event, info);
     });
 
     const onDrag = useStableCallback<DragHandler>((event, info) => {
@@ -186,11 +224,6 @@ export const Sheet = forwardRef<any, SheetProps>(
 
       // Make sure user cannot drag beyond the top of the sheet
       y.set(Math.max(currentY + info.delta.y, 0));
-    });
-
-    const onDragStart = useStableCallback<DragHandler>((event, info) => {
-      blurActiveInput();
-      onDragStartProp?.(event, info);
     });
 
     const onDragEnd = useStableCallback<DragHandler>((event, info) => {
@@ -294,67 +327,6 @@ export const Sheet = forwardRef<any, SheetProps>(
     usePreventScroll({
       isDisabled: disableScrollLocking || !isOpen,
     });
-
-    const focusedInput = useFocusedInput({
-      isEnabled: isOpen && avoidKeyboard,
-      sheetRef,
-    });
-
-    /**
-     * Keyboard avoidance.
-     *
-     * Move the sheet up when the keyboard opens if the sheet has snap points,
-     * and then scroll the focused input into view to make sure it's not covered
-     * by the keyboard.
-     */
-    useEffect(() => {
-      if (!isOpen || !avoidKeyboard) {
-        return;
-      }
-
-      async function adjustSheetForKeyboard() {
-        const sheetElement = sheetRef.current;
-
-        if (!sheetElement || !focusedInput || !keyboard.isKeyboardOpen) {
-          return;
-        }
-
-        /**
-         * If we have snap points and the sheet is currently snapped to a point
-         * that is being covered by the keyboard, we want to move the sheet up
-         * to reveal it.
-         */
-        const lastSnapPoint = snapPoints[snapPoints.length - 1];
-
-        if (lastSnapPoint) {
-          await animate(y, lastSnapPoint.snapValueY, animationOptions);
-          updateSnap(lastSnapPoint.snapIndex);
-        }
-
-        // Then scroll the focused input into view if it's covered by the keyboard
-        requestAnimationFrame(() => {
-          const inputRect = focusedInput.getBoundingClientRect();
-          const sheetRect = sheetElement.getBoundingClientRect();
-          const scroller = sheetElement.querySelector(
-            '.react-modal-sheet-content-scroller'
-          ) as HTMLElement;
-
-          const scrollTarget = Math.max(
-            inputRect.top -
-              sheetRect.top +
-              scroller.scrollTop -
-              inputRect.height,
-            0
-          );
-
-          requestAnimationFrame(() => {
-            scroller.scrollTo({ top: scrollTarget, behavior: 'smooth' });
-          });
-        });
-      }
-
-      adjustSheetForKeyboard();
-    }, [isOpen, avoidKeyboard, keyboard.isKeyboardOpen, focusedInput]);
 
     const state = useSheetState({
       isOpen,

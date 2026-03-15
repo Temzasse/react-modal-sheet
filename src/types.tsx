@@ -7,7 +7,6 @@ import {
 } from 'motion/react';
 import {
   type ComponentPropsWithoutRef,
-  type CSSProperties,
   type ForwardRefExoticComponent,
   type FunctionComponent,
   type HTMLAttributes,
@@ -108,7 +107,7 @@ export interface SheetContextType {
   currentSnap?: number;
   detent: SheetDetent;
   disableDrag: boolean;
-  dragProps?: SheetDragProps;
+  dragProps: SheetDragProps;
   indicatorRotation: MotionValue<number>;
   avoidKeyboard: boolean;
   prefersReducedMotion: boolean;

@@ -1,7 +1,7 @@
 // This code originates from https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/overlays/src/usePreventScroll.ts
 
+import { isIOS, willOpenKeyboard } from '../utils';
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
-import { isIOS } from '../utils';
 
 const KEYBOARD_BUFFER = 24;
 
@@ -32,17 +32,17 @@ export function isScrollable(
 
   const style = window.getComputedStyle(node);
 
-  let isScrollable = /(auto|scroll)/.test(
+  let scrollable = /(auto|scroll)/.test(
     style.overflow + style.overflowX + style.overflowY
   );
 
-  if (isScrollable && checkForOverflow) {
-    isScrollable =
+  if (scrollable && checkForOverflow) {
+    scrollable =
       node.scrollHeight !== node.clientHeight ||
       node.scrollWidth !== node.clientWidth;
   }
 
-  return isScrollable;
+  return scrollable;
 }
 
 export function getScrollParent(
@@ -63,19 +63,6 @@ export function getScrollParent(
     scrollableNode || document.scrollingElement || document.documentElement
   );
 }
-
-// HTML input types that do not cause the software keyboard to appear.
-const nonTextInputTypes = new Set([
-  'checkbox',
-  'radio',
-  'range',
-  'color',
-  'file',
-  'image',
-  'button',
-  'submit',
-  'reset',
-]);
 
 // The number of active usePreventScroll calls. Used to determine whether to revert back to the original page style/scroll position
 let preventScrollCount = 0;
@@ -366,13 +353,4 @@ function scrollIntoView(target: Element) {
     // @ts-expect-error
     target = scrollable.parentElement;
   }
-}
-
-function willOpenKeyboard(target: Element) {
-  return (
-    (target instanceof HTMLInputElement &&
-      !nonTextInputTypes.has(target.type)) ||
-    target instanceof HTMLTextAreaElement ||
-    (target instanceof HTMLElement && target.isContentEditable)
-  );
 }

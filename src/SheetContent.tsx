@@ -73,8 +73,14 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
     const scrollStyle: MotionStyle = applyStyles(styles.scroller, isUnstyled);
 
     if (sheetContext.avoidKeyboard) {
-      scrollStyle.paddingBottom =
-        'env(keyboard-inset-height, var(--keyboard-inset-height, 0px))';
+      /**
+       * Virtual Keyboard API is only available in secure context (https)
+       * and it will have 0px height in insecure context,
+       * which causes issues when developing and testing on localhost (http).
+       */
+      scrollStyle.paddingBottom = window.isSecureContext
+        ? 'env(keyboard-inset-height, var(--keyboard-inset-height, 0px))'
+        : 'var(--keyboard-inset-height, 0px)';
     }
 
     if (disableScroll) {
