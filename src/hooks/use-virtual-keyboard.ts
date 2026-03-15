@@ -1,10 +1,35 @@
 import { type RefObject, useEffect, useRef, useState } from 'react';
-import { useStableCallback } from './use-stable-callback';
+import { willOpenKeyboard } from '../utils';
+
+type VirtualKeyboardApi = {
+  overlaysContent: boolean;
+  boundingRect: {
+    x: number;
+    y: number;
+    height: number;
+    width: number;
+  };
+  addEventListener: (
+    type: 'geometrychange',
+    listener: EventListenerOrEventListenerObject
+  ) => void;
+  removeEventListener: (
+    type: 'geometrychange',
+    listener: EventListenerOrEventListenerObject
+  ) => void;
+};
 
 type VirtualKeyboardState = {
   isVisible: boolean;
   height: number;
 };
+
+/**
+ * Keep track of how many components are using the virtual keyboard API
+ * to avoid conflicts when toggling `overlaysContent` which is a global setting.
+ */
+let virtualKeyboardOverlayUsers = 0;
+let initialVirtualKeyboardOverlaysContent: boolean | null = null;
 
 type UseVirtualKeyboardOptions = {
   /**
@@ -22,11 +47,6 @@ type UseVirtualKeyboardOptions = {
    * @default 100
    */
   visualViewportThreshold?: number;
-  /**
-   * Whether to treat contenteditable elements as text inputs.
-   * @default true
-   */
-  includeContentEditable?: boolean;
   /**
    * Delay in ms for debouncing viewport changes.
    * @default 100
@@ -66,7 +86,6 @@ export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
     containerRef,
     isEnabled = true,
     debounceDelay = 100,
-    includeContentEditable = true,
     visualViewportThreshold = 100,
   } = options;
 
@@ -78,27 +97,14 @@ export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
   const focusedElementRef = useRef<HTMLElement | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isTextInput = useStableCallback((el: Element | null) => {
-    return (
-      el?.tagName === 'INPUT' ||
-      el?.tagName === 'TEXTAREA' ||
-      (includeContentEditable &&
-        el instanceof HTMLElement &&
-        el.isContentEditable)
-    );
-  });
-
   useEffect(() => {
-    if (!isEnabled) return;
-
     const vv = window.visualViewport;
-    const vk = (navigator as any).virtualKeyboard;
+    const vk = getVirtualKeyboardApi();
 
     function setKeyboardInsetHeightEnv(height: number) {
       const element = containerRef?.current || document.documentElement;
 
-      // Virtual Keyboard API is only available in secure context
-      if (window.isSecureContext) {
+      if (vk) {
         element.style.setProperty(
           '--keyboard-inset-height',
           `env(keyboard-inset-height, ${height}px)`
@@ -108,29 +114,46 @@ export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
       }
     }
 
-    function handleFocusIn(e: FocusEvent) {
-      if (e.target instanceof HTMLElement && isTextInput(e.target)) {
-        focusedElementRef.current = e.target;
-        updateKeyboardState();
-      }
+    function setKeyboardState(nextState: VirtualKeyboardState) {
+      setState((prevState) =>
+        prevState.isVisible === nextState.isVisible &&
+        prevState.height === nextState.height
+          ? prevState
+          : nextState
+      );
     }
 
-    function handleFocusOut() {
+    function resetKeyboardState() {
       focusedElementRef.current = null;
-      updateKeyboardState();
+      setKeyboardInsetHeightEnv(0);
+      setKeyboardState({ isVisible: false, height: 0 });
+    }
+
+    if (!isEnabled) {
+      resetKeyboardState();
+      return;
     }
 
     function updateKeyboardState() {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
       }
+
       debounceTimer.current = setTimeout(() => {
-        const active = focusedElementRef.current;
-        const inputIsFocused = isTextInput(active);
+        const active = getActiveElement() ?? focusedElementRef.current;
+        const inputIsFocused = active ? willOpenKeyboard(active) : false;
 
         if (!inputIsFocused) {
-          setKeyboardInsetHeightEnv(0);
-          setState({ isVisible: false, height: 0 });
+          resetKeyboardState();
+          return;
+        }
+
+        focusedElementRef.current = active as HTMLElement;
+
+        if (vk?.overlaysContent) {
+          const keyboardHeight = vk.boundingRect.height;
+          setKeyboardInsetHeightEnv(keyboardHeight);
+          setKeyboardState({ isVisible: true, height: keyboardHeight });
           return;
         }
 
@@ -139,33 +162,53 @@ export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
 
           if (heightDiff > visualViewportThreshold) {
             setKeyboardInsetHeightEnv(heightDiff);
-            setState({ isVisible: true, height: heightDiff });
-          } else {
-            setKeyboardInsetHeightEnv(0);
-            setState({ isVisible: false, height: 0 });
+            setKeyboardState({ isVisible: true, height: heightDiff });
+            return;
           }
         }
+
+        resetKeyboardState();
       }, debounceDelay);
     }
 
-    window.addEventListener('focusin', handleFocusIn);
-    window.addEventListener('focusout', handleFocusOut);
+    function handleFocusIn(e: FocusEvent) {
+      if (e.target instanceof HTMLElement && willOpenKeyboard(e.target)) {
+        focusedElementRef.current = e.target;
+        updateKeyboardState();
+      }
+    }
+
+    function handleFocusOut() {
+      requestAnimationFrame(() => {
+        focusedElementRef.current = getActiveElement();
+        updateKeyboardState();
+      });
+    }
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
 
     if (vv) {
       vv.addEventListener('resize', updateKeyboardState);
       vv.addEventListener('scroll', updateKeyboardState);
     }
 
-    let currentOverlaysContent = false;
-
     if (vk) {
-      currentOverlaysContent = vk.overlaysContent;
-      vk.overlaysContent = true;
+      if (virtualKeyboardOverlayUsers === 0) {
+        initialVirtualKeyboardOverlaysContent = vk.overlaysContent;
+        vk.overlaysContent = true;
+      }
+
+      virtualKeyboardOverlayUsers++;
+      vk.addEventListener('geometrychange', updateKeyboardState);
     }
 
+    focusedElementRef.current = getActiveElement();
+    updateKeyboardState();
+
     return () => {
-      window.removeEventListener('focusin', handleFocusIn);
-      window.removeEventListener('focusout', handleFocusOut);
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
 
       if (vv) {
         vv.removeEventListener('resize', updateKeyboardState);
@@ -173,22 +216,50 @@ export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
       }
 
       if (vk) {
-        vk.overlaysContent = currentOverlaysContent;
+        vk.removeEventListener('geometrychange', updateKeyboardState);
+
+        virtualKeyboardOverlayUsers = Math.max(
+          0,
+          virtualKeyboardOverlayUsers - 1
+        );
+
+        if (virtualKeyboardOverlayUsers === 0) {
+          vk.overlaysContent = initialVirtualKeyboardOverlaysContent ?? false;
+          initialVirtualKeyboardOverlaysContent = null;
+        }
       }
 
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
       }
+
+      resetKeyboardState();
     };
-  }, [
-    debounceDelay,
-    includeContentEditable,
-    isEnabled,
-    visualViewportThreshold,
-  ]);
+  }, [debounceDelay, isEnabled, visualViewportThreshold]);
 
   return {
     keyboardHeight: state.height,
     isKeyboardOpen: state.isVisible,
   };
+}
+
+function getVirtualKeyboardApi() {
+  return window.isSecureContext && 'virtualKeyboard' in navigator
+    ? (navigator.virtualKeyboard as VirtualKeyboardApi)
+    : null;
+}
+
+function getActiveElement() {
+  let activeElement: Element | null = document.activeElement;
+
+  while (
+    activeElement instanceof HTMLElement &&
+    activeElement.shadowRoot?.activeElement
+  ) {
+    activeElement = activeElement.shadowRoot.activeElement;
+  }
+
+  return activeElement && willOpenKeyboard(activeElement)
+    ? (activeElement as HTMLElement)
+    : null;
 }
