@@ -6,7 +6,7 @@ import { useDragConstraints } from './hooks/use-drag-constraints';
 import { useScrollPosition } from './hooks/use-scroll-position';
 import { styles } from './styles';
 import { type SheetContentProps } from './types';
-import { applyStyles, mergeRefs } from './utils';
+import { applyStyles, isHTTPS, mergeRefs } from './utils';
 
 export const SheetContent = forwardRef<any, SheetContentProps>(
   (
@@ -78,7 +78,7 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
        * and it will have 0px height in insecure context,
        * which causes issues when developing and testing on localhost (http).
        */
-      scrollStyle.paddingBottom = window.isSecureContext
+      scrollStyle.paddingBottom = isHTTPS()
         ? 'env(keyboard-inset-height, var(--keyboard-inset-height, 0px))'
         : 'var(--keyboard-inset-height, 0px)';
     }

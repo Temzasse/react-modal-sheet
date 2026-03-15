@@ -110,3 +110,7 @@ export function willOpenKeyboard(target: Element) {
     (target instanceof HTMLElement && target.isContentEditable)
   );
 }
+
+export function isHTTPS() {
+  return typeof window !== 'undefined' && window.isSecureContext;
+}

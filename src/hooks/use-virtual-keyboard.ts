@@ -1,5 +1,5 @@
 import { type RefObject, useEffect, useRef, useState } from 'react';
-import { willOpenKeyboard } from '../utils';
+import { isHTTPS, willOpenKeyboard } from '../utils';
 
 type VirtualKeyboardApi = {
   overlaysContent: boolean;
@@ -243,8 +243,12 @@ export function useVirtualKeyboard(options: UseVirtualKeyboardOptions = {}) {
   };
 }
 
+/**
+ * Virtual Keyboard API is only available in secure contexts (HTTPS)
+ * and may not be supported in all browsers.
+ */
 function getVirtualKeyboardApi() {
-  return window.isSecureContext && 'virtualKeyboard' in navigator
+  return isHTTPS() && 'virtualKeyboard' in navigator
     ? (navigator.virtualKeyboard as VirtualKeyboardApi)
     : null;
 }
