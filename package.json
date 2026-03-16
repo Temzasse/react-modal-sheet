@@ -82,6 +82,7 @@
     "trailingComma": "es5"
   },
   "dependencies": {
+    "@react-aria/utils": "3.33.1",
     "react-use-measure": "2.1.7"
   }
 }
