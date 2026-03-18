@@ -30,11 +30,7 @@ import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
 import { useSheetState } from './hooks/use-sheet-state';
 import { useStableCallback } from './hooks/use-stable-callback';
-import {
-  computeSnapPoints,
-  handleHighVelocityDrag,
-  handleLowVelocityDrag,
-} from './snap';
+import { classifyDragEnd, computeSnapPoints } from './snap';
 import { styles } from './styles';
 import { type SheetContextType, type SheetProps } from './types';
 import { applyStyles, waitForElement, willOpenKeyboard } from './utils';
@@ -232,63 +228,31 @@ export const Sheet = forwardRef<any, SheetProps>(
 
       const currentY = y.get();
 
-      let yTo = 0;
+      const result = classifyDragEnd({
+        y: currentY,
+        info,
+        sheetHeight,
+        dragCloseThreshold,
+        snapPoints,
+        dragVelocityThreshold,
+      });
 
-      const currentSnapPoint =
-        currentSnap !== undefined ? getSnapPoint(currentSnap) : null;
+      let yTo = result.yTo;
 
-      if (currentSnapPoint) {
-        const dragOffsetDirection = info.offset.y > 0 ? 'down' : 'up';
-        const dragVelocityDirection = info.velocity.y > 0 ? 'down' : 'up';
-        const isHighVelocity =
-          Math.abs(info.velocity.y) > dragVelocityThreshold;
+      // If disableDismiss is true, prevent closing via gesture
+      if (disableDismiss && yTo + 1 >= sheetHeight) {
+        // Use the bottom-most open snap point
+        const bottomSnapPoint = snapPoints.find((s) => s.snapValue > 0);
 
-        let result: { yTo: number; snapIndex: number | undefined };
-
-        if (isHighVelocity) {
-          result = handleHighVelocityDrag({
-            snapPoints,
-            dragDirection: dragVelocityDirection,
-          });
+        if (bottomSnapPoint) {
+          yTo = bottomSnapPoint.snapValueY;
+          updateSnap(bottomSnapPoint.snapIndex);
         } else {
-          result = handleLowVelocityDrag({
-            currentSnapPoint,
-            currentY,
-            dragDirection: dragOffsetDirection,
-            snapPoints,
-            velocity: info.velocity.y,
-          });
+          // If no open snap points available, stay at current position
+          yTo = currentY;
         }
-
-        yTo = result.yTo;
-
-        // If disableDismiss is true, prevent closing via gesture
-        if (disableDismiss && yTo + 1 >= sheetHeight) {
-          // Use the bottom-most open snap point
-          const bottomSnapPoint = snapPoints.find((s) => s.snapValue > 0);
-
-          if (bottomSnapPoint) {
-            yTo = bottomSnapPoint.snapValueY;
-            updateSnap(bottomSnapPoint.snapIndex);
-          } else {
-            // If no open snap points available, stay at current position
-            yTo = currentY;
-          }
-        } else if (result.snapIndex !== undefined) {
-          updateSnap(result.snapIndex);
-        }
-      } else if (
-        info.velocity.y > dragVelocityThreshold ||
-        currentY > sheetHeight * dragCloseThreshold
-      ) {
-        // Close the sheet if dragged past the threshold or if the velocity is high enough
-        // But only if disableDismiss is false
-        if (disableDismiss) {
-          // If disableDismiss, snap back to the open position
-          yTo = 0;
-        } else {
-          yTo = closedY;
-        }
+      } else if (result.snapIndex !== undefined) {
+        updateSnap(result.snapIndex);
       }
 
       // Update the spring value so that the sheet is animated to the snap point
