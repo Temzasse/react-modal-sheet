@@ -1,3 +1,4 @@
+import type { PanInfo } from 'motion';
 import type { SheetSnapPoint } from './types';
 import { isAscendingOrder } from './utils';
 
@@ -107,136 +108,238 @@ export function computeSnapPoints({
   }));
 }
 
-function findClosestSnapPoint({
-  snapPoints,
-  currentY,
-}: {
-  snapPoints: SheetSnapPoint[];
-  currentY: number;
-}) {
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function sign(value: number) {
+  if (value > 0) return 1;
+  if (value < 0) return -1;
+  return 0;
+}
+
+function toAscendingYSnaps(snapPoints: SheetSnapPoint[]) {
+  return snapPoints.slice().sort((a, b) => a.snapValueY - b.snapValueY);
+}
+
+function findNearestSnapByY(snapPoints: SheetSnapPoint[], y: number) {
   return snapPoints.reduce((closest, snap) =>
-    Math.abs(snap.snapValueY - currentY) <
-    Math.abs(closest.snapValueY - currentY)
+    Math.abs(snap.snapValueY - y) < Math.abs(closest.snapValueY - y)
       ? snap
       : closest
   );
 }
 
-function findNextSnapPointInDirection({
+function findNearestSnapAboveY(snapPoints: SheetSnapPoint[], y: number) {
+  const snaps = toAscendingYSnaps(snapPoints);
+
+  for (let i = snaps.length - 1; i >= 0; i--) {
+    if (snaps[i].snapValueY < y) {
+      return snaps[i];
+    }
+  }
+
+  return null;
+}
+
+function findNearestSnapBelowY(snapPoints: SheetSnapPoint[], y: number) {
+  const snaps = toAscendingYSnaps(snapPoints);
+
+  for (let i = 0; i < snaps.length; i++) {
+    if (snaps[i].snapValueY > y) {
+      return snaps[i];
+    }
+  }
+
+  return null;
+}
+
+function resolveDirection({
+  offsetY,
+  velocityY,
+  deltaY,
+}: {
+  offsetY: number;
+  velocityY: number;
+  deltaY: number;
+}) {
+  if (Math.abs(velocityY) > 50) return sign(velocityY);
+
+  const offsetDirection = sign(offsetY);
+  if (offsetDirection !== 0) return offsetDirection;
+
+  return sign(deltaY);
+}
+
+/**
+ * Classifies the final sheet position when a drag gesture ends.
+ *
+ * Decision flow (high level):
+ * 1) Predict momentum endpoint from current position and velocity.
+ * 2) Resolve drag direction (prefer velocity, fallback to offset/delta).
+ * 3) Detect flick tiers:
+ *    - strong flick -> jump fully open/closed
+ *    - flick -> move to next snap in flick direction
+ * 4) For slower drags:
+ *    - tiny drag or near-snap stickiness -> snap back to nearest snap
+ *    - otherwise, use progress between surrounding snaps and commit threshold
+ * 5) Apply velocity-assisted bias to nearest predicted snap for natural feel.
+ * 6) Fallback to nearest snap.
+ *
+ * Special case with no snap points:
+ * - flick: open/close by direction
+ * - otherwise: open/close by predicted position vs close threshold midpoint
+ */
+export function classifyDragEnd({
   y,
+  info,
+  sheetHeight,
   snapPoints,
-  dragDirection,
+  dragVelocityThreshold,
+  dragCloseThreshold,
 }: {
   y: number;
+  info: PanInfo;
+  sheetHeight: number;
   snapPoints: SheetSnapPoint[];
-  dragDirection: 'up' | 'down';
+  dragVelocityThreshold: number;
+  dragCloseThreshold: number;
 }) {
-  // NOTE: lower Y means higher in the sheet position!
-  if (dragDirection === 'down') {
-    /**
-     * Example:
-     *
-     * [
-     *   { snapIndex: 0, snapValueY: 810 },
-     *   { snapIndex: 1, snapValueY: 640 },
-     *   { snapIndex: 2, snapValueY: 405 }, <-- next down
-     *   ------------- Y = 60 ------------
-     *   { snapIndex: 3, snapValueY: 50 },
-     *   { snapIndex: 4, snapValueY: 0 },
-     * ]
-     */
-    return snapPoints
-      .slice()
-      .reverse()
-      .find((s) => s.snapValueY > y);
-  } else {
-    /**
-     * Example:
-     * [
-     *   { snapIndex: 0, snapValueY: 810 },
-     *   { snapIndex: 1, snapValueY: 640 },
-     *   { snapIndex: 2, snapValueY: 405 },
-     *   ------------- Y = 60 ------------
-     *   { snapIndex: 3, snapValueY: 50 }, <-- next up
-     *   { snapIndex: 4, snapValueY: 0 },
-     * ]
-     */
-    return snapPoints.find((s) => s.snapValueY < y);
-  }
-}
-export function handleHighVelocityDrag({
-  dragDirection,
-  snapPoints,
-}: {
-  dragDirection: 'up' | 'down';
-  snapPoints: SheetSnapPoint[];
-}) {
-  // Go to either the last or the first snap point depending on the direction
-  const bottomSnapPoint = snapPoints[0];
-  const topSnapPoint = snapPoints[snapPoints.length - 1];
-
-  if (dragDirection === 'down') {
-    return {
-      yTo: bottomSnapPoint.snapValueY,
-      snapIndex: bottomSnapPoint.snapIndex,
-    };
-  }
-  return {
-    yTo: topSnapPoint.snapValueY,
-    snapIndex: topSnapPoint.snapIndex,
-  };
-}
-
-export function handleLowVelocityDrag({
-  currentSnapPoint,
-  currentY,
-  dragDirection,
-  snapPoints,
-  velocity,
-}: {
-  currentSnapPoint: SheetSnapPoint;
-  currentY: number;
-  dragDirection: 'up' | 'down';
-  snapPoints: SheetSnapPoint[];
-  velocity: number;
-}) {
-  const closestSnapRelativeToCurrentY = findClosestSnapPoint({
-    snapPoints,
-    currentY,
-  });
-
   /**
-   * If velocity is very low the user has stopped the sheet to a specific
-   * position and we should snap to the closest snap point as there is no
-   * "momentum" that would push the sheet further to the given direction
+   * Thresholds and configuration for drag classification.
+   * Tweak these to adjust the feel of the sheet.
    */
-  if (Math.abs(velocity) < 20) {
+  // Velocity above this is considered a flick gesture.
+  const flickVelocity = dragVelocityThreshold;
+  // Velocity above this is treated as a strong flick and jumps to full open/closed.
+  const strongFlickVelocity = Math.max(2000, flickVelocity);
+  // In slow drags, crossing this portion of the current snap region commits to the next snap.
+  const distanceCommitRatio = 0.35;
+  // Time horizon (in seconds) used to estimate momentum-based end position.
+  const predictionTime = 0.2;
+  // Very small drags below this distance snap back instead of changing snap state.
+  const minDragDistance = 20;
+  // If drag ends within this many pixels from a snap, stick to that snap to reduce jitter.
+  const snapStickiness = 24;
+
+  const minY = 0;
+  const maxY = sheetHeight;
+  const offsetY = info.offset.y;
+  const deltaY = info.delta.y;
+  const velocityY = info.velocity.y;
+
+  // Step 1 — Compute predicted end position from momentum.
+  const predictedY = clamp(y + velocityY * predictionTime, minY, maxY);
+  const absVelocity = Math.abs(velocityY);
+
+  // Step 2 + 3 — Flick detection and gesture direction resolution.
+  const direction = resolveDirection({ offsetY, velocityY, deltaY });
+
+  const isStrongFlick = absVelocity > strongFlickVelocity;
+  const isFlick = absVelocity > flickVelocity;
+
+  // Step 4 — No snap points: decide between open/close only.
+  if (snapPoints.length === 0) {
+    if (isFlick) {
+      return {
+        yTo: direction < 0 ? minY : maxY,
+        snapIndex: undefined,
+      };
+    }
+
+    const midpoint = minY + (maxY - minY) * dragCloseThreshold;
+
     return {
-      yTo: closestSnapRelativeToCurrentY.snapValueY,
-      snapIndex: closestSnapRelativeToCurrentY.snapIndex,
+      yTo: predictedY < midpoint ? minY : maxY,
+      snapIndex: undefined,
     };
   }
 
-  /**
-   * If the dragging has a bit more velocity, we instead want to go to
-   * the next snap point in the given direction if it exists
-   */
-  const nextSnapInDirectionRelativeToCurrentY = findNextSnapPointInDirection({
-    y: currentY,
-    snapPoints,
-    dragDirection,
-  });
+  const nearestSnap = findNearestSnapByY(snapPoints, y);
 
-  if (nextSnapInDirectionRelativeToCurrentY) {
+  // Slow-drag guard — tiny movement: snap back to nearest.
+  if (!isFlick && Math.abs(offsetY) < minDragDistance) {
     return {
-      yTo: nextSnapInDirectionRelativeToCurrentY.snapValueY,
-      snapIndex: nextSnapInDirectionRelativeToCurrentY.snapIndex,
+      yTo: nearestSnap.snapValueY,
+      snapIndex: nearestSnap.snapIndex,
     };
   }
 
-  // No snap point down, stay at current
+  // Hysteresis (stickiness) — avoid jitter if already close to a snap.
+  if (!isFlick && Math.abs(y - nearestSnap.snapValueY) < snapStickiness) {
+    return {
+      yTo: nearestSnap.snapValueY,
+      snapIndex: nearestSnap.snapIndex,
+    };
+  }
+
+  // Step 5 — Strong flick overrides everything and goes fully open/closed.
+  if (isStrongFlick) {
+    const target = direction < 0 ? minY : maxY;
+    const targetSnap = findNearestSnapByY(snapPoints, target);
+
+    return {
+      yTo: target,
+      snapIndex: targetSnap.snapIndex,
+    };
+  }
+
+  // Step 5 — Medium flick moves to the next snap in flick direction.
+  if (isFlick) {
+    const nextSnap =
+      direction < 0
+        ? findNearestSnapAboveY(snapPoints, y)
+        : findNearestSnapBelowY(snapPoints, y);
+
+    const fallbackY = direction < 0 ? minY : maxY;
+    const fallbackSnap = findNearestSnapByY(snapPoints, fallbackY);
+    const targetSnap = nextSnap ?? fallbackSnap;
+
+    return {
+      yTo: targetSnap.snapValueY,
+      snapIndex: targetSnap.snapIndex,
+    };
+  }
+
+  const firstSnap = toAscendingYSnaps(snapPoints)[0];
+  const lastSnap = toAscendingYSnaps(snapPoints)[snapPoints.length - 1];
+  const prevSnap = findNearestSnapAboveY(snapPoints, y) ?? firstSnap;
+  const nextSnap = findNearestSnapBelowY(snapPoints, y) ?? lastSnap;
+
+  if (prevSnap.snapIndex === nextSnap.snapIndex) {
+    return {
+      yTo: prevSnap.snapValueY,
+      snapIndex: prevSnap.snapIndex,
+    };
+  }
+
+  const range = nextSnap.snapValueY - prevSnap.snapValueY;
+  const progress = range > 0 ? (y - prevSnap.snapValueY) / range : 0;
+
+  // Step 6 — Slow drag commit based on progress within the current snap region.
+  let selectedSnap = nearestSnap;
+
+  if (direction > 0) {
+    selectedSnap = progress > distanceCommitRatio ? nextSnap : prevSnap;
+  } else if (direction < 0) {
+    selectedSnap = progress < 1 - distanceCommitRatio ? prevSnap : nextSnap;
+  }
+
+  // Step 7 — Velocity-assisted bias toward predicted-position snap.
+  if (absVelocity > 200) {
+    const predictedSnap = findNearestSnapByY(snapPoints, predictedY);
+
+    if (
+      Math.abs(predictedSnap.snapValueY - y) <
+      Math.abs(selectedSnap.snapValueY - y)
+    ) {
+      selectedSnap = predictedSnap;
+    }
+  }
+
+  // Step 8 — Final fallback.
   return {
-    yTo: currentSnapPoint.snapValueY,
-    snapIndex: currentSnapPoint.snapIndex,
+    yTo: selectedSnap.snapValueY,
+    snapIndex: selectedSnap.snapIndex,
   };
 }
