@@ -84,7 +84,13 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
     }
 
     if (disableScroll) {
-      scrollStyle.overflowY = 'hidden';
+      /**
+       * NOTE: use `clip` to avoid glitchy behavior where using `hidden`
+       * would actually allow scrolling but just not show the scroll content.
+       * Using `hidden` seems to work fine on iOS but on Android it causes
+       * the up drag gesture to cancel occasionally causing bad UX.
+       */
+      scrollStyle.overflowY = 'clip';
     }
 
     if (dragProps !== undefined) {
