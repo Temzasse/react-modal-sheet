@@ -1,6 +1,6 @@
 import type { PanInfo } from 'motion';
 import type { SheetSnapPoint } from './types';
-import { isAscendingOrder } from './utils';
+import { clamp, isAscendingOrder } from './utils';
 
 /**
  * Convert negative / percentage snap points to absolute values
@@ -106,10 +106,6 @@ export function computeSnapPoints({
     snapValue: snap, // Absolute value from the bottom of the sheet
     snapValueY: sheetHeight - snap, // Y value is inverted as `y = 0` means sheet is at the top
   }));
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
 }
 
 function sign(value: number) {

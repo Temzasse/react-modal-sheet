@@ -114,6 +114,7 @@ export interface SheetContextType {
   sheetBoundsRef: (node: HTMLDivElement | null) => void;
   sheetRef: RefObject<any>;
   unstyled: boolean;
+  yProgress: MotionValue<number>;
   y: MotionValue<any>;
 }
 

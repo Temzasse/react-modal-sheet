@@ -33,7 +33,7 @@ import { useStableCallback } from './hooks/use-stable-callback';
 import { classifyDragEnd, computeSnapPoints } from './snap';
 import { styles } from './styles';
 import { type SheetContextType, type SheetProps } from './types';
-import { applyStyles, waitForElement, willOpenKeyboard } from './utils';
+import { applyStyles, clamp, waitForElement, willOpenKeyboard } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
   (
@@ -83,6 +83,7 @@ export const Sheet = forwardRef<any, SheetProps>(
     const closedY = sheetHeight > 0 ? sheetHeight : windowHeight;
     const y = useMotionValue(closedY);
     const yInverted = useTransform(y, (val) => Math.max(sheetHeight - val, 0));
+    const yProgress = useTransform(y, (val) => clamp(1 - val / closedY, 0, 1));
     const indicatorRotation = useMotionValue(0);
 
     const shouldReduceMotion = useReducedMotion();
@@ -347,6 +348,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       sheetBoundsRef,
       sheetRef,
       unstyled,
+      yProgress,
       y,
     };
 
