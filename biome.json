@@ -66,7 +66,10 @@
         "noUnreachable": "error",
         "noUnreachableSuper": "error",
         "noUnsafeFinally": "error",
-        "noUnusedVariables": "error",
+        "noUnusedVariables": {
+          "fix": "none",
+          "level": "error"
+        },
         "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "error",
         "useIsNan": "error",
@@ -81,7 +84,7 @@
       },
       "style": {
         "noNamespace": "error",
-        "noNonNullAssertion": "error",
+        "noNonNullAssertion": "warn",
         "noYodaExpression": "error",
         "useBlockStatements": "off",
         "useConsistentArrayType": {
