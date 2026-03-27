@@ -13,8 +13,8 @@ import { useOverlayTriggerState } from 'react-stately';
 import { styled } from 'styled-components';
 import { useMetaThemeColor } from '../../hooks/use-meta-theme-color';
 import { ScrollView } from '../common';
-import { NewMessageContent } from './NewMessageContent';
-import { NewMessageHeader } from './NewMessageHeader';
+import { NewMessageContent } from './new-message-content';
+import { NewMessageHeader } from './new-message-header';
 
 // A11y added with React Aria: https://react-spectrum.adobe.com/react-aria/useDialog.html
 
