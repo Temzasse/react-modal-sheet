@@ -1,19 +1,11 @@
-import type { MotionValue } from 'motion/react';
-
+import { useExposedContext } from './context';
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetContainer } from './SheetContainer';
 import { SheetContent } from './SheetContent';
 import { SheetDragIndicator } from './SheetDragIndicator';
 import { SheetHeader } from './SheetHeader';
 import { Sheet as SheetBase } from './sheet';
-import type { SheetCompound } from './types';
-
-export interface SheetRef {
-  y: MotionValue<number>;
-  yInverted: MotionValue<number>;
-  height: number;
-  snapTo: (index: number) => Promise<void>;
-}
+import type { ExposedContextType, SheetCompound } from './types';
 
 export const Sheet: SheetCompound = Object.assign(SheetBase, {
   Container: SheetContainer,
@@ -21,12 +13,15 @@ export const Sheet: SheetCompound = Object.assign(SheetBase, {
   DragIndicator: SheetDragIndicator,
   Content: SheetContent,
   Backdrop: SheetBackdrop,
+  useContext: useExposedContext,
 });
 
 export { useScrollPosition } from './hooks/use-scroll-position';
 export { useVirtualKeyboard } from './hooks/use-virtual-keyboard';
 
-// Export types
+export interface SheetContext extends ExposedContextType {}
+export interface SheetRef extends ExposedContextType {}
+
 export type {
   SheetBackdropProps,
   SheetContainerProps,

@@ -103,7 +103,7 @@ export type SheetSnapPoint = {
   snapValueY: number; // Y value is inverted as `y = 0` means sheet is at the top
 };
 
-export interface SheetContextType {
+export interface InternalContextType {
   currentSnap?: number;
   detent: SheetDetent;
   disableDrag: boolean;
@@ -116,6 +116,16 @@ export interface SheetContextType {
   unstyled: boolean;
   yProgress: MotionValue<number>;
   y: MotionValue<any>;
+}
+
+export interface ExposedContextType {
+  currentSnap?: number;
+  height: number;
+  snapPoints: SheetSnapPoint[];
+  snapTo: (index: number) => void;
+  y: MotionValue<number>;
+  yInverted: MotionValue<number>;
+  yProgress: MotionValue<number>;
 }
 
 export interface SheetScrollerContextType {
@@ -150,6 +160,7 @@ interface SheetCompoundComponent {
   DragIndicator: FunctionComponent<SheetDragIndicatorProps>;
   Content: ContentComponent;
   Backdrop: BackdropComponent;
+  useContext: () => ExposedContextType;
 }
 
 export type SheetCompound = SheetComponent & SheetCompoundComponent;

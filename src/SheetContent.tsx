@@ -1,7 +1,7 @@
 import { type MotionStyle, motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
-import { useSheetContext } from './context';
+import { useInternalContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
 import { useScrollPosition } from './hooks/use-scroll-position';
 import { styles } from './styles';
@@ -24,7 +24,7 @@ export const SheetContent = forwardRef<any, SheetContentProps>(
     },
     ref
   ) => {
-    const sheetContext = useSheetContext();
+    const sheetContext = useInternalContext();
     const dragConstraints = useDragConstraints();
 
     const scroll = useScrollPosition({

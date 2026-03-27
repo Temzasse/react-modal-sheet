@@ -37,49 +37,16 @@ npm install motion
 <details>
   <summary><strong>📚 Table of contents</strong></summary>
   
-  - [What's new in v5](#-whats-new-in-v5)
   - [Usage](#-usage)
   - [Props](#%EF%B8%8F-props)
   - [Methods and properties](#%EF%B8%8F-methods-and-properties)
+  - [Detents](#-detents)
   - [Compound Components](#-compound-components)
-  - [Advanced usage](#-advanced-usage)
+  - [Advanced behavior](#-advanced-behavior)
   - [Customization](#-customization)
   - [Accessibility](#%EF%B8%8F-accessibility)
   - [Troubleshooting](#-troubleshooting)
 </details>
-
----
-
-## 🎉 What's new in v5
-
-Version 5 introduces several major improvements and breaking changes:
-
-### 🔄 Breaking Changes
-
-- **Removed `Sheet.Scroller`**: Scrolling is now handled automatically by `Sheet.Content`
-  - See [Scrolling behavior](#-scrolling-behavior) section for details
-  - See [Making scrollable sheet content always reachable](#making-scrollable-sheet-content-always-reachable) for guidance on how to implement auto padding behavior
-- **Snap point order reversed**: Snap points now use ascending order (e.g., `[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
-  - This aligns better with other bottom sheet libraries and makes more intuitive sense
-- **Detent prop values changed**:
-  - `"full-height"` → `"default"`
-  - `"content-height"` → `"content"`
-  - New `"full"` detent for viewport-filling sheets
-
-### ✨ New Features
-
-- **Built-in keyboard avoidance**: Best-effort automatic virtual keyboard handling with the `avoidKeyboard` prop
-- **Enhanced scroll control**: Dynamic `disableScroll` and `disableDrag` functions with scroll state
-- **Improved snap point handling**: Better snap point calculation and more natural snapping between points
-- **New sheet properties**: Access `height` and `yInverted` motion values via ref
-- **Prevent dismissal**: New `disableDismiss` prop to prevent sheet from being closed by user gestures
-
-### 🔧 Migration from v4
-
-1. Remove all `Sheet.Scroller` components - content is now scrollable by default
-2. Reverse your snap point arrays: `[1, 0.5, 0]` → `[0, 0.5, 1]`
-3. Update detent props: `detent="full-height"` → `detent="default"`
-4. Review virtual keyboard handling - it's now automatic with `avoidKeyboard={true}`
 
 ---
 
@@ -144,20 +111,134 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 
 ## ⚙️ Methods and properties
 
-### `snapTo(index)`
+React Modal Sheet exposes several methods and properties that can be accessed via a ref or the sheet context.
 
-Imperative method that can be accessed via a ref for snapping to a snap point in given index.
+These allow you to imperatively control the sheet's behavior and access its internal state.
+
+| Name            | Type                      | Description                                                                                                                                                                                                                  |
+| --------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `y`             | `MotionValue<number>`     | Current sheet Y position where `0` means fully open at the top.                                                                                                                                                              |
+| `yInverted`     | `MotionValue<number>`     | Inverse of `y`, representing distance from the bottom of the sheet.                                                                                                                                                          |
+| `yProgress`     | `MotionValue<number>`     | Normalized open progress from `0` (closed) to `1` (fully open).                                                                                                                                                              |
+| `height`        | `number`                  | Current measured sheet height in pixels.                                                                                                                                                                                     |
+| `currentSnap`   | `number \| undefined`     | Current active snap point index. `undefined` when snap points are not used.                                                                                                                                                  |
+| `snapPoints`    | `SheetSnapPoint[]`        | Computed snap points with: `snapIndex` index of the snap point, `snapValue` computed pixel value (maps to given `snapPoints` prop values - eg. `0.5` becomes an actual pixel value), `snapValueY` inverted snap pixel value. |
+| `snapTo(index)` | `(index: number) => void` | Imperatively snaps the sheet to a snap point index. Requires `snapPoints` prop. Index `0` closes the sheet.                                                                                                                  |
+
+There are two ways to access sheet methods and properties:
+
+1. Via a ref using `useRef`
 
 ```tsx
-import { Sheet, SheetRef } from 'react-modal-sheet';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { useRef } from 'react';
+
+function RefExample() {
+  const sheetRef = useRef<SheetRef>(null);
+
+  // Then use eg. `sheetRef.current.snapTo()` or `sheetRef.current.y`, etc.
+
+  return (
+    <Sheet ref={sheetRef}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>{/* Your content here */}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+> [!IMPORTANT]
+> [React's rules about refs](https://react.dev/reference/react/useRef#caveats) apply here so don't read the sheet ref during render. If you need to access sheet methods or properties during render, use the `Sheet.useContext` hook instead.
+
+2. Via the `Sheet.useContext` hook from any child component of the sheet
+
+```tsx
+import { Sheet } from 'react-modal-sheet';
+
+function ContextExample() {
+  return (
+    <Sheet>
+      <SheetContainer />
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+
+/**
+ * NOTE: you need to define a separate component for using the `Sheet.useContext`
+ * hook since it can only be used within the sheet component tree.
+ */
+function SheetContainer() {
+  const context = Sheet.useContext();
+
+  // Then use eg. `context.snapTo()` or `context.y`, etc.
+
+  return (
+    <Sheet.Container>
+      <Sheet.Header />
+      <Sheet.Content>{/* Your content here */}</Sheet.Content>
+    </Sheet.Container>
+  );
+}
+```
+
+> [!TIP]
+> You generally want to prefer the `Sheet.useContext` hook when possible since it doesn't require you to manage refs and works seamlessly with React's declarative nature. However, there are some cases where using a ref might be more convenient, eg. when you need to access sheet methods from outside the sheet component tree.
+>
+> If you want to avoid creating a separate component just for using the `Sheet.useContext` hook, you can also create a reusable component that uses render-props pattern to expose the sheet context:
+>
+> ```tsx
+> import { ReactNode } from 'react';
+> import { Sheet, type SheetContext } from 'react-modal-sheet';
+>
+> // Generic render-prop helper component
+> function WithSheetContext({
+>   children,
+> }: {
+>   children: (context: SheetContext) => ReactNode;
+> }) {
+>   const context = Sheet.useContext();
+>   return <>{children(context)}</>;
+> }
+>
+> // Usage
+> function ContextExample() {
+>   return (
+>     <Sheet snapPoints={[0, 0.5, 1]} initialSnap={1}>
+>       <WithSheetContext>
+>         {(context) => (
+>           <Sheet.Container>
+>             <Sheet.Header />
+>             <Sheet.Content>
+>               <button onClick={() => context.snapTo(2)}>
+>                 Snap to index 2
+>               </button>
+>             </Sheet.Content>
+>           </Sheet.Container>
+>         )}
+>       </WithSheetContext>
+>     </Sheet>
+>   );
+> }
+> ```
+
+### `snapTo(index)`
+
+Imperative method for snapping to a snap point in given index.
+
+```tsx
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
 
 const snapPoints = [0, 0.5, 1];
 
 function SnapExample() {
   const [isOpen, setOpen] = useState(false);
-  const ref = useRef<SheetRef>(null);
-  const snapTo = (i: number) => ref.current?.snapTo(i);
+  const sheetRef = useRef<SheetRef>(null);
+  const snapTo = (i: number) => sheetRef.current?.snapTo(i);
 
   return (
     <>
@@ -165,13 +246,13 @@ function SnapExample() {
 
       {/* Opens to 50% since initial index is 1 */}
       <Sheet
-        ref={ref}
+        ref={sheetRef}
         isOpen={isOpen}
         onClose={() => setOpen(false)}
         initialSnap={1}
         snapPoints={snapPoints}
         onSnap={(snapIndex) =>
-          console.log('> Current snap point index:', snapIndex)
+          console.log('Current snap point index:', snapIndex)
         }
       >
         <Sheet.Container>
@@ -187,69 +268,163 @@ function SnapExample() {
 }
 ```
 
-### Motion values `y`, `yInverted` and `height`
+### Internal Motion values
 
-The `y` value is an internal [MotionValue](https://motion.dev/docs/react-motion-value) that represents the distance to the top most position of the sheet when it is fully open. So for example the `y` value is zero when the sheet is completely open.
+The `y`, `yInverted`, and `yProgress` values are [MotionValues](https://motion.dev/docs/react-motion-value). The `y` value is the core animated value that drives the sheet's position while dragging and snapping whereas `yInverted` and `yProgress` are derived from `y` and can be used for various animation effects or calculations based on the sheet's position.
 
-The `yInverted` value is the inverse of the `y` value and represents the distance from the bottom of the sheet. This can be useful for certain animations or calculations.
-
-The `height` value represents the current height of the sheet in pixels.
-
-All these values can be accessed via a ref, similar to the `snapTo` method.
+- The `y` value represents the distance to the top most position of the sheet when it is fully open. So for example the `y` value is zero when the sheet is completely open.
+- The `yInverted` value is the inverse of the `y` value and represents the distance from the bottom of the sheet. This can be useful for certain animations or calculations.
+- The `yProgress` value is a normalized value between 0 and 1 that represents how open the sheet is, where 0 means fully closed and 1 means fully open. This can be useful for triggering animations or effects based on how open the sheet is.
 
 Below you can see an example of how to use these values:
 
 ```tsx
-import { Sheet, SheetRef } from 'react-modal-sheet';
-import { useTransform } from 'motion/react';
-import { useState, useRef } from 'react';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { useTransform, interpolate } from 'motion/react';
+import { useRef } from 'react';
 
 function RefExample() {
-  const [isOpen, setOpen] = useState(false);
-  const ref = useRef<SheetRef>(null);
+  const sheetRef = useRef<SheetRef>(null);
 
-  const background = useTransform(() => {
-    const y = ref.current?.y.get() ?? 0;
-    return y > 100 ? 'lightblue' : 'lightcoral';
+  /**
+   * Example 1: Fade out an element as the sheet gets close to being fully open:
+   * - y: 0% - 50% → opacity 1
+   * - y: 50% - 60% → opacity fades from 1 to 0
+   * - y: 60% - 100% → opacity stays at 0
+   */
+  const opacity = useTransform(() => {
+    const progress = sheetRef?.yProgress.get() ?? 0;
+    const mix = interpolate([0, 0.5, 0.6], [1, 1, 0]);
+    return mix(progress);
   });
 
-  function doSomething() {
-    console.log('> Current y value:', ref.current?.y.get());
-    console.log('> Current yInverted value:', ref.current?.yInverted.get());
-    console.log('> Current height value:', ref.current?.height);
-  }
+  return <Sheet ref={sheetRef}>{/* ... */}</Sheet>;
+}
 
+function ContextExample() {
   return (
-    <>
-      <button onClick={() => setOpen(true)}>Open sheet</button>
-
-      <Sheet ref={ref} isOpen={isOpen} onClose={() => setOpen(false)}>
-        <Sheet.Container>
-          <Sheet.Content>
-            <motion.div style={{ background }}>
-              Use animated y value in some way
-            </motion.div>
-            {/* Your content here */}
-          </Sheet.Content>
-        </Sheet.Container>
-      </Sheet>
-    </>
+    <Sheet>
+      <InnerComponent />
+    </Sheet>
   );
+}
+
+function InnerComponent() {
+  const context = Sheet.useContext();
+
+  /**
+   * Example 2: Add padding to some content based on how far the sheet is dragged:
+   * - y: 0px - 100px → padding 16px to 8px
+   * - y: 100px - 200px → padding 8px to 0px
+   * - y: > 200px → padding 0px
+   */
+  const padding = useTransform(context.yInverted, (value) => {
+    const mix = interpolate([0, 100, 200], [16, 8, 0]);
+    return mix(value);
+  });
 }
 ```
 
-#### Making scrollable sheet content always reachable
+### Animating based on snap points
 
-One common use case for the `y` value is to apply padding bottom to the sheet content
-when the sheet is not fully open. This ensures that the content is always reachable even when the sheet is partially open, eg. when using snap points.
+One cool technique you can use is to animate properties based on the snap point thresholds.
 
-> [!NOTE]
-> Prior to v5 this was a built-in behavior of `Sheet.Scroller` via `autoPadding` prop but since `Sheet.Scroller` has been removed in v5 in favor of `Sheet.Content` handling scrolling internally, you can now implement this behavior yourself with the help of the `y` motion value.
->
-> Also take a look at the [Creating custom scrollers](#creating-custom-scrollers) section for more advanced use cases when you need to implement your own scroller and potentially apply this padding behavior to that.
+For example, you can easily create a custom hook that takes an array of output values corresponding to the snap points and returns a `MotionValue` that updates as the sheet is dragged and snaps to different points:
 
 ```tsx
-import { Sheet, SheetRef } from 'react-modal-sheet';
+import { interpolate, useTransform } from 'motion/react';
+import { Sheet } from 'react-modal-sheet';
+
+export function useSnapPointTransform(
+  /** The output values corresponding to the snap points. Must have the same length as snap points array */
+  output: number[],
+  /** The default value to return during the first render when snap points are not yet calculated */
+  defaultValue?: number
+) {
+  const { snapPoints, y } = Sheet.useContext();
+
+  return useTransform(y, (val) => {
+    const firstValue = output[0];
+
+    if (firstValue === undefined) {
+      throw new Error('Output array must have at least one value');
+    }
+
+    if (snapPoints.length === 0) {
+      return defaultValue ?? firstValue;
+    }
+
+    if (output.length !== snapPoints.length) {
+      throw new Error('Output array must have the same length as snap points');
+    }
+
+    const mix = interpolate(
+      snapPoints.map((point) => point.snapValueY),
+      output
+    );
+
+    return mix(val);
+  });
+}
+
+function SnapPointAnimationExample() {
+  return (
+    // Provide snap points that `useSnapPointTransform` can use for interpolation
+    <Sheet snapPoints={[0, 0.5, 0.7, 1]}>
+      <SheetContainer>
+        <Sheet.Header />
+        <Sheet.Content> {/* Some content here */}</Sheet.Content>
+      </SheetContainer>
+      <SheetBackdrop />
+    </Sheet>
+  );
+}
+
+function SheetContainer({ children }: { children: ReactNode }) {
+  /**
+   * Example: Animate border radius based on snap points:
+   * - snap point 0 - 1: border radius 32px
+   * - snap point 1 - 2: border radius 32px to 8px
+   * - snap point 2 - 3: border radius 8px to 0px
+   * - snap point 3: border radius 0px
+   */
+  const borderRadius = useSnapPointTransform([32, 32, 8, 0]);
+
+  return (
+    <Sheet.Container
+      style={{
+        borderTopRightRadius: borderRadius,
+        borderTopLeftRadius: borderRadius,
+      }}
+    >
+      {children}
+    </Sheet.Container>
+  );
+}
+
+function SheetBackdrop() {
+  // Fade in the backdrop between last two snap points
+  const opacity = useSnapPointTransform([0, 0, 0, 1]);
+
+  const backgroundColor = useMotionTemplate`
+    background-color: rgba(0, 0, 0, ${opacity});
+  `;
+
+  return <Sheet.Backdrop style={{ backgroundColor }} />;
+}
+```
+
+See the [Apple Maps example](https://temzasse.github.io/react-modal-sheet/#/apple-maps) for a real-world example of this technique for animating elements based on snap point thresholds.
+
+#### Making scrollable sheet content always reachable
+
+One potential use case for the `y` value is to apply padding bottom to the sheet content when the sheet is not fully open. This ensures that the content is always reachable even when the sheet is partially open, eg. when using snap points.
+
+> [!TIP]
+> Take a look at the [Creating custom scrollers](#creating-custom-scrollers) section for more advanced use cases when you need to implement your own scroller and potentially apply this padding behavior to that.
+
+```tsx
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { useTransform } from 'motion/react';
 import { useState, useRef } from 'react';
 
@@ -257,11 +432,11 @@ const snapPoints = [0, 0.5, 1];
 
 function PaddingExample() {
   const [isOpen, setOpen] = useState(false);
-  const ref = useRef<SheetRef>(null);
+  const sheetRef = useRef<SheetRef>(null);
 
   // Add padding bottom based on how far the sheet is from being fully open
   const paddingBottom = useTransform(() => {
-    return ref.current?.y.get() ?? 0;
+    return sheetRef.current?.y.get() ?? 0;
   });
 
   return (
@@ -269,7 +444,7 @@ function PaddingExample() {
       <button onClick={() => setOpen(true)}>Open sheet</button>
 
       <Sheet
-        ref={ref}
+        ref={sheetRef}
         isOpen={isOpen}
         onClose={() => setOpen(false)}
         snapPoints={snapPoints}
@@ -293,7 +468,7 @@ function PaddingExample() {
 }
 ```
 
-### Detents
+## 🪜 Detents
 
 By default the sheet will take the full height of the page minus top padding and safe area inset. The `detent` prop controls the sheet's height behavior:
 
@@ -398,11 +573,11 @@ Sheet backdrop is a translucent overlay that helps to separate the sheet from it
 
 > 🖥 Rendered element: `motion.div` or `motion.button`.
 
-## ✨ Advanced behaviors
+## ✨ Advanced behavior
 
 ### ⌨️ Virtual keyboard avoidance
 
-React Modal Sheet v5 includes built-in virtual keyboard avoidance that works automatically on mobile devices.
+React Modal Sheet includes built-in virtual keyboard avoidance that works automatically on mobile devices.
 When the `avoidKeyboard` prop is enabled (which is the default), the sheet will automatically add bottom padding to avoid the virtual keyboard covering input elements.
 
 ```tsx
@@ -949,7 +1124,7 @@ If you are using React `StrictMode` the sheet animations might not work as expec
 
 ### Upgrading from v4 to v5
 
-If you're experiencing issues after upgrading, check the "What's new in v5" section above for breaking changes. The most common issues are:
+The most common migration issues are:
 
 1. **Snap points not working**: Ensure your snap points are in ascending order (`[0, 0.5, 1]` instead of `[1, 0.5, 0]`)
 2. **Scrolling issues**: Remove `Sheet.Scroller` components as scrolling is now handled by `Sheet.Content`

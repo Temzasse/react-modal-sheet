@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
-import { useSheetContext } from './context';
+import { useInternalContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
 import { SheetDragIndicator } from './SheetDragIndicator';
 import { styles } from './styles';
@@ -13,7 +13,7 @@ export const SheetHeader = forwardRef<any, SheetHeaderProps>(
     { children, style, disableDrag, unstyled, className = '', ...rest },
     ref
   ) => {
-    const sheetContext = useSheetContext();
+    const sheetContext = useInternalContext();
     const dragConstraints = useDragConstraints();
     const dragProps =
       disableDrag || sheetContext.disableDrag

@@ -2,14 +2,14 @@ import { type MotionStyle, motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
 import { DEFAULT_HEIGHT } from './constants';
-import { useSheetContext } from './context';
+import { useInternalContext } from './context';
 import { styles } from './styles';
 import { type SheetContainerProps } from './types';
 import { applyStyles, mergeRefs } from './utils';
 
 export const SheetContainer = forwardRef<any, SheetContainerProps>(
   ({ children, style, className = '', unstyled, ...rest }, ref) => {
-    const sheetContext = useSheetContext();
+    const sheetContext = useInternalContext();
 
     const isUnstyled = unstyled ?? sheetContext.unstyled;
 

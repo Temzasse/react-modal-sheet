@@ -10,6 +10,7 @@ import {
 import React, {
   forwardRef,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -23,7 +24,7 @@ import {
   IS_SSR,
   REDUCED_MOTION_TWEEN_CONFIG,
 } from './constants';
-import { SheetContext } from './context';
+import { ExposedSheetContext, InternalSheetContext } from './context';
 import { useDimensions } from './hooks/use-dimensions';
 import { useKeyboardAvoidance } from './hooks/use-keyboard-avoidance';
 import { useModalEffect } from './hooks/use-modal-effect';
@@ -32,7 +33,11 @@ import { useSheetState } from './hooks/use-sheet-state';
 import { useStableCallback } from './hooks/use-stable-callback';
 import { classifyDragEnd, computeSnapPoints } from './snap';
 import { styles } from './styles';
-import { type SheetContextType, type SheetProps } from './types';
+import type {
+  ExposedContextType,
+  InternalContextType,
+  SheetProps,
+} from './types';
 import { applyStyles, clamp, waitForElement, willOpenKeyboard } from './utils';
 
 export const Sheet = forwardRef<any, SheetProps>(
@@ -74,18 +79,12 @@ export const Sheet = forwardRef<any, SheetProps>(
     const sheetRef = useRef<HTMLDivElement>(null);
     const sheetHeight = Math.round(sheetBounds.height);
     const [currentSnap, setCurrentSnap] = useState(initialSnap);
-    const snapPoints =
-      snapPointsProp && sheetHeight > 0
-        ? computeSnapPoints({ sheetHeight, snapPointsProp })
-        : [];
-
     const { windowHeight } = useDimensions();
     const closedY = sheetHeight > 0 ? sheetHeight : windowHeight;
     const y = useMotionValue(closedY);
     const yInverted = useTransform(y, (val) => Math.max(sheetHeight - val, 0));
     const yProgress = useTransform(y, (val) => clamp(1 - val / closedY, 0, 1));
     const indicatorRotation = useMotionValue(0);
-
     const shouldReduceMotion = useReducedMotion();
     const reduceMotion = Boolean(prefersReducedMotion || shouldReduceMotion);
     const animationOptions: Transition = {
@@ -100,6 +99,13 @@ export const Sheet = forwardRef<any, SheetProps>(
     const visibility = useTransform(y, (val) =>
       val + 2 >= closedY ? 'hidden' : 'visible'
     );
+
+    // Memo snap points as we expose them in context so we want them to be stable
+    const snapPoints = useMemo(() => {
+      return snapPointsProp && sheetHeight > 0
+        ? computeSnapPoints({ sheetHeight, snapPointsProp })
+        : [];
+    }, [sheetHeight, snapPointsProp?.join('')]);
 
     const updateSnap = useStableCallback((snapIndex: number) => {
       setCurrentSnap(snapIndex);
@@ -269,13 +275,6 @@ export const Sheet = forwardRef<any, SheetProps>(
       indicatorRotation.set(0);
     });
 
-    useImperativeHandle(ref, () => ({
-      y,
-      yInverted,
-      height: sheetHeight,
-      snapTo,
-    }));
-
     useModalEffect({
       y,
       detent,
@@ -311,23 +310,17 @@ export const Sheet = forwardRef<any, SheetProps>(
         const yTo = initialSnapPoint?.snapValueY ?? 0;
 
         await animate(y, yTo, animationOptions);
-
-        if (initialSnap !== undefined) {
-          updateSnap(initialSnap);
-        }
-
+        if (initialSnap !== undefined) updateSnap(initialSnap);
         onOpenEnd?.();
       },
       onClosing: async () => {
         onCloseStart?.();
-
         await animate(y, closedY, animationOptions);
-
         onCloseEnd?.();
       },
     });
 
-    const dragProps: SheetContextType['dragProps'] = {
+    const dragProps: InternalContextType['dragProps'] = {
       drag: 'y',
       dragElastic: 0,
       dragMomentum: false,
@@ -337,7 +330,7 @@ export const Sheet = forwardRef<any, SheetProps>(
       onDragEnd,
     };
 
-    const context: SheetContextType = {
+    const internalContext: InternalContextType = {
       currentSnap,
       detent,
       disableDrag,
@@ -352,8 +345,20 @@ export const Sheet = forwardRef<any, SheetProps>(
       y,
     };
 
+    const exposedContext: ExposedContextType = {
+      height: sheetHeight,
+      currentSnap,
+      snapPoints,
+      snapTo,
+      y,
+      yInverted,
+      yProgress,
+    };
+
+    useImperativeHandle(ref, () => exposedContext);
+
     const sheet = (
-      <SheetContext.Provider value={context}>
+      <InternalSheetContext.Provider value={internalContext}>
         <motion.div
           {...rest}
           ref={ref}
@@ -366,9 +371,11 @@ export const Sheet = forwardRef<any, SheetProps>(
             ...style,
           }}
         >
-          {state !== 'closed' ? children : null}
+          <ExposedSheetContext.Provider value={exposedContext}>
+            {state !== 'closed' ? children : null}
+          </ExposedSheetContext.Provider>
         </motion.div>
-      </SheetContext.Provider>
+      </InternalSheetContext.Provider>
     );
 
     if (IS_SSR) return sheet;

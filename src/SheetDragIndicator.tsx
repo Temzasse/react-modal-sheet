@@ -1,7 +1,7 @@
 import { motion, useTransform } from 'motion/react';
 import React from 'react';
 
-import { useSheetContext } from './context';
+import { useInternalContext } from './context';
 import { styles } from './styles';
 import type { SheetDragIndicatorProps } from './types';
 import { applyStyles } from './utils';
@@ -12,7 +12,7 @@ export function SheetDragIndicator({
   unstyled,
   ...rest
 }: SheetDragIndicatorProps) {
-  const sheetContext = useSheetContext();
+  const sheetContext = useInternalContext();
 
   const indicator1Transform = useTransform(
     sheetContext.indicatorRotation,

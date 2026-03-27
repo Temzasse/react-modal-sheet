@@ -1,7 +1,7 @@
 import { type MotionStyle, motion } from 'motion/react';
 import React, { forwardRef } from 'react';
 
-import { useSheetContext } from './context';
+import { useInternalContext } from './context';
 import { styles } from './styles';
 import { type SheetBackdropProps } from './types';
 import { applyStyles } from './utils';
@@ -10,7 +10,7 @@ const isClickable = (props: any) => !!props.onClick || !!props.onTap;
 
 export const SheetBackdrop = forwardRef<any, SheetBackdropProps>(
   ({ style, className = '', unstyled, ...rest }, ref) => {
-    const sheetContext = useSheetContext();
+    const sheetContext = useInternalContext();
     const clickable = isClickable(rest);
     const Comp = clickable ? motion.button : motion.div;
     const pointerEvents = clickable ? 'auto' : 'none';
