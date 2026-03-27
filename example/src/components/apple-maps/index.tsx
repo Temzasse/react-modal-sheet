@@ -11,19 +11,26 @@ import { Sheet } from 'react-modal-sheet';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
+import { useSafeAreaInsets } from '../../hooks/use-safe-area-insets';
 import { useSheetRef } from '../../hooks/use-sheet-ref';
 import { useSnapPointTransform } from '../../hooks/use-sheet-snap-transform';
 import bgImg from './map-bg.jpeg';
 
-const snapPoints = [0, 70, 0.5, 1];
-const initialSnap = 1;
-const lastSnap = snapPoints.length - 1;
+const padding = 8;
+const borderRadius = 30;
+const headerHeight = 67;
 
 export function AppleMaps() {
   const [isOpen, setOpen] = useState(true);
   const [sheetRef, setSheetRef] = useSheetRef();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ container: scrollRef });
+  const insets = useSafeAreaInsets();
+  const bottomInset = insets.bottom;
+
+  const snapPoints = [0, headerHeight + padding + bottomInset, 0.5, 1];
+  const initialSnap = 1;
+  const lastSnap = snapPoints.length - 1;
 
   const contentBorderColor = useMotionTemplate`
     rgba(150, 150, 150, ${useTransform(scrollY, [0, 40], [0, 0.1])})
@@ -83,7 +90,7 @@ export function AppleMaps() {
         onClose={() => setOpen(false)}
         onSnap={handleSnapChange}
       >
-        <SheetContainer>
+        <SheetContainer bottomInset={bottomInset}>
           <SheetHeader />
           <SheetContent
             // Only scroll when at the upmost snap point
@@ -103,7 +110,8 @@ export function AppleMaps() {
 function SheetHeader() {
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const { snapTo, currentSnap } = Sheet.useContext();
+  const { snapTo, currentSnap, snapPoints } = Sheet.useContext();
+  const lastSnap = snapPoints.length - 1;
 
   return (
     <SheetHeaderBase>
@@ -135,19 +143,45 @@ function SheetHeader() {
 
 function SheetContainer({
   children,
+  bottomInset,
   ...props
-}: ComponentProps<typeof Sheet.Container>) {
-  const { yProgress } = Sheet.useContext();
+}: ComponentProps<typeof Sheet.Container> & {
+  bottomInset: number;
+}) {
+  const { y, yProgress } = Sheet.useContext();
 
-  const backgroundColor = useMotionTemplate`
-    rgba(25, 25, 25, ${useTransform(yProgress, [0.7, 1], [0.8, 1])})
-  `;
+  const paddingHorizontal = useSnapPointTransform([
+    padding,
+    padding,
+    padding,
+    0,
+  ]);
+
+  const paddingBottom = useSnapPointTransform([
+    padding + bottomInset,
+    padding + bottomInset,
+    padding + bottomInset,
+    0,
+  ]);
+
+  const borderBottomRadius = useSnapPointTransform([
+    borderRadius,
+    borderRadius,
+    borderRadius,
+    0,
+  ]);
 
   const borderColor = useMotionTemplate`
     rgba(255, 255, 255, ${useTransform(yProgress, [0.7, 1], [0.1, 0])})
   `;
 
-  const paddingHorizontal = useSnapPointTransform([8, 8, 8, 0]);
+  const backgroundColor = useMotionTemplate`
+    rgba(25, 25, 25, ${useTransform(yProgress, [0.7, 1], [0.6, 1])})
+  `;
+
+  const clipPath = useMotionTemplate`
+    inset(0px 0px calc(${y}px + ${paddingBottom}px) 0px round ${borderBottomRadius}px)
+  `;
 
   return (
     <SheetContainerBase
@@ -158,6 +192,7 @@ function SheetContainer({
         margin: '0 calc(var(--padding-horizontal) * 1px)',
         backgroundColor,
         borderColor,
+        clipPath,
       }}
     >
       {children}
@@ -205,6 +240,7 @@ const SheetContainerBase = styled(Sheet.Container)`
   border-width: 1px;
   border-style: solid;
   border-bottom: none;
+  box-shadow: none !important;
 `;
 
 const SheetHeaderBase = styled(Sheet.Header)`
