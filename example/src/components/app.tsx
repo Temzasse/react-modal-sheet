@@ -18,23 +18,22 @@ import { LuScrollText, LuWaypoints } from 'react-icons/lu';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
 import { Link, Route, Routes } from 'react-router';
 import { styled } from 'styled-components';
-
-import { AvoidKeyboard } from './AvoidKeyboard';
 import { A11y } from './a11y';
 import { AppleMaps } from './apple-maps';
 import { AppleMusic } from './apple-music';
-import { ContentHeight } from './ContentHeight';
-import { CustomScroller } from './CustomScroller';
-import { CustomStyles } from './CustomStyles';
+import { AvoidKeyboard } from './avoid-keyboard';
 import { DarkMode, Screen, ScrollView } from './common';
-import { DisableDrag } from './DisableDrag';
-import { FullScreen } from './FullScreen';
-import { ReducedMotion } from './ReducedMotion';
-import { Scrollable } from './Scrollable';
-import { ScrollableSnapPoints } from './ScrollableSnapPoints';
-import { ShadowDOM } from './ShadowDOM';
-import { SnapPoints } from './SnapPoints';
+import { ContentHeight } from './content-height';
+import { CustomScroller } from './custom-scroller';
+import { CustomStyles } from './custom-styles';
+import { DisableDrag } from './disable-drag';
+import { FullScreen } from './full-screen';
+import { ReducedMotion } from './reduced-motion';
+import { Scrollable } from './scrollable-simple';
+import { ScrollableSnapPoints } from './scrollable-snap-points';
+import { ShadowDOM } from './shadow-dom';
 import { SlackMessage } from './slack-message';
+import { SnapPoints } from './snap-points';
 
 export function App() {
   return (

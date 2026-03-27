@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 import { Button } from './common';
-import { ExampleLayout } from './ExampleLayout';
+import { ExampleLayout } from './example-layout';
 
 const snapPoints = [0, 200, 1];
 const lastSnap = snapPoints.length - 1;

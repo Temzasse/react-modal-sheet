@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Sheet } from 'react-modal-sheet';
 
-import { ExampleLayout } from './ExampleLayout';
+import { ExampleLayout } from './example-layout';
 
 export function ShadowDOM() {
   const shadowRoot = useShadowRoot();

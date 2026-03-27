@@ -2,9 +2,9 @@ import { clamp, motion, useTransform } from 'motion/react';
 import { useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { styled } from 'styled-components';
-import { BoxList } from './BoxList';
+import { BoxList } from './box-list';
 import { Button } from './common';
-import { ExampleLayout } from './ExampleLayout';
+import { ExampleLayout } from './example-layout';
 
 const snapPoints = [0, 170, 0.5, -200, 1];
 const initialSnap = 1;

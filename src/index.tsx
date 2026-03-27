@@ -1,10 +1,10 @@
 import { useExposedContext } from './context';
-import { SheetBackdrop } from './SheetBackdrop';
-import { SheetContainer } from './SheetContainer';
-import { SheetContent } from './SheetContent';
-import { SheetDragIndicator } from './SheetDragIndicator';
-import { SheetHeader } from './SheetHeader';
 import { Sheet as SheetBase } from './sheet';
+import { SheetBackdrop } from './sheet-backdrop';
+import { SheetContainer } from './sheet-container';
+import { SheetContent } from './sheet-content';
+import { SheetDragIndicator } from './sheet-drag-indicator';
+import { SheetHeader } from './sheet-header';
 import type { ExposedContextType, SheetCompound } from './types';
 
 export const Sheet: SheetCompound = Object.assign(SheetBase, {

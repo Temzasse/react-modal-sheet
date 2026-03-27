@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 
 import { useInternalContext } from './context';
 import { useDragConstraints } from './hooks/use-drag-constraints';
-import { SheetDragIndicator } from './SheetDragIndicator';
+import { SheetDragIndicator } from './sheet-drag-indicator';
 import { styles } from './styles';
 import { type SheetHeaderProps } from './types';
 import { applyStyles, mergeRefs } from './utils';

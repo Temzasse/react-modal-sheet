@@ -1,8 +1,8 @@
 import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
-import { BoxList } from './BoxList';
-import { ExampleLayout } from './ExampleLayout';
+import { BoxList } from './box-list';
+import { ExampleLayout } from './example-layout';
 
 export function FullScreen() {
   return (

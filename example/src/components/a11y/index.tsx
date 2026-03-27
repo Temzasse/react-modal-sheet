@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
-
-import { A11ySheet } from './A11ySheet';
-import { ExampleLayout } from '../ExampleLayout';
+import { ExampleLayout } from '../example-layout';
+import { A11ySheet } from './a11y-sheet';
 
 export function A11y() {
   return (

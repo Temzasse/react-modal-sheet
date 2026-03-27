@@ -3,7 +3,7 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
 import { Button } from './common';
-import { ExampleLayout } from './ExampleLayout';
+import { ExampleLayout } from './example-layout';
 
 export function AvoidKeyboard() {
   const sheetRef = useRef<SheetRef>(null);

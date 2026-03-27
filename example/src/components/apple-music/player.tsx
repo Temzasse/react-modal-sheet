@@ -1,18 +1,17 @@
-import { styled } from 'styled-components';
-
 import {
-  FaPlay,
-  FaForward,
   FaBackward,
+  FaFire,
+  FaForward,
+  FaListUl,
+  FaPlay,
+  FaPodcast,
   FaVolumeOff,
   FaVolumeUp,
-  FaListUl,
-  FaPodcast,
-  FaFire,
 } from 'react-icons/fa';
+import { styled } from 'styled-components';
 
-import type { Album as AlbumType } from './data';
 import { MoreButton } from './common';
+import type { Album as AlbumType } from './data';
 
 export function Player({ song, album }: { song: string; album: AlbumType }) {
   return (

@@ -1,7 +1,7 @@
 import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
-import { ExampleLayout } from './ExampleLayout';
+import { ExampleLayout } from './example-layout';
 
 export function ReducedMotion() {
   return (
