@@ -1,8 +1,5 @@
 import { createContext, useContext } from 'react';
-import type {
-  ExposedContextType,
-  InternalContextType,
-} from './types';
+import type { ExposedContextType, InternalContextType } from './types';
 
 export const InternalSheetContext = createContext<
   InternalContextType | undefined
