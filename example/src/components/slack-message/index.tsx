@@ -1,9 +1,4 @@
 import { useRef } from 'react';
-import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
-import { Sheet } from 'react-modal-sheet';
-import { useOverlayTriggerState } from 'react-stately';
-import { styled } from 'styled-components';
-
 import {
   FocusScope,
   OverlayProvider,
@@ -12,9 +7,12 @@ import {
   useModal,
   useOverlay,
 } from 'react-aria';
-
+import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
+import { Sheet } from 'react-modal-sheet';
+import { useOverlayTriggerState } from 'react-stately';
+import { styled } from 'styled-components';
+import { useMetaThemeColor } from '../../hooks/use-meta-theme-color';
 import { ScrollView } from '../common';
-import { useMetaThemeColor } from '../hooks';
 import { NewMessageContent } from './NewMessageContent';
 import { NewMessageHeader } from './NewMessageHeader';
 

@@ -1,120 +1,182 @@
 import {
-  AnimatePresence,
   interpolate,
   motion,
   useMotionTemplate,
   useScroll,
   useTransform,
 } from 'motion/react';
-import { useRef, useState } from 'react';
+import { type ComponentProps, useRef, useState } from 'react';
 import { FiChevronLeft, FiSearch } from 'react-icons/fi';
-import { Sheet, type SheetRef } from 'react-modal-sheet';
+import { Sheet } from 'react-modal-sheet';
 import { Link } from 'react-router';
 import styled from 'styled-components';
+
+import { useSheetRef } from '../../hooks/use-sheet-ref';
+import { useSnapPointTransform } from '../../hooks/use-sheet-snap-transform';
 import bgImg from './map-bg.jpeg';
 
-const snapPoints = [0, 100, 0.5, 1];
+const snapPoints = [0, 70, 0.5, 1];
 const initialSnap = 1;
 const lastSnap = snapPoints.length - 1;
 
 export function AppleMaps() {
-  const [sheetRef, setSheetRef] = useState<SheetRef | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [isOpen, setOpen] = useState(true);
-  const [inputValue, setInputValue] = useState('');
-  const [snapPoint, setSnapPoint] = useState(initialSnap);
-  const close = () => setOpen(false);
+  const [sheetRef, setSheetRef] = useSheetRef();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ container: scrollRef });
-  const contentBorderColor = useMotionTemplate`rgba(255, 255, 255, ${useTransform(scrollY, [0, 40], [0, 0.1])})`;
 
-  function handleSheetRef(ref: SheetRef | null) {
-    if (!sheetRef && ref) {
-      setSheetRef(ref);
-    }
-  }
+  const contentBorderColor = useMotionTemplate`
+    rgba(150, 150, 150, ${useTransform(scrollY, [0, 40], [0, 0.1])})
+  `;
 
-  function handleInputFocus() {
-    if (snapPoint !== lastSnap) {
-      sheetRef?.snapTo(lastSnap);
+  /**
+   * NOTE: we need to use the sheet ref to animate elements outside the sheet
+   * because we don't have access to the sheet's context value.
+   *
+   * It's important to note that for animating elements inside the sheet,
+   * it's better to use the `useSheetContext` hook to access various motion values.
+   */
+  const backlinkOpacity = useTransform(() => {
+    const progress = sheetRef?.yProgress.get() ?? 0;
+    const mix = interpolate([0, 0.5, 0.6], [1, 1, 0]);
+    return mix(progress);
+  });
+
+  const backlinkDisplay = useTransform(() => {
+    const progress = sheetRef?.yProgress.get() ?? 0;
+    if (progress > 0.6) return 'none';
+    return 'block';
+  });
+
+  function handleSnapChange(snap: number) {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+
+    /**
+     * If we have scrolled the content and we are not at the upmost snap point,
+     * scroll back to top
+     */
+    if (scroller.scrollHeight > scroller.clientHeight && snap !== lastSnap) {
+      scroller.scrollTo({ top: 0, behavior: 'instant' });
     }
   }
 
   return (
     <Container>
-      <AnimatePresence>
-        {snapPoint < lastSnap && (
-          <BackLinkContainer
-            key="back-link"
-            initial={false}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <BackLink to="..">
-              <FiChevronLeft size={16} />
-              <span>Back</span>
-            </BackLink>
-          </BackLinkContainer>
-        )}
-      </AnimatePresence>
-
       <FakeMap />
 
+      <BackLinkContainer
+        style={{ opacity: backlinkOpacity, display: backlinkDisplay }}
+      >
+        <BackLink to="..">
+          <FiChevronLeft size={16} />
+          <span>Back</span>
+        </BackLink>
+      </BackLinkContainer>
+
       <Sheet
-        ref={handleSheetRef}
+        ref={setSheetRef}
         isOpen={isOpen}
         snapPoints={snapPoints}
         initialSnap={initialSnap}
         disableDismiss
-        onClose={close}
-        onSnap={setSnapPoint}
+        onClose={() => setOpen(false)}
+        onSnap={handleSnapChange}
       >
         <SheetContainer>
-          <SheetHeader>
-            <SearchContainer>
-              <SearchWrapper>
-                <SearchIconWrapper>
-                  <FiSearch size={16} />
-                </SearchIconWrapper>
-                <SearchInput
-                  ref={inputRef}
-                  name="search"
-                  type="text"
-                  placeholder="Search places"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onFocus={handleInputFocus}
-                />
-              </SearchWrapper>
-              <ProfilePicture
-                src="https://api.dicebear.com/9.x/avataaars/svg?seed=John&backgroundColor=b6e3f4,c0aede,d1d4f9"
-                alt="Profile"
-              />
-            </SearchContainer>
-          </SheetHeader>
-
+          <SheetHeader />
           <SheetContent
             // Only scroll when at the upmost snap point
             disableScroll={(state) => state.currentSnap !== lastSnap}
             scrollRef={scrollRef}
             style={{ borderTopColor: contentBorderColor }}
           >
-            {!!sheetRef && <SheetSuggestions sheetRef={sheetRef} />}
+            <SheetSuggestions />
           </SheetContent>
         </SheetContainer>
-
-        {snapPoint === lastSnap && <Sheet.Backdrop />}
+        <SheetBackdrop />
       </Sheet>
     </Container>
   );
 }
 
-function SheetSuggestions({ sheetRef }: { sheetRef: SheetRef }) {
-  const mix = interpolate([100, 150], [0, 1]);
+function SheetHeader() {
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { snapTo, currentSnap } = Sheet.useContext();
 
-  const contentOpacity = useTransform(() => {
-    return mix(sheetRef.yInverted.get());
-  });
+  return (
+    <SheetHeaderBase>
+      <SearchContainer>
+        <SearchWrapper>
+          <SearchIconWrapper>
+            <FiSearch size={16} />
+          </SearchIconWrapper>
+          <SearchInput
+            ref={inputRef}
+            name="search"
+            type="text"
+            placeholder="Search places"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onFocus={() => {
+              if (currentSnap !== lastSnap) snapTo(lastSnap);
+            }}
+          />
+        </SearchWrapper>
+        <ProfilePicture
+          src="https://api.dicebear.com/9.x/avataaars/svg?seed=John&backgroundColor=b6e3f4,c0aede,d1d4f9"
+          alt="Profile"
+        />
+      </SearchContainer>
+    </SheetHeaderBase>
+  );
+}
+
+function SheetContainer({
+  children,
+  ...props
+}: ComponentProps<typeof Sheet.Container>) {
+  const { yProgress } = Sheet.useContext();
+
+  const backgroundColor = useMotionTemplate`
+    rgba(25, 25, 25, ${useTransform(yProgress, [0.7, 1], [0.8, 1])})
+  `;
+
+  const borderColor = useMotionTemplate`
+    rgba(255, 255, 255, ${useTransform(yProgress, [0.7, 1], [0.1, 0])})
+  `;
+
+  const paddingHorizontal = useSnapPointTransform([8, 8, 8, 0]);
+
+  return (
+    <SheetContainerBase
+      {...props}
+      style={{
+        ['--padding-horizontal' as any]: paddingHorizontal,
+        width: 'calc(100% - var(--padding-horizontal) * 2px)',
+        margin: '0 calc(var(--padding-horizontal) * 1px)',
+        backgroundColor,
+        borderColor,
+      }}
+    >
+      {children}
+    </SheetContainerBase>
+  );
+}
+
+function SheetBackdrop() {
+  const opacity = useSnapPointTransform([0, 0, 0, 0.5]);
+
+  const backgroundColor = useMotionTemplate`
+    rgba(0, 0, 0, ${opacity})
+  `;
+
+  return <Sheet.Backdrop style={{ backgroundColor }} />;
+}
+
+function SheetSuggestions() {
+  const contentOpacity = useSnapPointTransform([0, 0, 1, 1]);
 
   return (
     <Results style={{ opacity: contentOpacity }}>
@@ -136,12 +198,16 @@ function SheetSuggestions({ sheetRef }: { sheetRef: SheetRef }) {
   );
 }
 
-const SheetContainer = styled(Sheet.Container)`
-  background-color: rgba(35, 35, 35, 0.8) !important;
-  backdrop-filter: blur(10px);
+const SheetContainerBase = styled(Sheet.Container)`
+  backdrop-filter: saturate(150%) blur(10px);
+  border-top-right-radius: 30px !important;
+  border-top-left-radius: 30px !important;
+  border-width: 1px;
+  border-style: solid;
+  border-bottom: none;
 `;
 
-const SheetHeader = styled(Sheet.Header)`
+const SheetHeaderBase = styled(Sheet.Header)`
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -152,7 +218,7 @@ const SheetHeader = styled(Sheet.Header)`
     top: 4px;
     left: 50%;
     transform: translateX(-50%);
-    width: 32px;
+    width: 50px;
     height: 4px;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 2px;
@@ -189,15 +255,15 @@ const SearchInput = styled.input`
   padding: 0;
 
   &::placeholder {
-    color: #ccc;
+    color: #a5a5a5;
   }
 `;
 
 const SearchWrapper = styled.div`
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
   padding: 8px 12px;
   gap: 8px;
   flex: 1;
@@ -212,7 +278,7 @@ const SearchContainer = styled.div`
 const SearchIconWrapper = styled.div`
   display: flex;
   align-items: center;
-  color: #ccc;
+  color: #fff;
 `;
 
 const ProfilePicture = styled.img`
@@ -276,7 +342,7 @@ const Suggestion = styled.li`
     left: 44px; /* Icon width (32px) + gap (12px) */
     right: -16px;
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(150, 150, 150, 0.1);
   }
 `;
 

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { styled } from 'styled-components';
-
-import { ExampleLayout } from './ExampleLayout';
 import { Button } from './common';
+import { ExampleLayout } from './ExampleLayout';
 
 const snapPoints = [0, 100, 0.5, -100, 1];
 const initialSnap = 1; // Initial snap point when sheet is opened
