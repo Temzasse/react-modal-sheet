@@ -26,6 +26,7 @@ import {
 } from './constants';
 import { ExposedSheetContext, InternalSheetContext } from './context';
 import { useDimensions } from './hooks/use-dimensions';
+import { useIsomorphicLayoutEffect } from './hooks/use-isomorphic-layout-effect';
 import { useKeyboardAvoidance } from './hooks/use-keyboard-avoidance';
 import { useModalEffect } from './hooks/use-modal-effect';
 import { usePreventScroll } from './hooks/use-prevent-scroll';
@@ -319,6 +320,12 @@ export const Sheet = forwardRef<any, SheetProps>(
         onCloseEnd?.();
       },
     });
+
+    useIsomorphicLayoutEffect(() => {
+      if (state === 'opening') {
+        y.set(closedY);
+      }
+    }, [state, closedY, y]);
 
     const dragProps: InternalContextType['dragProps'] = {
       drag: 'y',
