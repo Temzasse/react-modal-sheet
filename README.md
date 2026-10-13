@@ -100,7 +100,7 @@ Also, by constructing the sheet from smaller pieces makes it easier to apply any
 | `onSnap`                | no       |                                      | Callback fn that is called with the current snap point index when the sheet snaps to a new snap point. Requires `snapPoints` prop.                                                                                                                                                                                              |
 | `snapPoints`            | no       |                                      | Eg. `[0, 0.5, 100, 1]` - where positive values are pixels from the bottom of the sheet and negative from the top. Values between 0-1 represent percentages, eg. `0.5` means 50% of sheet height. **Must be in ascending order and should include 0 (closed) and 1 (fully open).**                                               |
 | `initialSnap`           | no       | 0                                    | Initial snap point when sheet is opened (index from `snapPoints`).                                                                                                                                                                                                                                                              |
-| `modalEffectRootId`     | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables [iOS modal effect](#-ios-modal-view-effect).                                                                                                                                                                                                           |
+| `modalEffectRootId`     | no       |                                      | The id of the element where the main app is mounted, eg. "root". Enables [iOS modal effect](#-ios-modal-view-effect). Can also be the `id` of another sheet to [stack sheets](#stacking-sheets).                                                                                                                                |
 | `modalEffectThreshold`  | no       | 0                                    | Threshold value between 0-1 which determines when the iOS modal effect will start while dragging the sheet - `0` corresponding to the start of the drag (0% has been dragged into view) and `1` corresponding to the end of the drag (100% of the sheet is visible).                                                            |
 | `tweenConfig`           | no       | `{ ease: 'easeOut', duration: 0.2 }` | Overrides the config for the sheet [tween](https://motion.dev/docs/react-transitions#tween) transition when the sheet is opened, closed, or snapped to a point.                                                                                                                                                                 |
 | `mountPoint`            | no       | `document.body`                      | HTML element that should be used as the mount point for the sheet.                                                                                                                                                                                                                                                              |
@@ -830,6 +830,47 @@ You can control the start threshold of the effect with the `modalEffectThreshold
 > This gives a more natural UX and follows the native iOS effect more closely.
 >
 > You can still override this behavior by providing a custom `modalEffectThreshold` value.
+
+#### Stacking sheets
+
+The modal effect can also be applied to another sheet which lets you stack sheets on top of each other. Give the underlying sheet an `id` and use it as the `modalEffectRootId` of the sheet that is opened on top of it. You can stack as many sheets as you want by always pointing `modalEffectRootId` to the sheet directly underneath.
+
+```tsx
+function StackedExample() {
+  const [isOpen, setOpen] = useState(false);
+  const [isStackedOpen, setStackedOpen] = useState(false);
+
+  return (
+    <Sheet
+      id="parent-sheet"
+      isOpen={isOpen}
+      onClose={() => setOpen(false)}
+      modalEffectRootId="root"
+    >
+      <Sheet.Container>
+        <Sheet.Content>
+          <button onClick={() => setStackedOpen(true)}>Open stacked sheet</button>
+
+          <Sheet
+            isOpen={isStackedOpen}
+            onClose={() => setStackedOpen(false)}
+            modalEffectRootId="parent-sheet"
+          >
+            <Sheet.Container>{/*...*/}</Sheet.Container>
+            <Sheet.Backdrop onTap={() => setStackedOpen(false)} />
+          </Sheet>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop onTap={() => setOpen(false)} />
+    </Sheet>
+  );
+}
+```
+
+> [!NOTE]
+> The stacked sheet should be rendered inside the underlying sheet (like above) so that it is mounted after it and placed on top of it. Give the stacked sheet a tappable `Sheet.Backdrop` so that the underlying sheet can't be tapped or dragged while the stacked sheet is open. Note that a stacked sheet is unmounted without a closing animation when the underlying sheet is closed.
+
+See the [Stacked sheets example](https://temzasse.github.io/react-modal-sheet/#/stacked-sheets) for a working example of this.
 
 ## 🎨 Customization
 

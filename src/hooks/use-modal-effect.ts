@@ -2,6 +2,7 @@ import { type MotionValue, transform } from 'motion';
 import { useEffect } from 'react';
 
 import type { SheetDetent, SheetSnapPoint } from '../types';
+import { clamp } from '../utils';
 import { useSafeAreaInsets } from './use-safe-area-insets';
 import { useStableCallback } from './use-stable-callback';
 
@@ -79,13 +80,7 @@ export function useModalEffect({
     // Make sure progress is between 0 and 1
     progress = Math.max(0, Math.min(1, progress));
 
-    const pageWidth = window.innerWidth;
-
-    updateModalEffect(rootId, {
-      scale: transform(progress, [0, 1], [1, (pageWidth - 16) / pageWidth]),
-      translateY: transform(progress, [0, 1], [0, 24 + insetTop]),
-      borderRadius: transform(progress, [0, 1], [0, 10]),
-    });
+    updateModalEffect(rootId, { progress, insetTop });
   });
 
   const handleYComplete = useStableCallback(() => {
@@ -122,9 +117,18 @@ export function useModalEffect({
 }
 
 function setupModalEffect(rootId: string) {
-  const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
-  if (!root) return;
+  const target = getModalEffectTarget(rootId);
+  if (!target) return;
 
+  if (target.type === 'sheet') {
+    const sheet = target.element;
+
+    // No transition as the sheet follows the `y` of the stacked sheet
+    sheet.style.transformOrigin = 'center top';
+    return;
+  }
+
+  const root = target.element;
   const body = document.querySelector('body') as HTMLBodyElement;
 
   body.style.backgroundColor = '#000000';
@@ -137,21 +141,55 @@ function setupModalEffect(rootId: string) {
 
 function updateModalEffect(
   rootId: string,
-  opts: { scale: number; translateY: number; borderRadius: number }
+  opts: { progress: number; insetTop: number }
 ) {
-  const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
-  if (!root) return;
+  const target = getModalEffectTarget(rootId);
+  if (!target) return;
 
-  const { scale, translateY, borderRadius } = opts;
+  const { progress, insetTop } = opts;
+
+  if (target.type === 'sheet') {
+    const sheet = target.element;
+
+    const sheetWidth = sheet.offsetWidth;
+    const sheetTop = sheet.offsetTop;
+    const scaleEnd = (sheetWidth - 16) / sheetWidth;
+    const scale = transform(progress, [0, 1], [1, scaleEnd]);
+    const offsetY = clamp(24 + insetTop - sheetTop, -10, 0);
+    const translateYEnd = scaleEnd * (sheetTop + offsetY) - sheetTop;
+    const translateY = transform(progress, [0, 1], [0, translateYEnd]);
+
+    sheet.style.scale = `${scale}`;
+    sheet.style.translate = `0 ${translateY}px`;
+    return;
+  }
+
+  const root = target.element;
+  const pageWidth = window.innerWidth;
+  const scaleEnd = (pageWidth - 16) / pageWidth;
+  const scale = transform(progress, [0, 1], [1, scaleEnd]);
+  const translateY = transform(progress, [0, 1], [0, 24 + insetTop]);
+  const borderRadius = transform(progress, [0, 1], [0, 10]);
+
   root.style.transform = `scale(${scale}) translate3d(0, ${translateY}px, 0)`;
   root.style.borderTopRightRadius = `${borderRadius}px`;
   root.style.borderTopLeftRadius = `${borderRadius}px`;
 }
 
 function cleanupModalEffect(rootId: string) {
-  const root = document.querySelector(`#${rootId}`) as HTMLDivElement;
-  if (!root) return;
+  const target = getModalEffectTarget(rootId);
+  if (!target) return;
 
+  if (target.type === 'sheet') {
+    const sheet = target.element;
+
+    sheet.style.removeProperty('transform-origin');
+    sheet.style.removeProperty('scale');
+    sheet.style.removeProperty('translate');
+    return;
+  }
+
+  const root = target.element;
   const body = document.querySelector('body') as HTMLBodyElement;
 
   body.style.removeProperty('background-color');
@@ -163,4 +201,23 @@ function cleanupModalEffect(rootId: string) {
   root.style.removeProperty('transform');
   root.style.removeProperty('border-top-right-radius');
   root.style.removeProperty('border-top-left-radius');
+}
+
+function getModalEffectTarget(rootId: string) {
+  const root = document.getElementById(rootId) as HTMLDivElement;
+  if (!root) return null;
+
+  // When stacking sheets the effect is applied to the container of the sheet
+  const sheetRoot = root.closest('.react-modal-sheet-root');
+
+  if (sheetRoot) {
+    const container = sheetRoot.querySelector(
+      '.react-modal-sheet-container'
+    ) as HTMLDivElement;
+    if (!container) return null;
+
+    return { type: 'sheet', element: container };
+  }
+
+  return { type: 'root', element: root };
 }

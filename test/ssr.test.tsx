@@ -18,3 +18,17 @@ test('renders Sheet in HTML output', () => {
   );
   expect(markup).toContain('react-modal-sheet');
 });
+
+test('renders Sheet id on the sheet root element', () => {
+  const markup = renderToString(
+    <Sheet id="parent-sheet" isOpen onClose={() => {}}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>Hello world</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+  const sheetRoot = markup.match(/<div[^>]*react-modal-sheet-root[^>]*>/);
+  expect(sheetRoot?.[0]).toContain('id="parent-sheet"');
+});
