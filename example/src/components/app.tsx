@@ -19,6 +19,7 @@ import { LuScrollText, LuWaypoints } from 'react-icons/lu';
 import { MdAccessibility as A11yIcon } from 'react-icons/md';
 import { Link, Route, Routes } from 'react-router';
 import { styled } from 'styled-components';
+
 import { A11y } from './a11y';
 import { AppleMaps } from './apple-maps';
 import { AppleMusic } from './apple-music';

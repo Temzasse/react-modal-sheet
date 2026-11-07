@@ -1,9 +1,8 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
-  compiler: {styledComponents: true,
-  },
+  compiler: { styledComponents: true },
 };
 
 export default nextConfig;

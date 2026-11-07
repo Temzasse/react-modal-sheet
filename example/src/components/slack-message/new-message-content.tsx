@@ -1,5 +1,4 @@
 import type { RefObject } from 'react';
-import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
 const people = [

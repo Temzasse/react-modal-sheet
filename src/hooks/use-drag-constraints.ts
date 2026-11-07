@@ -1,6 +1,5 @@
-import { useCallback, useRef } from 'react';
-
 import { type BoundingBox } from 'motion/react';
+import { useCallback, useRef } from 'react';
 
 // This is a hacky way to fix a bug in motion/react where the drag
 // constraints are not updated when window is resized.

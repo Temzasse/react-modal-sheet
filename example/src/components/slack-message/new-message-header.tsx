@@ -1,7 +1,7 @@
 import { useRef } from 'react';
-import { styled } from 'styled-components';
-import { FiX as CloseIcon } from 'react-icons/fi';
 import { useButton } from 'react-aria';
+import { FiX as CloseIcon } from 'react-icons/fi';
+import { styled } from 'styled-components';
 
 export function NewMessageHeader({
   sheetState,

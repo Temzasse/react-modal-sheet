@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           cache: 'npm'
-          node-version: 22
+          node-version: 26
 
       - name: 📥 Install deps
         run: npm ci

@@ -1,13 +1,12 @@
 import './index.css';
-
 import { StrictMode } from 'react';
 import { OverlayProvider } from 'react-aria';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router';
 
-import { App } from './components/App';
+import { App } from './components/app';
 
-// biome-ignore lint/style/noNonNullAssertion: root is always defined
+// oxlint-disable-next-line typescript/no-non-null-assertion -- root is always defined
 const root = createRoot(document.getElementById('root')!);
 
 function Root() {

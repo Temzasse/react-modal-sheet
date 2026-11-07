@@ -1,4 +1,5 @@
 import type { PanInfo } from 'motion';
+
 import type { SheetSnapPoint } from './types';
 import { clamp, isAscendingOrder } from './utils';
 

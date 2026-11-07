@@ -1,4 +1,5 @@
 import { type RefObject, useEffect, useRef, useState } from 'react';
+
 import { isHTTPS, willOpenKeyboard } from '../utils';
 
 type VirtualKeyboardApi = {

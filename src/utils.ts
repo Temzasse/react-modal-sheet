@@ -1,4 +1,5 @@
 import { type CSSProperties, type ForwardedRef, type RefCallback } from 'react';
+
 import { IS_SSR } from './constants';
 
 export function applyStyles(

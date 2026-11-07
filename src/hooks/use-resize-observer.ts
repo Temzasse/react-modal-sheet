@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+
 import { useStableCallback } from './use-stable-callback';
 
 export function useResizeObserver<T extends Element = HTMLDivElement>(

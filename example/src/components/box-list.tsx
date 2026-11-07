@@ -31,5 +31,5 @@ const Box = styled.div`
   justify-content: center;
   font-weight: 700;
   font-size: 16px;
-	user-select: none;
+  user-select: none;
 `;

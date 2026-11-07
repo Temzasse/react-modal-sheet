@@ -1,7 +1,4 @@
 import { useRef, type PropsWithChildren } from 'react';
-import type { OverlayTriggerState } from 'react-stately';
-import { Sheet } from 'react-modal-sheet';
-
 import {
   FocusScope,
   useDialog,
@@ -9,6 +6,8 @@ import {
   useModal,
   OverlayProvider,
 } from 'react-aria';
+import { Sheet } from 'react-modal-sheet';
+import type { OverlayTriggerState } from 'react-stately';
 
 type SheetProps = {
   state: OverlayTriggerState;
@@ -24,6 +23,7 @@ export function A11ySheet({
   return (
     <Sheet {...rest} isOpen={state.isOpen} onClose={state.close}>
       <OverlayProvider>
+        {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- Modal focus is managed by React Aria. */}
         <FocusScope contain autoFocus restoreFocus>
           <A11ySheetContent state={state} label={label}>
             {children}

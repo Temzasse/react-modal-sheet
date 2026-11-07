@@ -3,13 +3,13 @@ import { Sheet } from 'react-modal-sheet';
 import { styled } from 'styled-components';
 
 import { useMetaThemeColor } from '../../hooks/use-meta-theme-color';
-import { Album } from './Album';
+import { Album } from './album';
 import { album } from './data';
-import { Player } from './Player';
+import { Player } from './player';
 
 export function AppleMusic() {
   const [isPlayerOpen, setPlayerOpen] = useState(false);
-  // biome-ignore lint/style/noNonNullAssertion: songs are static
+  // oxlint-disable-next-line typescript/no-non-null-assertion -- songs are static
   const [currentSong, setCurrentSong] = useState(album.songs[0]!);
 
   const openPlayer = () => setPlayerOpen(true);

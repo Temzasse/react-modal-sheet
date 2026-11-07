@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "unicorn", "jsx-a11y", "nextjs"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "off",
+    "typescript/no-non-null-assertion": "warn",
+    "eqeqeq": ["error", "smart"],
+    "no-var": "warn",
+    "prefer-const": "error",
+    "react/set-state-in-effect": "off"
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/.next/**",
+    "**/dev-dist/**",
+    "**/.yalc/**"
+  ]
+}

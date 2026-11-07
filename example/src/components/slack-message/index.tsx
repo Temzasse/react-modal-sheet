@@ -11,6 +11,7 @@ import { FiEdit as MessageIcon, FiSearch as SearchIcon } from 'react-icons/fi';
 import { Sheet } from 'react-modal-sheet';
 import { useOverlayTriggerState } from 'react-stately';
 import { styled } from 'styled-components';
+
 import { useMetaThemeColor } from '../../hooks/use-meta-theme-color';
 import { ScrollView } from '../common';
 import { NewMessageContent } from './new-message-content';

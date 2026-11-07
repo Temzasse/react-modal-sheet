@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
+import type { ReactNode } from 'react';
+
 import './globals.css';
 
 import { StyledComponentsRegistry } from '../components/styled-registry';

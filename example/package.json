@@ -1,8 +1,8 @@
 {
   "name": "example",
   "version": "1.0.0",
-  "license": "MIT",
   "homepage": "https://temzasse.github.io/react-modal-sheet",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "dev:host": "vite --host",
@@ -11,32 +11,32 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "typecheck": "tsc --noEmit --skipLibCheck",
-    "format:check": "biome format ./src",
-    "format:write": "biome format --write ./src",
-    "lint:check": "biome lint --error-on-warnings ./src",
-    "lint:write": "biome lint --error-on-warnings  --write ./src",
+    "format:check": "oxfmt --check ./src",
+    "format:write": "oxfmt --write ./src",
+    "lint:check": "oxlint --deny-warnings ./src",
+    "lint:write": "oxlint --deny-warnings --fix ./src",
     "generate:pwa": "pwa-assets-generator --preset minimal public/favicon.svg"
   },
   "dependencies": {
-    "motion": "12.35.0",
-    "react": "19.2.4",
-    "react-aria": "3.47.0",
-    "react-dom": "19.2.4",
-    "react-icons": "5.6.0",
+    "motion": "14.10.1",
+    "react": "19.3.1",
+    "react-aria": "3.53.1",
+    "react-dom": "19.3.1",
+    "react-icons": "5.7.0",
     "react-modal-sheet": "file:.yalc/react-modal-sheet",
-    "react-router": "7.13.1",
-    "react-stately": "3.45.0",
-    "styled-components": "6.3.11"
+    "react-router": "8.5.1",
+    "react-stately": "3.51.0",
+    "styled-components": "6.6.0"
   },
   "devDependencies": {
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vite-pwa/assets-generator": "1.0.2",
-    "@vitejs/plugin-react": "5.1.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vite-pwa/assets-generator": "2.0.0",
+    "@vitejs/plugin-react": "6.2.1",
     "gh-pages": "6.3.0",
-    "typescript": "5.9.3",
-    "vite": "7.3.1",
-    "vite-plugin-pwa": "1.0.3",
+    "typescript": "7.0.2",
+    "vite": "8.3.6",
+    "vite-plugin-pwa": "2.0.0",
     "vite-plugin-restart": "2.0.0"
   }
 }
