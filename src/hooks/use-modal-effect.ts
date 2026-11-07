@@ -155,8 +155,8 @@ function updateModalEffect(
     const sheetTop = sheet.offsetTop;
     const scaleEnd = (sheetWidth - 16) / sheetWidth;
     const scale = transform(progress, [0, 1], [1, scaleEnd]);
-    const offsetY = clamp(24 + insetTop - sheetTop, -10, 0);
-    const translateYEnd = scaleEnd * (sheetTop + offsetY) - sheetTop;
+    // Match the scaled app root's top edge, but cap the final lift for short sheets.
+    const translateYEnd = clamp(scaleEnd * (24 + insetTop) - sheetTop, -10, 0);
     const translateY = transform(progress, [0, 1], [0, translateYEnd]);
 
     sheet.style.scale = `${scale}`;
