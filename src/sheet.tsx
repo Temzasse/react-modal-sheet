@@ -366,8 +366,8 @@ export const Sheet = forwardRef<any, SheetProps>(
           className={`react-modal-sheet-root ${className}`}
           style={{
             ...applyStyles(styles.root, unstyled),
-            zIndex,
-            visibility,
+            zIndex: state === 'closed' ? -1 : zIndex,
+            visibility: state === 'closed' ? 'hidden' : visibility,
             ...style,
           }}
         >

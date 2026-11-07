@@ -29,6 +29,10 @@ test('opens, closes, and reopens with ordered lifecycle callbacks', async () => 
     />
   );
   await expect.element(page.getByTestId('container')).not.toBeInTheDocument();
+  await expect.element(page.getByTestId('sheet')).not.toBeVisible();
+  expect(getComputedStyle(page.getByTestId('sheet').element()).zIndex).toBe(
+    '-1'
+  );
 
   await screen.rerender(
     <TestSheet
@@ -50,6 +54,10 @@ test('opens, closes, and reopens with ordered lifecycle callbacks', async () => 
     />
   );
   await expect.element(page.getByTestId('container')).not.toBeInTheDocument();
+  await expect.element(page.getByTestId('sheet')).not.toBeVisible();
+  expect(getComputedStyle(page.getByTestId('sheet').element()).zIndex).toBe(
+    '-1'
+  );
   await page.getByRole('button', { name: 'Background action' }).click();
   expect(onAction).toHaveBeenCalledTimes(2);
   expect(events).toEqual([

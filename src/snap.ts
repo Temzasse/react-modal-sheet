@@ -45,20 +45,22 @@ export function computeSnapPoints({
   snapPointsProp: number[];
   sheetHeight: number;
 }): SheetSnapPoint[] {
-  if (snapPointsProp[0] !== 0) {
+  const snapPoints = [...snapPointsProp];
+
+  if (snapPoints[0] !== 0) {
     console.error(
       'First snap point should be 0 to ensure the sheet can be fully closed. ' +
-        `Got: [${snapPointsProp.join(', ')}]`
+        `Got: [${snapPoints.join(', ')}]`
     );
-    snapPointsProp.unshift(0);
+    snapPoints.unshift(0);
   }
 
-  if (snapPointsProp[snapPointsProp.length - 1] !== 1) {
+  if (snapPoints[snapPoints.length - 1] !== 1) {
     console.error(
       'Last snap point should be 1 to ensure the sheet can be fully opened. ' +
-        `Got: [${snapPointsProp.join(', ')}]`
+        `Got: [${snapPoints.join(', ')}]`
     );
-    snapPointsProp.push(1);
+    snapPoints.push(1);
   }
 
   if (sheetHeight <= 0) {
@@ -69,7 +71,7 @@ export function computeSnapPoints({
     return [];
   }
 
-  const snapPointValues = snapPointsProp.map((point) => {
+  const snapPointValues = snapPoints.map((point) => {
     // Percentage values e.g. between 0.0 and 1.0
     if (point > 0 && point <= 1) {
       return Math.round(point * sheetHeight);
@@ -80,7 +82,7 @@ export function computeSnapPoints({
 
   console.assert(
     isAscendingOrder(snapPointValues),
-    `Snap points need to be in ascending order got: [${snapPointsProp.join(', ')}]`
+    `Snap points need to be in ascending order got: [${snapPoints.join(', ')}]`
   );
 
   // Make sure all snap points are within the sheet height
