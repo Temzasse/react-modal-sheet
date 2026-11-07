@@ -31,8 +31,19 @@ jobs:
       - name: 🔎 Typecheck
         run: npm run typecheck
 
-      - name: 🔬 Test
+      - name: 🌐 Install test browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: 🔬 Run unit and browser tests
         run: npm run test
+
+      - name: 📸 Upload browser test failures
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-failures
+          path: .vitest/attachments/
+          if-no-files-found: ignore
 
       - name: 🏗️ Build library
         run: npm run build

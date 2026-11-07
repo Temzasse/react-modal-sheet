@@ -1,5 +1,3 @@
-// @vitest-environment node
-
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { expect, test } from 'vitest';
@@ -17,6 +15,7 @@ test('renders Sheet in HTML output', () => {
     </Sheet>
   );
   expect(markup).toContain('react-modal-sheet');
+  expect(markup).toContain('Hello world');
 });
 
 test('renders Sheet id on the sheet root element', () => {
@@ -31,4 +30,17 @@ test('renders Sheet id on the sheet root element', () => {
   );
   const sheetRoot = markup.match(/<div[^>]*react-modal-sheet-root[^>]*>/);
   expect(sheetRoot?.[0]).toContain('id="parent-sheet"');
+});
+
+test('does not render sheet contents when closed on the server', () => {
+  const markup = renderToString(
+    <Sheet isOpen={false} onClose={() => {}}>
+      <Sheet.Container>
+        <Sheet.Content>Hello world</Sheet.Content>
+      </Sheet.Container>
+    </Sheet>
+  );
+  expect(markup).toContain('data-sheet-state="closed"');
+  expect(markup).not.toContain('Hello world');
+  expect(markup).not.toContain('react-modal-sheet-container');
 });

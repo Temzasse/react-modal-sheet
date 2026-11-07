@@ -36,16 +36,17 @@ npm install motion
 
 <details>
   <summary><strong>📚 Table of contents</strong></summary>
-  
-  - [Usage](#-usage)
-  - [Props](#%EF%B8%8F-props)
-  - [Methods and properties](#%EF%B8%8F-methods-and-properties)
-  - [Detents](#-detents)
-  - [Compound Components](#-compound-components)
-  - [Advanced behavior](#-advanced-behavior)
-  - [Customization](#-customization)
-  - [Accessibility](#%EF%B8%8F-accessibility)
-  - [Troubleshooting](#-troubleshooting)
+
+- [Usage](#-usage)
+- [Props](#%EF%B8%8F-props)
+- [Methods and properties](#%EF%B8%8F-methods-and-properties)
+- [Detents](#-detents)
+- [Compound Components](#-compound-components)
+- [Advanced behavior](#-advanced-behavior)
+- [Customization](#-customization)
+- [Accessibility](#%EF%B8%8F-accessibility)
+- [Troubleshooting](#-troubleshooting)
+
 </details>
 
 ---
@@ -53,8 +54,8 @@ npm install motion
 ## 💻 Usage
 
 ```tsx
-import { Sheet } from 'react-modal-sheet';
 import { useState } from 'react';
+import { Sheet } from 'react-modal-sheet';
 
 function Example() {
   const [isOpen, setOpen] = useState(false);
@@ -130,8 +131,8 @@ There are two ways to access sheet methods and properties:
 1. Via a ref using `useRef`
 
 ```tsx
-import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { useRef } from 'react';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 function RefExample() {
   const sheetRef = useRef<SheetRef>(null);
@@ -230,8 +231,8 @@ function SheetContainer() {
 Imperative method for snapping to a snap point in given index.
 
 ```tsx
-import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { useState, useRef } from 'react';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 const snapPoints = [0, 0.5, 1];
 
@@ -279,9 +280,9 @@ The `y`, `yInverted`, and `yProgress` values are [MotionValues](https://motion.d
 Below you can see an example of how to use these values:
 
 ```tsx
-import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { useTransform, interpolate } from 'motion/react';
 import { useRef } from 'react';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 function RefExample() {
   const sheetRef = useRef<SheetRef>(null);
@@ -424,9 +425,9 @@ One potential use case for the `y` value is to apply padding bottom to the sheet
 > Take a look at the [Creating custom scrollers](#creating-custom-scrollers) section for more advanced use cases when you need to implement your own scroller and potentially apply this padding behavior to that.
 
 ```tsx
-import { Sheet, type SheetRef } from 'react-modal-sheet';
 import { useTransform } from 'motion/react';
 import { useState, useRef } from 'react';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 const snapPoints = [0, 0.5, 1];
 
@@ -849,7 +850,9 @@ function StackedExample() {
     >
       <Sheet.Container>
         <Sheet.Content>
-          <button onClick={() => setStackedOpen(true)}>Open stacked sheet</button>
+          <button onClick={() => setStackedOpen(true)}>
+            Open stacked sheet
+          </button>
 
           <Sheet
             isOpen={isStackedOpen}
@@ -1076,10 +1079,7 @@ The example below utilizes React Aria to achieve an accessible modal-like bottom
 > ℹ️ The example was built by following the React Aria's [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation.
 
 ```tsx
-import { Sheet } from 'react-modal-sheet';
 import { useRef } from 'react';
-import { useOverlayTriggerState } from 'react-stately';
-
 import {
   useOverlay,
   useModal,
@@ -1088,6 +1088,8 @@ import {
   useButton,
   useDialog,
 } from 'react-aria';
+import { Sheet } from 'react-modal-sheet';
+import { useOverlayTriggerState } from 'react-stately';
 
 function A11yExample() {
   const sheetState = useOverlayTriggerState({});
@@ -1174,6 +1176,21 @@ The most common migration issues are:
 ## 🤝 Contributing
 
 If you find a bug or have a feature request please open an issue. If you want to contribute code please open a pull request.
+
+### Running tests
+
+Install dependencies and browser binaries once:
+
+```sh
+npm ci
+npx playwright install chromium webkit
+```
+
+Run all tests with `npm test`, Node unit and SSR tests with `npm run test:unit`, or browser interaction tests with `npm run test:browser`. Browser tests use [Vitest Browser Mode](https://vitest.dev/guide/browser/) with real Motion animations in Chromium and WebKit; they do not require the example app or Yalc. On Linux, install browser system dependencies with `npx playwright install --with-deps chromium webkit`.
+
+For interactive debugging, run `npm run test:browser -- --watch --browser.headless=false`. Failure screenshots are saved under `.vitest/attachments/` and uploaded by CI.
+
+### Running the examples
 
 You can build and run the library and the example app locally like this:
 
