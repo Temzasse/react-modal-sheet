@@ -75,7 +75,7 @@ export const Sheet = forwardRef<any, SheetProps>(
     },
     ref
   ) => {
-    const [sheetBoundsRef, sheetBounds] = useMeasure();
+    const [sheetBoundsRef, sheetBounds] = useMeasure({ offsetSize: true });
     const sheetRef = useRef<HTMLDivElement>(null);
     const sheetHeight = Math.round(sheetBounds.height);
     const [currentSnap, setCurrentSnap] = useState(initialSnap);

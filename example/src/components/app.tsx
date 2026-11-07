@@ -9,6 +9,7 @@ import {
   FaMobile,
   FaWalking,
   FaKeyboard as KeyboardIcon,
+  FaLayerGroup as LayersIcon,
   FaLock as LockIcon,
   FaMoon as MoonIcon,
   FaPaintBrush as PaintIcon,
@@ -34,6 +35,7 @@ import { ScrollableSnapPoints } from './scrollable-snap-points';
 import { ShadowDOM } from './shadow-dom';
 import { SlackMessage } from './slack-message';
 import { SnapPoints } from './snap-points';
+import { StackedSheets } from './stacked-sheets';
 
 export function App() {
   return (
@@ -170,6 +172,14 @@ export function App() {
             </Screen>
           }
         />
+        <Route
+          path="stacked-sheets/*"
+          element={
+            <Screen>
+              <StackedSheets />
+            </Screen>
+          }
+        />
       </Routes>
     </ScrollView>
   );
@@ -280,6 +290,13 @@ const ExampleSelector = () => {
         <ExampleLink to="shadow-dom">
           <MoonIcon size={48} />
           <span>Shadow DOM</span>
+        </ExampleLink>
+      </li>
+
+      <li>
+        <ExampleLink to="stacked-sheets">
+          <LayersIcon size={48} />
+          <span>Stacked sheets</span>
         </ExampleLink>
       </li>
     </ExampleLinks>
