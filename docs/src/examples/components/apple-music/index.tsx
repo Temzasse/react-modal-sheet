@@ -99,7 +99,9 @@ const PlayerSheet = styled(Sheet, {
         'linear-gradient(160deg, #3b274b 0%, #291c38 60%, #1b1228 100%) !important',
       color: '#fff',
     },
-    '& .react-modal-sheet-header': { height: '32px' },
+    '& .react-modal-sheet-header': {
+      height: '32px',
+    },
     '& .react-modal-sheet-drag-indicator': {
       backgroundColor: 'rgb(255 255 255 / 25%) !important',
     },

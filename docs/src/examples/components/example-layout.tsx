@@ -56,7 +56,12 @@ export function ExampleLayout({ title, description, children }: Props) {
               <div data-skeleton="bar short" />
               <div data-skeleton="chart">
                 {[38, 62, 48, 80, 58, 92, 74, 100].map((height, index) => (
-                  <span key={index} style={{ height: `${height}%` }} />
+                  <span
+                    key={index}
+                    style={{
+                      height: `${height}%`,
+                    }}
+                  />
                 ))}
               </div>
             </div>
@@ -84,7 +89,12 @@ export function ExampleLayout({ title, description, children }: Props) {
             </div>
           </SkeletonCanvas>
 
-          <ButtonWrapper style={{ opacity: fabOpacity, y: fabTranslateY }}>
+          <ButtonWrapper
+            style={{
+              opacity: fabOpacity,
+              y: fabTranslateY,
+            }}
+          >
             <Button variant="launch" onPress={state.open}>
               Open sheet
             </Button>
@@ -183,7 +193,9 @@ const SkeletonCanvas = styled('div', {
       borderRadius: '50%',
       background: 'var(--skeleton)',
     },
-    '& [data-skeleton~="lines"]': { flex: '1' },
+    '& [data-skeleton~="lines"]': {
+      flex: '1',
+    },
     '& [data-skeleton~="pill"]': {
       width: '64px',
       height: '26px',
@@ -202,7 +214,9 @@ const SkeletonCanvas = styled('div', {
         borderRadius: '12px',
       },
     '& [data-skeleton~="feature"] > [data-skeleton~="bar"]:not([data-skeleton~="title"])':
-      { maxWidth: '260px' },
+      {
+        maxWidth: '260px',
+      },
     '& [data-skeleton~="feature"] > [data-skeleton~="title"]': {
       marginBottom: '20px',
     },
@@ -245,10 +259,18 @@ const SkeletonCanvas = styled('div', {
       marginBottom: '12px',
     },
     '@media (max-width: 480px)': {
-      '& [data-skeleton~="cards"]': { gap: '10px' },
-      '& [data-skeleton~="card"]': { padding: '16px' },
-      '& [data-skeleton~="chart"]': { gap: '8px' },
-      '& [data-skeleton~="pill"]': { width: '44px' },
+      '& [data-skeleton~="cards"]': {
+        gap: '10px',
+      },
+      '& [data-skeleton~="card"]': {
+        padding: '16px',
+      },
+      '& [data-skeleton~="chart"]': {
+        gap: '8px',
+      },
+      '& [data-skeleton~="pill"]': {
+        width: '44px',
+      },
     },
   },
 });
@@ -258,6 +280,8 @@ const ButtonWrapper = styled(motion.div, {
     position: 'fixed',
     bottom: 'max(24px, env(safe-area-inset-bottom))',
     right: '24px',
-    '& button': { boxShadow: '0 4px 20px rgb(0 0 0 / 15%)' },
+    '& button': {
+      boxShadow: '0 4px 20px rgb(0 0 0 / 15%)',
+    },
   },
 });

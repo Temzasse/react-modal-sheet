@@ -58,7 +58,10 @@ export function App({ exampleSlug, documentationUrl, exampleBaseUrl }: Props) {
 
 const Navigation = styled('nav', {
   base: {
-    'html[data-example-slug="apple-music"] &': { display: 'none' },
+    'html:is([data-example-slug="apple-music"], [data-example-slug="slack-message"]) &':
+      {
+        display: 'none',
+      },
     position: 'fixed',
     top: 'max(16px, env(safe-area-inset-top))',
     left: 'max(24px, env(safe-area-inset-left))',
@@ -73,7 +76,9 @@ const Navigation = styled('nav', {
       color: 'var(--sl-color-text-accent)',
       boxShadow: '0 1px 3px rgb(0 0 0 / 4%)',
     },
-    '& a:hover': { background: 'var(--sl-color-gray-6)' },
+    '& a:hover': {
+      background: 'var(--sl-color-gray-6)',
+    },
     '& a:focus-visible': {
       outline: '3px solid var(--sl-color-accent)',
       outlineOffset: '3px',
@@ -108,7 +113,12 @@ const ExampleLink = styled('a', {
     border: '1px solid var(--sl-color-gray-5)',
     borderRadius: '8px',
     transition: 'background-color 0.2s',
-    '&:hover': { backgroundColor: 'var(--sl-color-gray-6)' },
-    '& span': { fontWeight: '500', fontSize: '18px' },
+    '&:hover': {
+      backgroundColor: 'var(--sl-color-gray-6)',
+    },
+    '& span': {
+      fontWeight: '500',
+      fontSize: '18px',
+    },
   },
 });

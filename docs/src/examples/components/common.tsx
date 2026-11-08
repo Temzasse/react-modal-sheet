@@ -39,7 +39,9 @@ const ButtonBase = styled('button', {
     textAlign: 'center',
     lineHeight: '1',
     transition: 'opacity 0.1s ease-out',
-    '&:active': { opacity: '0.8' },
+    '&:active': {
+      opacity: '0.8',
+    },
   },
   variants: {
     variant: {
@@ -51,7 +53,9 @@ const ButtonBase = styled('button', {
         fontWeight: '600',
         fontSize: '14px',
         lineHeight: '1.25',
-        '&:hover': { opacity: '0.9' },
+        '&:hover': {
+          opacity: '0.9',
+        },
         '&:focus-visible': {
           outline: '3px solid var(--sl-color-accent)',
           outlineOffset: '3px',
@@ -63,7 +67,9 @@ const ButtonBase = styled('button', {
       },
     },
   },
-  defaultVariants: { variant: 'default' },
+  defaultVariants: {
+    variant: 'default',
+  },
 });
 
 export const Screen = styled('div', {
@@ -80,5 +86,9 @@ export const Screen = styled('div', {
 });
 
 export const ScrollView = styled('div', {
-  base: { overflowY: 'auto', height: '100dvh' },
+  base: {
+    overflowY: 'auto',
+    height: '100dvh',
+    overscrollBehaviorY: 'none',
+  },
 });

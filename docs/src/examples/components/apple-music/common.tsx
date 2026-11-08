@@ -25,8 +25,15 @@ const MoreControl = styled('button', {
     borderRadius: '50%',
     color: '#fff',
     cursor: 'pointer',
-    '&:hover:not(:disabled)': { background: 'rgb(255 255 255 / 10%)' },
-    '&:disabled': { cursor: 'default' },
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '3px' },
+    '&:hover:not(:disabled)': {
+      background: 'rgb(255 255 255 / 10%)',
+    },
+    '&:disabled': {
+      cursor: 'default',
+    },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '3px',
+    },
   },
 });

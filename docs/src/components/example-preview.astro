@@ -36,7 +36,9 @@ const previewStyles = {
   viewportControls: css({
     display: 'flex',
     gap: '4px',
-    '@media (max-width: 50rem), (pointer: coarse)': { display: 'none' },
+    '@media (max-width: 50rem), (pointer: coarse)': {
+      display: 'none',
+    },
   }),
   viewportButton: css({
     padding: '6px 12px',
@@ -71,8 +73,12 @@ const previewStyles = {
     overflow: 'hidden',
     height: 'var(--desktop-preview-height, 672px)',
     minHeight: '280px',
-    '[data-viewport="phone"] &': { height: '876px' },
-    '@media (max-width: 50rem), (pointer: coarse)': { display: 'none' },
+    '[data-viewport="phone"] &': {
+      height: '876px',
+    },
+    '@media (max-width: 50rem), (pointer: coarse)': {
+      display: 'none',
+    },
   }),
   frame: css({
     position: 'absolute',
@@ -95,10 +101,14 @@ const previewStyles = {
   }),
   mobileHint: css(hintStyles, {
     display: 'none',
-    '@media (max-width: 50rem), (pointer: coarse)': { display: 'block' },
+    '@media (max-width: 50rem), (pointer: coarse)': {
+      display: 'block',
+    },
   }),
   desktopHint: css(hintStyles, {
-    '@media (max-width: 50rem), (pointer: coarse)': { display: 'none' },
+    '@media (max-width: 50rem), (pointer: coarse)': {
+      display: 'none',
+    },
   }),
 };
 ---

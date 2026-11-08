@@ -116,6 +116,8 @@ const Input = styled('input', {
     border: '2px solid var(--example-border)',
     borderRadius: '8px',
     outline: 'none',
-    '&:focus': { borderColor: 'var(--example-indicator)' },
+    '&:focus': {
+      borderColor: 'var(--example-indicator)',
+    },
   },
 });

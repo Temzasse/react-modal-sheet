@@ -9,7 +9,12 @@ const examples = [
   { slug: 'scrollable', title: 'Scrollable content', width: 499 },
 ];
 const styles = {
-  root: cx('not-content', css({ marginBlock: '2rem 3rem' })),
+  root: cx(
+    'not-content',
+    css({
+      marginBlock: '2rem 3rem',
+    })
+  ),
   hero: css({
     display: 'block',
     width: '100%',
@@ -33,8 +38,12 @@ const styles = {
     textDecoration: 'none',
     fontSize: '.875rem',
     fontWeight: '600',
-    '&:hover': { textDecoration: 'underline' },
-    '&:focus-visible': { outlineOffset: '6px' },
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+    '&:focus-visible': {
+      outlineOffset: '6px',
+    },
   }),
   recording: css({
     display: 'block',

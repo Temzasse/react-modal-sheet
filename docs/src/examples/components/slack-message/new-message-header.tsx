@@ -1,52 +1,78 @@
 import { useRef } from 'react';
 import { useButton } from 'react-aria';
-import { FiX as CloseIcon } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 
 import { styled } from '../../../../styled-system/jsx';
 
 export function NewMessageHeader({
-  sheetState,
-  titleProps,
+  onClose,
+  titleId,
 }: {
-  sheetState: any;
-  titleProps: any;
+  onClose: () => void;
+  titleId?: string;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const closeButton = useButton(
-    { onPress: sheetState.close, 'aria-label': 'Close bottom sheet' },
+    { onPress: onClose, 'aria-label': 'Close new message' },
     ref
-  ); // prettier-ignore
+  );
 
   return (
     <Wrapper>
-      <CloseWrapper {...closeButton.buttonProps} ref={ref}>
-        <CloseIcon size={24} color="var(--example-text)" />
-      </CloseWrapper>
-
-      <Title {...titleProps}>New Message</Title>
+      <Handle aria-hidden="true" />
+      <Title id={titleId}>New message</Title>
+      <CloseButton {...closeButton.buttonProps} ref={ref}>
+        <FiX size={21} />
+      </CloseButton>
     </Wrapper>
   );
 }
 
 const Wrapper = styled('div', {
   base: {
-    width: '100%',
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: '16px',
-    color: 'var(--example-text)',
-    position: 'relative',
+    justifyContent: 'space-between',
+    padding: '28px 20px 15px',
+    color: 'var(--slack-text)',
   },
 });
-
-const CloseWrapper = styled('button', {
+const Handle = styled('span', {
   base: {
     position: 'absolute',
-    left: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
+    top: '9px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '34px',
+    height: '4px',
+    borderRadius: '99px',
+    background: 'var(--slack-muted)',
+    opacity: '.5',
   },
 });
-
-const Title = styled('span', { base: { fontWeight: '600', fontSize: '16px' } });
+const Title = styled('h2', {
+  base: {
+    margin: '0',
+    fontSize: '24px',
+    lineHeight: '1.2',
+    fontWeight: '750',
+    letterSpacing: '-.025em',
+  },
+});
+const CloseButton = styled('button', {
+  base: {
+    display: 'grid',
+    placeItems: 'center',
+    width: '30px',
+    height: '30px',
+    borderRadius: '50%',
+    background: 'var(--slack-surface)',
+    color: 'var(--slack-muted)',
+    cursor: 'pointer',
+    '&:focus-visible': {
+      outline: '2px solid var(--slack-accent)',
+      outlineOffset: '3px',
+    },
+  },
+});

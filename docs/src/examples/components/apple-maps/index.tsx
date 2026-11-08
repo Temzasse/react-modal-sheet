@@ -47,7 +47,11 @@ export function AppleMaps() {
 
   return (
     <Container>
-      <FakeMap style={{ backgroundImage: `url(${mapBackground})` }} />
+      <FakeMap
+        style={{
+          backgroundImage: `url(${mapBackground})`,
+        }}
+      />
 
       <Sheet
         isOpen={isOpen}
@@ -63,7 +67,9 @@ export function AppleMaps() {
             // Only scroll when at the upmost snap point
             disableScroll={(state) => state.currentSnap !== lastSnap}
             scrollRef={scrollRef}
-            style={{ borderTopColor: contentBorderColor }}
+            style={{
+              borderTopColor: contentBorderColor,
+            }}
           >
             <SheetSuggestions />
           </SheetContent>
@@ -174,19 +180,33 @@ function SheetBackdrop() {
     rgba(0, 0, 0, ${opacity})
   `;
 
-  return <Sheet.Backdrop style={{ backgroundColor }} />;
+  return (
+    <Sheet.Backdrop
+      style={{
+        backgroundColor,
+      }}
+    />
+  );
 }
 
 function SheetSuggestions() {
   const contentOpacity = useSnapPointTransform([0, 0, 1, 1]);
 
   return (
-    <Results style={{ opacity: contentOpacity }}>
+    <Results
+      style={{
+        opacity: contentOpacity,
+      }}
+    >
       <SectionTitle>Suggestions</SectionTitle>
       <Suggestions>
         {places.map((place) => (
           <Suggestion key={place.id}>
-            <ResultIcon style={{ backgroundColor: place.bgColor }}>
+            <ResultIcon
+              style={{
+                backgroundColor: place.bgColor,
+              }}
+            >
               {place.icon}
             </ResultIcon>
             <ResultInfo>
@@ -309,7 +329,11 @@ const places = [
 ];
 
 const Container = styled('div', {
-  base: { position: 'relative', width: '100%', height: '100dvh' },
+  base: {
+    position: 'relative',
+    width: '100%',
+    height: '100dvh',
+  },
 });
 
 const FakeMap = styled('div', {
@@ -322,7 +346,9 @@ const FakeMap = styled('div', {
 });
 
 const SheetContent = styled(Sheet.Content, {
-  base: { borderTop: '1px solid rgba(255, 255, 255, 0)' },
+  base: {
+    borderTop: '1px solid rgba(255, 255, 255, 0)',
+  },
 });
 
 const SheetHeaderBase = styled(Sheet.Header, {
@@ -345,7 +371,11 @@ const SheetHeaderBase = styled(Sheet.Header, {
 });
 
 const SearchContainer = styled('div', {
-  base: { display: 'flex', alignItems: 'center', gap: '12px' },
+  base: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  },
 });
 
 const SearchWrapper = styled('div', {
@@ -378,7 +408,9 @@ const SearchInput = styled('input', {
     color: 'var(--example-text)',
     caretColor: 'var(--example-text)',
     padding: '0',
-    '&::placeholder': { color: 'var(--example-muted)' },
+    '&::placeholder': {
+      color: 'var(--example-muted)',
+    },
   },
 });
 
@@ -481,5 +513,8 @@ const ResultName = styled('span', {
 });
 
 const ResultAddress = styled('span', {
-  base: { color: 'var(--example-muted)', fontSize: '14px' },
+  base: {
+    color: 'var(--example-muted)',
+    fontSize: '14px',
+  },
 });

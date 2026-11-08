@@ -241,7 +241,10 @@ const BackLink = styled('a', {
     background: 'rgb(255 255 255 / 10%)',
     border: '1px solid rgb(255 255 255 / 12%)',
     color: '#fff',
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '3px' },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '3px',
+    },
   },
 });
 
@@ -268,8 +271,12 @@ const IconButton = styled('button', {
     color: '#fff',
     cursor: 'pointer',
     borderRadius: '50%',
-    '&:hover': { background: 'rgb(255 255 255 / 10%)' },
-    '&:focus-visible': { outline: '2px solid #fff' },
+    '&:hover': {
+      background: 'rgb(255 255 255 / 10%)',
+    },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+    },
   },
 });
 
@@ -340,8 +347,13 @@ const RoundButton = styled('button', {
     color: '#fff',
     background: 'rgb(255 255 255 / 9%)',
     cursor: 'pointer',
-    '&:hover': { background: 'rgb(255 255 255 / 16%)' },
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '3px' },
+    '&:hover': {
+      background: 'rgb(255 255 255 / 16%)',
+    },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '3px',
+    },
   },
 });
 const PlayButton = styled('button', {
@@ -361,8 +373,13 @@ const PlayButton = styled('button', {
       'linear-gradient(150deg, rgb(255 255 255 / 23%), rgb(255 255 255 / 12%))',
     border: '1px solid rgb(255 255 255 / 18%)',
     cursor: 'pointer',
-    '&:hover': { background: 'rgb(255 255 255 / 28%)' },
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '3px' },
+    '&:hover': {
+      background: 'rgb(255 255 255 / 28%)',
+    },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '3px',
+    },
   },
 });
 const AlbumNote = styled('p', {
@@ -383,7 +400,12 @@ const SongList = styled('ol', {
     borderTop: '1px solid rgb(255 255 255 / 15%)',
   },
 });
-const SongListItem = styled('li', { base: { listStyle: 'none', margin: '0' } });
+const SongListItem = styled('li', {
+  base: {
+    listStyle: 'none',
+    margin: '0',
+  },
+});
 const SongButton = styled('button', {
   base: {
     display: 'flex',
@@ -393,7 +415,10 @@ const SongButton = styled('button', {
     color: '#fff',
     textAlign: 'left',
     cursor: 'pointer',
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '-2px' },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '-2px',
+    },
   },
 });
 const SongNumber = styled('span', {
@@ -480,7 +505,9 @@ const MiniOpen = styled('button', {
     color: '#fff',
     cursor: 'pointer',
     borderRadius: '22px',
-    '&:focus-visible': { outline: '2px solid #fff' },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+    },
   },
 });
 const MiniImage = styled('img', {
@@ -494,7 +521,12 @@ const MiniImage = styled('img', {
   },
 });
 const MiniInfo = styled('span', {
-  base: { display: 'flex', flexDirection: 'column', minWidth: '0', gap: '3px' },
+  base: {
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: '0',
+    gap: '3px',
+  },
 });
 const MiniSong = styled('span', {
   base: {
@@ -524,8 +556,12 @@ const MiniControl = styled('button', {
     color: '#fff',
     cursor: 'pointer',
     borderRadius: '50%',
-    '&:hover': { background: 'rgb(255 255 255 / 10%)' },
-    '&:focus-visible': { outline: '2px solid #fff' },
+    '&:hover': {
+      background: 'rgb(255 255 255 / 10%)',
+    },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+    },
   },
 });
 const AppNavigation = styled('nav', {
@@ -551,7 +587,13 @@ const NavItem = styled('span', {
     padding: '5px 0',
     borderRadius: '999px',
     color: 'rgb(255 255 255 / 85%)',
-    '& span': { fontSize: '9px', fontWeight: '600' },
-    '&[data-active]': { background: 'rgb(0 0 0 / 30%)', color: '#fff' },
+    '& span': {
+      fontSize: '9px',
+      fontWeight: '600',
+    },
+    '&[data-active]': {
+      background: 'rgb(0 0 0 / 30%)',
+      color: '#fff',
+    },
   },
 });

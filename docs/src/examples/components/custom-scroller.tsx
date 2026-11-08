@@ -80,7 +80,10 @@ const Input = styled('input', {
     borderRadius: '8px',
     border: '1px solid var(--example-border)',
     background: 'var(--example-field-bg)',
-    '&:focus': { outline: 'none', borderColor: 'var(--example-indicator)' },
+    '&:focus': {
+      outline: 'none',
+      borderColor: 'var(--example-indicator)',
+    },
   },
 });
 

@@ -25,5 +25,7 @@ export function FullScreen() {
 }
 
 const SheetContainer = styled(Sheet.Container, {
-  base: { borderRadius: '0 !important' },
+  base: {
+    borderRadius: '0 !important',
+  },
 });

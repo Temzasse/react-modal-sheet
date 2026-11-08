@@ -93,7 +93,10 @@ export default defineConfig({
         "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Cpath fill='%23000' d='M0 0h180v180H0z' filter='url(%23grain)'/%3E%3C/svg%3E\")",
       backgroundRepeat: 'repeat',
     },
-    '.sl-markdown-content table': { display: 'block', overflowX: 'auto' },
+    '.sl-markdown-content table': {
+      display: 'block',
+      overflowX: 'auto',
+    },
     '.site-title img': {
       width: '280px',
       maxWidth: '100%',
@@ -106,8 +109,12 @@ export default defineConfig({
         fontWeight: 'var(--sl-font-heading-weight)',
         fontSynthesis: 'none',
       },
-    '.sl-markdown-content td': { minWidth: '8rem' },
-    '.sl-markdown-content td:last-child': { minWidth: '18rem' },
+    '.sl-markdown-content td': {
+      minWidth: '8rem',
+    },
+    '.sl-markdown-content td:last-child': {
+      minWidth: '18rem',
+    },
     // Keep example pages free of the dev toolbar, including fullscreen previews.
     'html[data-playground] astro-dev-toolbar': {
       display: 'none !important',
@@ -120,7 +127,9 @@ export default defineConfig({
       accentColor: 'var(--sl-color-text-accent)',
       height: '100%',
       overflow: 'hidden',
-      '@supports (height: 1dvh)': { '--vh': '1dvh' },
+      '@supports (height: 1dvh)': {
+        '--vh': '1dvh',
+      },
       '& body': {
         height: '100%',
         overflow: 'hidden',
@@ -143,7 +152,9 @@ export default defineConfig({
         height: '100%',
         minHeight: 'calc(100 * var(--vh))',
       },
-      '& #root > astro-island': { display: 'contents' },
+      '& #root > astro-island': {
+        display: 'contents',
+      },
       '& :is(button, input, textarea)': {
         fontSize: '16px',
         fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -154,10 +165,21 @@ export default defineConfig({
         margin: '0',
         padding: '0',
       },
-      '& *': { boxSizing: 'border-box' },
-      '& ul': { listStyle: 'none', padding: '0', margin: '0' },
-      '& li': { margin: '0' },
-      '& a': { textDecoration: 'none', color: 'inherit' },
+      '& *': {
+        boxSizing: 'border-box',
+      },
+      '& ul': {
+        listStyle: 'none',
+        padding: '0',
+        margin: '0',
+      },
+      '& li': {
+        margin: '0',
+      },
+      '& a': {
+        textDecoration: 'none',
+        color: 'inherit',
+      },
     },
     'html[data-playground]:not([data-example-slug="custom-styles"]):not([data-example-slug="apple-maps"]) .react-modal-sheet-container':
       {
@@ -170,7 +192,9 @@ export default defineConfig({
     'html[data-playground][data-example-layout="custom"]': {
       color: 'var(--example-text)',
       accentColor: 'var(--example-text)',
-      '&, & body, & #root': { backgroundColor: 'var(--example-app-bg)' },
+      '&, & body, & #root': {
+        backgroundColor: 'var(--example-app-bg)',
+      },
     },
     'html[data-playground][data-example-slug="apple-music"]': {
       '--sl-color-bg': '#0d0719',
@@ -179,6 +203,39 @@ export default defineConfig({
       '--example-text': '#ffffff',
       '--example-indicator': '#777777',
       accentColor: '#ffffff',
+    },
+    'html[data-playground][data-example-slug="slack-message"]': {
+      '--slack-hairline-scale': '1',
+      '@media (min-resolution: 2dppx)': {
+        '--slack-hairline-scale': '0.5',
+      },
+      '@media (min-resolution: 3dppx)': {
+        '--slack-hairline-scale': '0.333333',
+      },
+      '--slack-bg': '#1a1d21',
+      '--slack-surface': '#282b30',
+      '--slack-search-bg': '#23262b',
+      '--slack-text': '#f8f8f8',
+      '--slack-muted': '#b3b5b7',
+      '--slack-border': '#34373c',
+      '--slack-accent': '#d9b8f0',
+      '--slack-accent-soft': 'rgb(155 105 190 / 18%)',
+      '--slack-tab-bg': 'rgb(49 51 57 / 82%)',
+      '--example-app-bg': 'var(--slack-bg)',
+      '--example-sheet-bg': 'var(--slack-bg)',
+      '--example-text': 'var(--slack-text)',
+      accentColor: 'var(--slack-accent)',
+    },
+    'html[data-example-slug="slack-message"][data-theme="light"]': {
+      '--slack-bg': '#ffffff',
+      '--slack-surface': '#f1eef4',
+      '--slack-search-bg': '#f5f2f7',
+      '--slack-text': '#1d1c1d',
+      '--slack-muted': '#6b6570',
+      '--slack-border': '#e5e1e8',
+      '--slack-accent': '#67368a',
+      '--slack-accent-soft': 'rgb(129 77 165 / 12%)',
+      '--slack-tab-bg': 'rgb(250 248 252 / 86%)',
     },
     'html[data-playground][data-example-layout="shared"] .react-modal-sheet-container':
       {

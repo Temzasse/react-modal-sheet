@@ -21,5 +21,8 @@ export function A11y() {
 }
 
 const SheetContent = styled('div', {
-  base: { textAlign: 'center', paddingTop: '24px' },
+  base: {
+    textAlign: 'center',
+    paddingTop: '24px',
+  },
 });

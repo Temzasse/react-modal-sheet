@@ -31,6 +31,8 @@ Edit documentation in `src/content/docs/` and navigation in `astro.config.mjs`. 
 
 Example components, hooks, and assets live in `src/examples/`. Register examples in `src/examples/registry.ts`; Astro generates their fullscreen routes at `/playground/<example>/`. React components use Panda’s `styled()` object syntax, with definitions at the end of each component file. Astro templates use named `css()` classes in the same file. `panda.config.ts` owns document-level resets and theme defaults. The official Panda Vite plugin regenerates styles on save; `prepare` generates the ignored `styled-system/` helpers and types during dependency installation. The only authored CSS file declares cascade layer order. Old playground hash bookmarks redirect to the static routes.
 
+Write style objects across multiple lines, including `base`, variants, and nested selectors. Oxfmt preserves the expanded layout when the first property starts on a new line.
+
 The docs import the library directly from the repository's `src/` through a Vite alias. Editing library code or examples updates the running previews through hot module replacement. A separate library build, package linking, and a second development server are unnecessary.
 
 Desktop previews use isolated iframes so portals and modal effects operate on the example's root. Shared inline examples show only the launch control and sheet. Fullscreen examples add a Starlight-inspired heading, a scrollable skeleton dashboard, and one link back to the example gallery. Custom app layouts keep their own content. Touch devices open examples fullscreen. Use a physical phone for native gestures and keyboard behavior.

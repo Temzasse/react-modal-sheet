@@ -77,7 +77,12 @@ function SheetFooter({ sheetRef }: { sheetRef: SheetRef }) {
   });
 
   return (
-    <Footer style={{ y: footerY, height: footerHeight }}>
+    <Footer
+      style={{
+        y: footerY,
+        height: footerHeight,
+      }}
+    >
       <Controls>
         <Button onPress={() => sheetRef.snapTo(0)}>0</Button>
         <Button onPress={() => sheetRef.snapTo(1)}>1</Button>

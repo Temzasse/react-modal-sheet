@@ -173,8 +173,12 @@ const Artwork = styled('img', {
     boxShadow: '0 15px 45px rgb(0 0 0 / 25%)',
     transform: 'scale(.91)',
     transition: 'transform 400ms ease',
-    '&[data-playing="true"]': { transform: 'scale(1)' },
-    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+    '&[data-playing="true"]': {
+      transform: 'scale(1)',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
   },
 });
 const MainContent = styled('div', {
@@ -186,7 +190,11 @@ const MainContent = styled('div', {
   },
 });
 const SongInfoRow = styled('div', {
-  base: { display: 'flex', alignItems: 'center', gap: '4px' },
+  base: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  },
 });
 const SongInfo = styled('div', {
   base: {
@@ -209,7 +217,10 @@ const SongName = styled('span', {
   },
 });
 const ArtistName = styled('span', {
-  base: { fontSize: '17px', color: 'rgb(255 255 255 / 65%)' },
+  base: {
+    fontSize: '17px',
+    color: 'rgb(255 255 255 / 65%)',
+  },
 });
 const SmallControl = styled('button', {
   base: {
@@ -221,12 +232,21 @@ const SmallControl = styled('button', {
     borderRadius: '50%',
     color: '#fff',
     cursor: 'pointer',
-    '&:hover': { background: 'rgb(255 255 255 / 10%)' },
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '2px' },
+    '&:hover': {
+      background: 'rgb(255 255 255 / 10%)',
+    },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '2px',
+    },
   },
 });
 const Track = styled('div', {
-  base: { display: 'flex', flexDirection: 'column', gap: '9px' },
+  base: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '9px',
+  },
 });
 const SeekSlider = styled('input', {
   base: {
@@ -250,7 +270,10 @@ const SeekSlider = styled('input', {
       borderRadius: '50%',
       background: '#fff',
     },
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '5px' },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '5px',
+    },
   },
 });
 const TrackTimes = styled('div', {
@@ -283,7 +306,9 @@ const TransportButton = styled('button', {
       transform: 'scale(.93)',
       background: 'rgb(255 255 255 / 8%)',
     },
-    '&:focus-visible': { outline: '2px solid #fff' },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+    },
   },
 });
 const VolumeControl = styled('div', {
@@ -320,11 +345,18 @@ const VolumeSlider = styled('input', {
       borderRadius: '50%',
       background: '#fff',
     },
-    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '7px' },
+    '&:focus-visible': {
+      outline: '2px solid #fff',
+      outlineOffset: '7px',
+    },
   },
 });
 const UtilityControls = styled('div', {
-  base: { display: 'flex', justifyContent: 'space-between', padding: '0 20px' },
+  base: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '0 20px',
+  },
 });
 const UtilityIcon = styled('span', {
   base: {

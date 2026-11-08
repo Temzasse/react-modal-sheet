@@ -62,7 +62,11 @@ const SheetWrapper = styled('div', {
   },
 });
 
-const SheetHeader = styled(Sheet.Header, { base: { position: 'relative' } });
+const SheetHeader = styled(Sheet.Header, {
+  base: {
+    position: 'relative',
+  },
+});
 
 const HeaderImage = styled('div', {
   base: {
@@ -86,10 +90,17 @@ const DragIndicatorWrapper = styled('div', {
 });
 
 const SheetContent = styled(Sheet.Content, {
-  base: { padding: '0px 16px 16px 16px' },
+  base: {
+    padding: '0px 16px 16px 16px',
+  },
 });
 
-const Title = styled('h2', { base: { margin: '0', fontSize: '20px' } });
+const Title = styled('h2', {
+  base: {
+    margin: '0',
+    fontSize: '20px',
+  },
+});
 
 const Paragraph = styled('p', {
   base: {
@@ -110,7 +121,9 @@ const Input = styled('input', {
     outline: 'none',
     width: '100%',
     marginBottom: '8px',
-    '&:focus': { borderColor: 'var(--example-indicator)' },
+    '&:focus': {
+      borderColor: 'var(--example-indicator)',
+    },
   },
 });
 

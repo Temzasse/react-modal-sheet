@@ -54,7 +54,11 @@ function useScrolling() {
   return { onScroll, isScrolling };
 }
 
-const Content = styled('div', { base: { padding: '16px' } });
+const Content = styled('div', {
+  base: {
+    padding: '16px',
+  },
+});
 
 const BoxList = styled('div', {
   base: {
