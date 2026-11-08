@@ -1,1 +1,0 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/react-modal-sheet/sw.js', { scope: '/react-modal-sheet/' })})}
