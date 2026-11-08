@@ -72,15 +72,15 @@ const ContentHeader = styled('div', {
 
 const Input = styled('input', {
   base: {
-    color: 'var(--sl-color-text)',
-    backgroundColor: 'var(--sl-color-bg)',
+    color: 'var(--example-text)',
+    backgroundColor: 'var(--example-field-bg)',
     padding: '8px',
     fontSize: '16px',
     width: '100%',
     borderRadius: '8px',
-    border: '1px solid var(--sl-color-gray-4)',
-    background: 'var(--sl-color-bg)',
-    '&:focus': { outline: 'none', borderColor: 'var(--sl-color-text-accent)' },
+    border: '1px solid var(--example-border)',
+    background: 'var(--example-field-bg)',
+    '&:focus': { outline: 'none', borderColor: 'var(--example-indicator)' },
   },
 });
 
@@ -96,7 +96,7 @@ const ScrollPosition = styled('div', {
   base: {
     padding: '8px',
     fontSize: '14px',
-    color: 'var(--sl-color-gray-3)',
+    color: 'var(--example-muted)',
     textAlign: 'center',
     position: 'sticky',
     top: '0',
@@ -108,7 +108,7 @@ const ContentFooter = styled('button', {
   base: {
     padding: '16px',
     background: 'var(--sl-color-text-accent)',
-    color: 'var(--sl-color-bg)',
+    color: 'var(--example-field-bg)',
     textAlign: 'center',
   },
 });

@@ -139,7 +139,7 @@ function SheetContainer({
   ]);
 
   const borderColor = useMotionTemplate`
-    color-mix(in srgb, var(--sl-color-gray-4) ${useTransform(yProgress, [0.7, 1], [40, 0])}%, transparent)
+    color-mix(in srgb, var(--example-indicator) ${useTransform(yProgress, [0.7, 1], [40, 0])}%, transparent)
   `;
 
   const backgroundColor = useMotionTemplate`
@@ -338,7 +338,7 @@ const SheetHeaderBase = styled(Sheet.Header, {
       transform: 'translateX(-50%)',
       width: '50px',
       height: '4px',
-      backgroundColor: 'var(--sl-color-gray-4)',
+      backgroundColor: 'var(--example-indicator)',
       borderRadius: '2px',
     },
   },
@@ -352,7 +352,7 @@ const SearchWrapper = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: 'var(--sl-color-bg)',
+    backgroundColor: 'var(--example-app-bg)',
     borderRadius: '999px',
     padding: '8px 12px',
     gap: '8px',
@@ -364,7 +364,7 @@ const SearchIconWrapper = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    color: 'var(--sl-color-white)',
+    color: 'var(--example-text)',
   },
 });
 
@@ -375,10 +375,10 @@ const SearchInput = styled('input', {
     border: 'none',
     fontSize: '16px',
     outline: 'none',
-    color: 'var(--sl-color-white)',
-    caretColor: 'var(--sl-color-text-accent)',
+    color: 'var(--example-text)',
+    caretColor: 'var(--example-text)',
     padding: '0',
-    '&::placeholder': { color: 'var(--sl-color-gray-3)' },
+    '&::placeholder': { color: 'var(--example-muted)' },
   },
 });
 
@@ -413,7 +413,7 @@ const Results = styled(motion.div, {
 
 const SectionTitle = styled('h3', {
   base: {
-    color: 'var(--sl-color-gray-2)',
+    color: 'var(--example-muted)',
     fontSize: '14px',
     fontWeight: '500',
     margin: '0 0 16px 0',
@@ -474,12 +474,12 @@ const ResultInfo = styled('div', {
 
 const ResultName = styled('span', {
   base: {
-    color: 'var(--sl-color-white)',
+    color: 'var(--example-text)',
     fontSize: '16px',
     fontWeight: '500',
   },
 });
 
 const ResultAddress = styled('span', {
-  base: { color: 'var(--sl-color-gray-2)', fontSize: '14px' },
+  base: { color: 'var(--example-muted)', fontSize: '14px' },
 });

@@ -52,8 +52,8 @@ export function NewMessageContent({
 
 const Search = styled('label', {
   base: {
-    borderTop: '1px solid var(--sl-color-gray-5)',
-    borderBottom: '1px solid var(--sl-color-gray-5)',
+    borderTop: '1px solid var(--example-border)',
+    borderBottom: '1px solid var(--example-border)',
     display: 'flex',
     alignItems: 'center',
     padding: '16px',
@@ -64,7 +64,7 @@ const Search = styled('label', {
 });
 
 const SearchLabel = styled('span', {
-  base: { color: 'var(--sl-color-gray-3)', marginRight: '16px' },
+  base: { color: 'var(--example-muted)', marginRight: '16px' },
 });
 
 const SearchInput = styled('input', {
@@ -73,8 +73,8 @@ const SearchInput = styled('input', {
     border: 'none',
     outline: 'none',
     flex: '1',
-    color: 'var(--sl-color-white)',
-    '&::placeholder': { color: 'var(--sl-color-gray-4)' },
+    color: 'var(--example-text)',
+    '&::placeholder': { color: 'var(--example-indicator)' },
   },
 });
 
@@ -95,7 +95,7 @@ const Person = styled('li', {
     alignItems: 'center',
     outline: 'none',
     '&:focus': {
-      backgroundColor: 'var(--sl-color-gray-5)',
+      backgroundColor: 'var(--example-border)',
       borderRadius: '6px',
     },
     '& > * + *': { marginLeft: '16px' },
@@ -113,9 +113,9 @@ const PersonImage = styled('img', {
 
 const PersonName = styled('span', {
   base: {
-    color: 'var(--sl-color-white)',
+    color: 'var(--example-text)',
     fontWeight: '600',
-    '&[data-dimmed]': { color: 'var(--sl-color-gray-3)', fontWeight: '400' },
+    '&[data-dimmed]': { color: 'var(--example-muted)', fontWeight: '400' },
   },
 });
 
@@ -124,7 +124,7 @@ const PersonStatus = styled('div', {
     width: '10px',
     height: '10px',
     borderRadius: '50%',
-    border: '1px solid var(--sl-color-gray-4)',
+    border: '1px solid var(--example-indicator)',
     backgroundColor: 'transparent',
     "&[data-online='true']": {
       borderColor: 'green',

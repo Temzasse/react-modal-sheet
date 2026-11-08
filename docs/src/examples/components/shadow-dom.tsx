@@ -18,11 +18,14 @@ export function ShadowDOM() {
             <Sheet isOpen={isOpen} onClose={close} mountPoint={shadowRoot}>
               <style>{`
                 .react-modal-sheet-drag-indicator {
-                  background-color: var(--sl-color-gray-4) !important;
+                  background-color: var(--example-indicator) !important;
                 }
               `}</style>
               <Sheet.Container
-                style={{ backgroundColor: 'var(--example-sheet-bg)' }}
+                style={{
+                  backgroundColor: 'var(--example-sheet-bg)',
+                  color: 'var(--example-text)',
+                }}
               >
                 <Sheet.Header />
                 <Sheet.Content>

@@ -1,67 +1,140 @@
+import { useState } from 'react';
 import {
   FaBackward,
-  FaFire,
   FaForward,
-  FaListUl,
+  FaPause,
   FaPlay,
-  FaPodcast,
   FaVolumeOff,
   FaVolumeUp,
 } from 'react-icons/fa';
+import { FiAirplay, FiList, FiMessageCircle, FiStar } from 'react-icons/fi';
 
 import { styled } from '../../../../styled-system/jsx';
-import { MoreButton } from './common';
-import type { Album as AlbumType } from './data';
+import { formatTime, MoreButton } from './common';
+import type { Album, Song } from './data';
 
-export function Player({ song, album }: { song: string; album: AlbumType }) {
+export function Player({
+  song,
+  album,
+  elapsed,
+  isPlaying,
+  isFavorite,
+  onSeek,
+  onTogglePlaying,
+  onPreviousSong,
+  onNextSong,
+  onToggleFavorite,
+}: {
+  song: Song;
+  album: Album;
+  elapsed: number;
+  isPlaying: boolean;
+  isFavorite: boolean;
+  onSeek: (seconds: number) => void;
+  onTogglePlaying: () => void;
+  onPreviousSong: () => void;
+  onNextSong: () => void;
+  onToggleFavorite: () => void;
+}) {
+  const [volume, setVolume] = useState(70);
+
   return (
     <Wrapper>
-      <AlbumImage>
-        <ImageWrapper>
-          <Image src={album.image} />
-        </ImageWrapper>
-      </AlbumImage>
-
+      <ArtworkArea>
+        <Artwork
+          src={album.image}
+          alt={`${album.name} album cover`}
+          width={640}
+          height={640}
+          data-playing={isPlaying}
+        />
+      </ArtworkArea>
       <MainContent>
-        <SongInfoWrapper>
+        <SongInfoRow>
           <SongInfo>
-            <SongName>{song}</SongName>
+            <SongName>{song.title}</SongName>
             <ArtistName>{album.artist}</ArtistName>
           </SongInfo>
-          <MoreButton />
-        </SongInfoWrapper>
+          <SmallControl
+            type="button"
+            aria-label={
+              isFavorite ? 'Remove from favorites' : 'Add to favorites'
+            }
+            aria-pressed={isFavorite}
+            onClick={onToggleFavorite}
+          >
+            <FiStar size={23} fill={isFavorite ? 'currentColor' : 'none'} />
+          </SmallControl>
+          <MoreButton disabled />
+        </SongInfoRow>
 
         <Track>
-          <TrackTimeline />
-          <TrackTimeInfo>
-            <span>0.00</span>
-            <span>-4.00</span>
-          </TrackTimeInfo>
+          <SeekSlider
+            aria-label="Playback position"
+            aria-valuetext={`${formatTime(elapsed)} of ${formatTime(song.duration)}`}
+            type="range"
+            min={0}
+            max={song.duration}
+            value={elapsed}
+            onChange={(event) => onSeek(Number(event.target.value))}
+            style={{
+              background: `linear-gradient(to right, rgba(255,255,255,.65) ${(elapsed / song.duration) * 100}%, rgba(255,255,255,.2) ${(elapsed / song.duration) * 100}%)`,
+            }}
+          />
+          <TrackTimes>
+            <span>{formatTime(elapsed)}</span>
+            <span>−{formatTime(song.duration - elapsed)}</span>
+          </TrackTimes>
         </Track>
 
-        <Controls>
-          <Control onClick={() => console.log('Prev song')}>
+        <Transport>
+          <TransportButton
+            type="button"
+            onClick={onPreviousSong}
+            aria-label="Previous song"
+          >
             <FaBackward size={32} />
-          </Control>
-          <Control onClick={() => console.log('Play / Pause')}>
-            <FaPlay size={32} />
-          </Control>
-          <Control onClick={() => console.log('Next song')}>
+          </TransportButton>
+          <TransportButton
+            type="button"
+            onClick={onTogglePlaying}
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+          >
+            {isPlaying ? <FaPause size={37} /> : <FaPlay size={37} />}
+          </TransportButton>
+          <TransportButton
+            type="button"
+            onClick={onNextSong}
+            aria-label="Next song"
+          >
             <FaForward size={32} />
-          </Control>
-        </Controls>
+          </TransportButton>
+        </Transport>
 
         <VolumeControl>
-          <FaVolumeOff size={12} />
-          <VolumeSlider type="range" />
-          <FaVolumeUp size={12} />
+          <FaVolumeOff size={15} aria-hidden="true" />
+          <VolumeSlider
+            type="range"
+            min={0}
+            max={100}
+            value={volume}
+            aria-label="Volume"
+            onChange={(event) => setVolume(Number(event.target.value))}
+          />
+          <FaVolumeUp size={15} aria-hidden="true" />
         </VolumeControl>
 
-        <IconButtons>
-          <FaFire size={20} color="var(--sl-color-gray-5)" />
-          <FaPodcast size={20} color="var(--sl-color-text-accent)" />
-          <FaListUl size={20} color="var(--sl-color-text-accent)" />
-        </IconButtons>
+        <UtilityControls aria-hidden="true">
+          <UtilityIcon>
+            <FiMessageCircle size={24} />
+          </UtilityIcon>
+          <UtilityIcon>
+            <FiAirplay size={24} />
+          </UtilityIcon>
+          <UtilityIcon>
+            <FiList size={25} />
+          </UtilityIcon>
+        </UtilityControls>
       </MainContent>
     </Wrapper>
   );
@@ -69,188 +142,196 @@ export function Player({ song, album }: { song: string; album: AlbumType }) {
 
 const Wrapper = styled('div', {
   base: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    padding: '0px 24px 16px 24px',
+    minHeight: 'min(660px, calc(100dvh - 70px))',
+    padding: '0 28px max(20px, env(safe-area-inset-bottom))',
+    color: '#fff',
+    colorScheme: 'dark',
   },
 });
-
-const AlbumImage = styled('div', {
+const ArtworkArea = styled('div', {
   base: {
-    position: 'relative',
-    marginBottom: '40px',
+    display: 'grid',
+    placeItems: 'center',
     flex: '1',
+    minHeight: '120px',
+    padding: '20px 12px 30px',
   },
 });
-
-const ImageWrapper = styled('div', {
-  base: {
-    zIndex: '99',
-    position: 'absolute',
-    top: '0',
-    right: '0',
-    bottom: '0',
-    left: '0',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
-const Image = styled('img', {
+const Artwork = styled('img', {
   base: {
     display: 'block',
-    height: '100%',
-    maxHeight: '300px',
-    width: 'auto',
-    borderRadius: '8px',
-    boxShadow: '0px 0px 1px rgba(255, 255, 255, 0.3)',
-    zIndex: '999',
+    width: 'min(100%, 320px)',
+    height: 'auto',
+    maxHeight: '100%',
+    aspectRatio: '1',
+    objectFit: 'contain',
+    borderRadius: '10px',
+    boxShadow: '0 15px 45px rgb(0 0 0 / 25%)',
+    transform: 'scale(.91)',
+    transition: 'transform 400ms ease',
+    '&[data-playing="true"]': { transform: 'scale(1)' },
+    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
   },
 });
-
 const MainContent = styled('div', {
   base: {
     display: 'flex',
     flexDirection: 'column',
-    flex: 'none',
+    flexShrink: '0',
+    gap: '22px',
   },
 });
-
-const SongInfoWrapper = styled('div', {
-  base: { display: 'flex', alignItems: 'center' },
+const SongInfoRow = styled('div', {
+  base: { display: 'flex', alignItems: 'center', gap: '4px' },
 });
-
-const SongInfo = styled('span', {
+const SongInfo = styled('div', {
   base: {
     display: 'flex',
     flexDirection: 'column',
     flex: '1',
-    lineHeight: '1.4',
+    minWidth: '0',
+    gap: '3px',
   },
 });
-
 const SongName = styled('span', {
   base: {
-    fontSize: '18px',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    fontSize: '20px',
     fontWeight: '700',
-    color: 'var(--sl-color-white)',
-    lineHeight: '1.4',
+    letterSpacing: '-0.025em',
+    lineHeight: '1.3',
   },
 });
-
-const ArtistName = styled('div', {
-  base: { fontSize: '18px', color: 'var(--sl-color-text-accent)' },
+const ArtistName = styled('span', {
+  base: { fontSize: '17px', color: 'rgb(255 255 255 / 65%)' },
 });
-
-const Track = styled('div', {
+const SmallControl = styled('button', {
   base: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '16px 0px',
-  },
-});
-
-const TrackTimeline = styled('div', {
-  base: {
-    width: '100%',
-    height: '3px',
-    backgroundColor: 'var(--sl-color-gray-5)',
-    marginBottom: '4px',
-    position: 'relative',
-    borderRadius: '1px',
-    '&:before': {
-      content: "' '",
-      width: '6px',
-      height: '6px',
-      borderRadius: '50%',
-      position: 'absolute',
-      left: '0',
-      top: '-2px',
-      backgroundColor: 'var(--sl-color-gray-3)',
-    },
-  },
-});
-
-const TrackTimeInfo = styled('div', {
-  base: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    color: 'var(--sl-color-gray-3)',
-    fontSize: '12px',
-  },
-});
-
-const Controls = styled('div', {
-  base: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '16px 24px',
-  },
-});
-
-const Control = styled('button', {
-  base: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'none',
-    border: 'none',
-    width: '56px',
-    height: '56px',
+    display: 'grid',
+    placeItems: 'center',
+    flexShrink: '0',
+    width: '36px',
+    height: '36px',
     borderRadius: '50%',
-    color: 'var(--sl-color-white)',
-    outline: 'none',
-    '&:active': { backgroundColor: 'var(--sl-color-gray-4)' },
+    color: '#fff',
+    cursor: 'pointer',
+    '&:hover': { background: 'rgb(255 255 255 / 10%)' },
+    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '2px' },
   },
 });
-
+const Track = styled('div', {
+  base: { display: 'flex', flexDirection: 'column', gap: '9px' },
+});
+const SeekSlider = styled('input', {
+  base: {
+    appearance: 'none',
+    width: '100%',
+    height: '5px',
+    margin: '0',
+    borderRadius: '999px',
+    cursor: 'pointer',
+    '&::-webkit-slider-thumb': {
+      appearance: 'none',
+      width: '7px',
+      height: '7px',
+      borderRadius: '50%',
+      background: '#fff',
+    },
+    '&::-moz-range-thumb': {
+      width: '7px',
+      height: '7px',
+      border: '0',
+      borderRadius: '50%',
+      background: '#fff',
+    },
+    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '5px' },
+  },
+});
+const TrackTimes = styled('div', {
+  base: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    color: 'rgb(255 255 255 / 45%)',
+    fontSize: '11px',
+    fontVariantNumeric: 'tabular-nums',
+  },
+});
+const Transport = styled('div', {
+  base: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 22px',
+  },
+});
+const TransportButton = styled('button', {
+  base: {
+    display: 'grid',
+    placeItems: 'center',
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    color: '#fff',
+    cursor: 'pointer',
+    '&:active': {
+      transform: 'scale(.93)',
+      background: 'rgb(255 255 255 / 8%)',
+    },
+    '&:focus-visible': { outline: '2px solid #fff' },
+  },
+});
 const VolumeControl = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    color: 'var(--sl-color-gray-3)',
+    gap: '12px',
+    color: 'rgb(255 255 255 / 55%)',
+    paddingTop: '4px',
   },
 });
-
 const VolumeSlider = styled('input', {
   base: {
     appearance: 'none',
-    width: '100%',
-    height: '34px',
     flex: '1',
-    margin: '0px 12px',
-    padding: '32px 0px',
-    background: 'none',
-    '&:focus': { outline: 'none' },
-    '&::-webkit-slider-runnable-track': {
-      width: '100%',
-      height: '3px',
-      background: 'var(--sl-color-gray-4)',
-      borderRadius: '1px',
-      cursor: 'pointer',
-    },
+    minWidth: '0',
+    height: '4px',
+    margin: '12px 0',
+    borderRadius: '999px',
+    background: 'rgb(255 255 255 / 25%)',
+    cursor: 'pointer',
     '&::-webkit-slider-thumb': {
       appearance: 'none',
-      boxShadow: '0px 0px 16px rgba(0, 0, 0, 0.2)',
-      height: '20px',
       width: '20px',
+      height: '20px',
       borderRadius: '50%',
-      background: 'var(--sl-color-white)',
-      cursor: 'pointer',
-      marginTop: '-9px',
+      background: '#fff',
+      boxShadow: '0 2px 8px rgb(0 0 0 / 20%)',
     },
+    '&::-moz-range-thumb': {
+      width: '20px',
+      height: '20px',
+      border: '0',
+      borderRadius: '50%',
+      background: '#fff',
+    },
+    '&:focus-visible': { outline: '2px solid #fff', outlineOffset: '7px' },
   },
 });
-
-const IconButtons = styled('div', {
+const UtilityControls = styled('div', {
+  base: { display: 'flex', justifyContent: 'space-between', padding: '0 20px' },
+});
+const UtilityIcon = styled('span', {
   base: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: '16px',
+    display: 'grid',
+    placeItems: 'center',
+    width: '48px',
+    height: '40px',
+    color: 'rgb(255 255 255 / 65%)',
   },
 });

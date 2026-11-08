@@ -109,13 +109,13 @@ const Form = styled('form', {
 
 const Input = styled('input', {
   base: {
-    color: 'var(--sl-color-text)',
-    backgroundColor: 'var(--sl-color-bg)',
+    color: 'var(--example-text)',
+    backgroundColor: 'var(--example-field-bg)',
     padding: '12px',
     fontSize: '16px',
-    border: '2px solid var(--sl-color-gray-4)',
+    border: '2px solid var(--example-border)',
     borderRadius: '8px',
     outline: 'none',
-    '&:focus': { borderColor: 'var(--sl-color-accent)' },
+    '&:focus': { borderColor: 'var(--example-indicator)' },
   },
 });

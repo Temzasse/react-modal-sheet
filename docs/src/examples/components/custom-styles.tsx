@@ -58,6 +58,7 @@ const SheetWrapper = styled('div', {
     boxShadow:
       '0 1px 3px rgba(0, 0, 0, 0.1),\n    0 1px 2px rgba(0, 0, 0, 0.2),\n    0 12px 20px rgba(0, 0, 0, 0.3)',
     backgroundColor: 'var(--example-sheet-bg)',
+    color: 'var(--example-text)',
   },
 });
 
@@ -71,7 +72,7 @@ const HeaderImage = styled('div', {
     width: '100%',
     height: '150px',
     marginBottom: '16px',
-    backgroundColor: 'var(--sl-color-gray-6)',
+    backgroundColor: 'var(--example-card-bg)',
   },
 });
 
@@ -100,16 +101,16 @@ const Paragraph = styled('p', {
 
 const Input = styled('input', {
   base: {
-    color: 'var(--sl-color-text)',
-    backgroundColor: 'var(--sl-color-bg)',
+    color: 'var(--example-text)',
+    backgroundColor: 'var(--example-field-bg)',
     padding: '12px',
     fontSize: '16px',
-    border: '2px solid var(--sl-color-gray-4)',
+    border: '2px solid var(--example-border)',
     borderRadius: '8px',
     outline: 'none',
     width: '100%',
     marginBottom: '8px',
-    '&:focus': { borderColor: 'var(--sl-color-accent)' },
+    '&:focus': { borderColor: 'var(--example-indicator)' },
   },
 });
 

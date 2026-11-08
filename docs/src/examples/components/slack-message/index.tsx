@@ -109,12 +109,12 @@ const Wrapper = styled('div', {
 const Topbar = styled('div', {
   base: {
     width: '100%',
-    backgroundColor: 'var(--sl-color-bg)',
+    backgroundColor: 'var(--example-app-bg)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '8px 16px',
-    color: 'var(--sl-color-white)',
+    color: 'var(--example-text)',
   },
 });
 
@@ -123,7 +123,7 @@ const Logo = styled('div', {
     width: '32px',
     height: '32px',
     borderRadius: '12px',
-    backgroundColor: 'var(--sl-color-accent-low)',
+    backgroundColor: 'slategray',
   },
 });
 
@@ -141,7 +141,7 @@ const Content = styled('div', {
     paddingRight: '16px',
     paddingTop: 'max(16px, env(safe-area-inset-top))',
     paddingBottom: '56px',
-    backgroundColor: 'var(--sl-color-gray-5)',
+    backgroundColor: 'var(--example-border)',
   },
 });
 
@@ -153,8 +153,8 @@ const Fab = styled('button', {
     width: '48px',
     height: '48px',
     borderRadius: '50%',
-    backgroundColor: 'var(--sl-color-text-accent)',
-    color: 'var(--sl-color-bg)',
+    backgroundColor: 'var(--example-app-bg)',
+    color: 'var(--example-text)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -172,7 +172,7 @@ const MessageSheet = styled(Sheet, {
       backgroundColor: 'rgba(0, 0, 0, 0.3) !important',
     },
     '& .react-modal-sheet-drag-indicator': {
-      backgroundColor: 'var(--sl-color-gray-4) !important',
+      backgroundColor: 'var(--example-indicator) !important',
     },
   },
 });

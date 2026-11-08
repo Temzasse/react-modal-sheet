@@ -58,6 +58,7 @@ export function App({ exampleSlug, documentationUrl, exampleBaseUrl }: Props) {
 
 const Navigation = styled('nav', {
   base: {
+    'html[data-example-slug="apple-music"] &': { display: 'none' },
     position: 'fixed',
     top: 'max(16px, env(safe-area-inset-top))',
     left: 'max(24px, env(safe-area-inset-left))',

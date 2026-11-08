@@ -58,8 +58,8 @@ const ButtonBase = styled('button', {
         },
       },
       secondary: {
-        backgroundColor: 'var(--sl-color-gray-6)',
-        color: 'var(--sl-color-white)',
+        backgroundColor: 'var(--example-card-bg)',
+        color: 'var(--example-text)',
       },
     },
   },
@@ -72,6 +72,10 @@ export const Screen = styled('div', {
     width: '100%',
     minHeight: '100%',
     paddingTop: 'env(safe-area-inset-top)',
+    'html[data-example-layout="custom"] &': {
+      backgroundColor: 'var(--example-app-bg)',
+      color: 'var(--example-text)',
+    },
   },
 });
 

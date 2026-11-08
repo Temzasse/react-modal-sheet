@@ -113,7 +113,7 @@ const CurrentSnapText = styled('div', {
     },
     '& > span:last-child': {
       fontSize: '14px',
-      color: 'var(--sl-color-gray-3)',
+      color: 'var(--example-muted)',
     },
   },
 });
@@ -129,7 +129,7 @@ const Footer = styled(motion.div, {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'var(--example-sheet-bg)',
-    borderTop: '1px solid var(--sl-color-gray-5)',
+    borderTop: '1px solid var(--example-border)',
     pointerEvents: 'auto',
     '@media (min-width: 720px)': {
       maxWidth: '720px',

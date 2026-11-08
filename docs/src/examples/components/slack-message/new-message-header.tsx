@@ -20,7 +20,7 @@ export function NewMessageHeader({
   return (
     <Wrapper>
       <CloseWrapper {...closeButton.buttonProps} ref={ref}>
-        <CloseIcon size={24} color="var(--sl-color-white)" />
+        <CloseIcon size={24} color="var(--example-text)" />
       </CloseWrapper>
 
       <Title {...titleProps}>New Message</Title>
@@ -35,7 +35,7 @@ const Wrapper = styled('div', {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '16px',
-    color: 'var(--sl-color-white)',
+    color: 'var(--example-text)',
     position: 'relative',
   },
 });
