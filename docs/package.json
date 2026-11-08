@@ -1,0 +1,36 @@
+{
+  "name": "react-modal-sheet-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy": "npm run check && npm run build && gh-pages --dist dist --branch gh-pages --nojekyll",
+    "prepare": "panda codegen"
+  },
+  "dependencies": {
+    "@astrojs/react": "7.1.4",
+    "@astrojs/starlight": "0.42.10",
+    "astro": "7.4.7",
+    "motion": "14.10.1",
+    "react": "19.3.1",
+    "react-aria": "3.53.1",
+    "react-dom": "19.3.1",
+    "react-icons": "5.7.0",
+    "react-stately": "3.51.0",
+    "react-use-measure": "2.1.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@pandacss/dev": "2.5.0",
+    "@pandacss/preset-base": "2.5.0",
+    "@pandacss/preset-panda": "2.5.0",
+    "@pandacss/vite": "2.5.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "gh-pages": "6.3.0",
+    "typescript": "6.0.3"
+  }
+}

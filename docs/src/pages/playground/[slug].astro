@@ -1,0 +1,14 @@
+---
+import { examples } from '../../examples/registry';
+import PlaygroundLayout from '../../layouts/playground.astro';
+
+export function getStaticPaths() {
+  return examples.map(({ slug, title }) => ({
+    params: { slug },
+    props: { slug, title },
+  }));
+}
+const { slug, title } = Astro.props;
+---
+
+<PlaygroundLayout slug={slug} title={title} />

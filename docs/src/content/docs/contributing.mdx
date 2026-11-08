@@ -1,0 +1,41 @@
+---
+title: Contributing
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+If you find a bug or have a feature request please open an issue. If you want to contribute code please open a pull request.
+
+## Running tests
+
+Install dependencies and browser binaries once:
+
+```sh
+npm ci
+npx playwright install chromium webkit
+```
+
+Run all tests with `npm test`, Node unit and SSR tests with `npm run test:unit`, or browser interaction tests with `npm run test:browser`. Run only the server-rendering checks with `npm run test:ssr`; they use React's `renderToString` in Node and require no browser or framework app.
+
+Browser tests use [Vitest Browser Mode](https://vitest.dev/guide/browser/) with real Motion animations in Chromium and WebKit. They run independently of the docs server. On Linux, install browser system dependencies with `npx playwright install --with-deps chromium webkit`.
+
+For interactive debugging, run `npm run test:browser -- --watch --browser.headless=false`. Failure screenshots are saved under `.vitest/attachments/` and uploaded by CI.
+
+## Running the docs and examples
+
+From the repository root:
+
+```sh
+npm ci --prefix docs
+npm run dev
+```
+
+Open http://localhost:4321/react-modal-sheet/. Documentation and all 16 examples run in the same Astro project. Changes to the library's `src/` and example components in `docs/src/examples/` update the previews automatically; a library build or package-linking step is unnecessary.
+
+Use `npm run docs:check` to check documentation and example types, and `npm run docs:build` to build the static site. Use `npm run build` when you need the library's distributable files.
+
+<Aside type="tip">
+
+To try examples on your phone, run `npm run dev -- --host` and open the printed network URL with `/react-modal-sheet/` appended. Your phone and computer must be on the same network. Launch examples fullscreen to try native gestures and the virtual keyboard.
+
+</Aside>

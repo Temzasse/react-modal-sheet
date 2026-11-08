@@ -1,0 +1,25 @@
+import { styled } from '../../../../styled-system/jsx';
+import { ExampleLayout } from '../example-layout';
+import { A11ySheet } from './a11y-sheet';
+
+export function A11y() {
+  return (
+    <ExampleLayout
+      title="Accessibility"
+      description="An accessible sheet with the help of React Aria."
+    >
+      {(state) => (
+        <A11ySheet state={state} label="Accessible bottom sheet">
+          <SheetContent>
+            <strong>This is a simple a11y sheet 🦾</strong>
+            <p>Your content goes here...</p>
+          </SheetContent>
+        </A11ySheet>
+      )}
+    </ExampleLayout>
+  );
+}
+
+const SheetContent = styled('div', {
+  base: { textAlign: 'center', paddingTop: '24px' },
+});

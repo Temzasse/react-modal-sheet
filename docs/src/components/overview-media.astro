@@ -1,0 +1,74 @@
+---
+import { css, cx } from '../../styled-system/css';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const examples = [
+  { slug: 'apple-maps', title: 'Apple Maps', width: 499 },
+  { slug: 'apple-music', title: 'Apple Music', width: 505 },
+  { slug: 'snap-points', title: 'Snap points', width: 499 },
+  { slug: 'scrollable', title: 'Scrollable content', width: 499 },
+];
+const styles = {
+  root: cx('not-content', css({ marginBlock: '2rem 3rem' })),
+  hero: css({
+    display: 'block',
+    width: '100%',
+    height: 'auto',
+    borderRadius: '12px',
+  }),
+  gallery: css({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    gap: '1rem',
+    marginTop: '1.5rem',
+    '@media (min-width: 50rem)': {
+      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+    },
+  }),
+  example: css({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '.75rem',
+    color: 'var(--sl-color-text-accent)',
+    textDecoration: 'none',
+    fontSize: '.875rem',
+    fontWeight: '600',
+    '&:hover': { textDecoration: 'underline' },
+    '&:focus-visible': { outlineOffset: '6px' },
+  }),
+  recording: css({
+    display: 'block',
+    width: '100%',
+    height: 'auto',
+    border: '1px solid var(--sl-color-gray-5)',
+    borderRadius: '10px',
+  }),
+};
+---
+
+<div class={styles.root}>
+  <img
+    class={styles.hero}
+    src={`${base}/media/hero.jpg`}
+    alt="React Modal Sheet — a bottom sheet surrounded by colorful pixel artwork"
+    width="2376"
+    height="1144"
+    decoding="async"
+  />
+  <div class={styles.gallery}>
+    {examples.map(({ slug, title, width }) => (
+      <a class={styles.example} href={`${base}/examples/${slug}/`}>
+        <img
+          class={styles.recording}
+          src={`${base}/media/example-${slug}.gif`}
+          alt={`${title} animated demo`}
+          width={width}
+          height="1080"
+          loading="lazy"
+          decoding="async"
+        />
+        <span>{title} →</span>
+      </a>
+    ))}
+  </div>
+</div>

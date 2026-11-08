@@ -1,0 +1,193 @@
+---
+import { css, cx } from '../../styled-system/css';
+
+interface Props {
+  slug: string;
+  title: string;
+}
+const { slug, title } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const url = `${base}/playground/${slug}/`;
+const hintStyles = css.raw({
+  margin: '0',
+  padding: '12px 16px',
+  fontSize: '.8125rem',
+  color: 'var(--sl-color-gray-2)',
+});
+const previewStyles = {
+  root: cx(
+    'not-content',
+    css({
+      marginBlock: '1.75rem',
+      border: '1px solid var(--sl-color-gray-5)',
+      borderRadius: '12px',
+      overflow: 'hidden',
+    })
+  ),
+  toolbar: css({
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '12px',
+    padding: '12px',
+    background: 'var(--sl-color-bg-nav)',
+  }),
+  viewportControls: css({
+    display: 'flex',
+    gap: '4px',
+    '@media (max-width: 50rem), (pointer: coarse)': { display: 'none' },
+  }),
+  viewportButton: css({
+    padding: '6px 12px',
+    border: '1px solid transparent',
+    borderRadius: '6px',
+    background: 'transparent',
+    color: 'var(--sl-color-text)',
+    cursor: 'pointer',
+    font: 'inherit',
+    fontSize: '.875rem',
+    '&[aria-pressed="true"]': {
+      background: 'var(--sl-color-bg)',
+      borderColor: 'var(--sl-color-gray-5)',
+    },
+  }),
+  fullscreenLink: css({
+    fontSize: '.875rem',
+    fontWeight: '600',
+    color: 'var(--sl-color-text-accent)',
+    '@media (max-width: 50rem), (pointer: coarse)': {
+      display: 'block',
+      width: '100%',
+      textAlign: 'center',
+      padding: '8px',
+    },
+  }),
+  stage: css({
+    position: 'relative',
+    padding: '16px',
+    background: 'var(--sl-color-gray-6)',
+    resize: 'vertical',
+    overflow: 'hidden',
+    height: 'var(--desktop-preview-height, 672px)',
+    minHeight: '280px',
+    '[data-viewport="phone"] &': { height: '876px' },
+    '@media (max-width: 50rem), (pointer: coarse)': { display: 'none' },
+  }),
+  frame: css({
+    position: 'absolute',
+    top: '16px',
+    left: '16px',
+    display: 'block',
+    width: '1280px',
+    height: 'calc((100% - 32px) / var(--preview-scale, 1))',
+    transform: 'scale(var(--preview-scale, 1))',
+    transformOrigin: 'top left',
+    border: '1px solid rgba(150, 150, 150, 0.25)',
+    borderRadius: '8px',
+    background: 'var(--sl-color-bg)',
+    '[data-viewport="phone"] &': {
+      width: 'min(390px, calc(100% - 32px))',
+      height: 'calc(100% - 40px)',
+      left: '50%',
+      transform: 'translateX(-50%)',
+    },
+  }),
+  mobileHint: css(hintStyles, {
+    display: 'none',
+    '@media (max-width: 50rem), (pointer: coarse)': { display: 'block' },
+  }),
+  desktopHint: css(hintStyles, {
+    '@media (max-width: 50rem), (pointer: coarse)': { display: 'none' },
+  }),
+};
+---
+
+<section
+  data-example-preview
+  data-viewport="phone"
+  class={previewStyles.root}
+  aria-label={`${title} interactive preview`}
+>
+  <div class={previewStyles.toolbar}>
+    <div
+      class={previewStyles.viewportControls}
+      role="group"
+      aria-label="Preview width"
+    >
+      {['Desktop', 'Phone'].map((label) => (
+        <button
+          type="button"
+          data-viewport={label.toLowerCase()}
+          aria-pressed={label === 'Phone' ? 'true' : 'false'}
+          class={previewStyles.viewportButton}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+    <a href={url} class={previewStyles.fullscreenLink}>
+      Open fullscreen <span aria-hidden="true">→</span>
+    </a>
+  </div>
+  <div data-preview-stage class={previewStyles.stage}>
+    <iframe
+      data-src={url}
+      title={`${title} live example`}
+      loading="lazy"
+      allow="fullscreen"
+      tabindex="0"
+      class={previewStyles.frame}
+    ></iframe>
+  </div>
+  <p class={previewStyles.mobileHint}>
+    Launch the example fullscreen to try touch gestures, animations, and the
+    virtual keyboard.
+  </p>
+  <p class={previewStyles.desktopHint}>
+    Interact with the example, switch viewport widths, or open it fullscreen.
+    Phone mode previews layout; use a real phone for touch and keyboard
+    behavior.
+  </p>
+</section>
+<script>
+  const desktop = window.matchMedia(
+    '(min-width: 50.01rem) and (pointer: fine)'
+  );
+  for (const preview of document.querySelectorAll<HTMLElement>(
+    '[data-example-preview]'
+  )) {
+    const frame = preview.querySelector('iframe');
+    const stage = preview.querySelector<HTMLElement>('[data-preview-stage]');
+    if (stage) {
+      // Start desktop mode at 1280 × 800, scaled to fit the documentation column.
+      const observer = new ResizeObserver(([entry]) => {
+        if (!entry) return;
+        const scale = Math.min(1, entry.contentRect.width / 1280);
+        stage.style.setProperty('--preview-scale', String(scale));
+        stage.style.setProperty(
+          '--desktop-preview-height',
+          `${800 * scale + 32}px`
+        );
+      });
+      observer.observe(stage);
+    }
+    function updateFrame() {
+      if (desktop.matches && frame && !frame.src)
+        frame.src = frame.dataset.src ?? '';
+      if (!desktop.matches) frame?.removeAttribute('src');
+    }
+    updateFrame();
+    desktop.addEventListener('change', updateFrame);
+    for (const button of preview.querySelectorAll<HTMLButtonElement>(
+      '[data-viewport]'
+    )) {
+      button.addEventListener('click', () => {
+        preview.dataset.viewport = button.dataset.viewport;
+        for (const control of preview.querySelectorAll('[data-viewport]')) {
+          control.setAttribute('aria-pressed', String(control === button));
+        }
+      });
+    }
+  }
+</script>

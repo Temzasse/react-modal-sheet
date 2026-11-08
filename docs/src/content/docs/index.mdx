@@ -1,0 +1,57 @@
+---
+title: Sheet happens. Handle it smoothly.
+description: Flexible, gesture-driven bottom sheets for React, powered by Motion.
+template: splash
+hero:
+  tagline: React Modal Sheet gives you flexible bottom sheets for your React apps. Compose your own UI, fine-tune every gesture, and bring native-feeling interactions to the web.
+  actions:
+    - text: Get started
+      link: ./getting-started/installation/
+      icon: right-arrow
+    - text: Try the examples
+      link: ./examples/
+      variant: secondary
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import OverviewMedia from '../../components/overview-media.astro';
+
+<OverviewMedia />
+
+<CardGrid>
+  <Card title="Compose your sheet" icon="puzzle">
+    Combine the container, header, content, and backdrop. Use the pieces your
+    interface needs.
+  </Card>
+  <Card title="Built for touch" icon="mobile-android">
+    Drag, flick, and snap between heights. Handle scrolling and the virtual
+    keyboard.
+  </Card>
+  <Card title="Make it yours" icon="pencil">
+    Customize styles, animate with Motion values, or start with unstyled
+    components.
+  </Card>
+  <Card title="Try it anywhere" icon="laptop">
+    Explore all interactive examples with desktop previews and fullscreen mobile
+    experiences.
+  </Card>
+</CardGrid>
+
+## Start building
+
+```sh
+npm install react-modal-sheet motion
+```
+
+<CardGrid>
+  <LinkCard
+    title="Your first sheet"
+    href="./getting-started/usage/"
+    description="Go from installation to a working bottom sheet."
+  />
+  <LinkCard
+    title="API reference"
+    href="./reference/props/"
+    description="Find props, compound components, methods, and Motion values."
+  />
+</CardGrid>

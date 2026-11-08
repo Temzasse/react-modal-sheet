@@ -1,0 +1,158 @@
+---
+title: Scrolling behavior
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The `Sheet.Content` component manages scroll interactions internally and provides several ways to control scrolling:
+
+### Basic scrollable content
+
+```tsx
+function ScrollableExample() {
+  return (
+    <Sheet>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>
+          {/* Long content that needs scrolling */}
+          <div style={{ height: '200vh' }}>Long content here...</div>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+### Controlling scroll behavior with snap points
+
+You can disable scrolling conditionally using the `disableScroll` prop. This is useful when you want content to be scrollable only at certain snap points:
+
+```tsx
+const snapPoints = [0, 0.5, 1];
+
+function ConditionalScrollExample() {
+  return (
+    <Sheet snapPoints={snapPoints} initialSnap={1}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Only allow scrolling when at the top snap point (index 2)
+          disableScroll={(state) => state.currentSnap !== 2}
+        >
+          <div style={{ height: '200vh' }}>Long content here...</div>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+### Dynamic drag control
+
+Similarly, you can control when dragging is enabled based on scroll position or snap point:
+
+```tsx
+function DynamicDragExample() {
+  return (
+    <Sheet>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Disable drag when not scrolled to top
+          disableDrag={(state) => state.scrollPosition !== 'top'}
+        >
+          <div style={{ height: '200vh' }}>Long content here...</div>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+The scroll state provides:
+
+- `scrollPosition`: `'top'`, `'bottom'`, `'middle'`, or `undefined`
+- `currentSnap`: Current snap point index (if using snap points)
+
+### Creating custom scrollers
+
+If you need more control over the scrollable area, eg. when you don't want the whole content area to be scrollable, you can disable the default scrolling behavior of the `Sheet.Content` and implement your own scroller with the help of `useScrollPosition` and `useVirtualKeyboard` utility hooks.
+
+<Aside type="note">
+
+These hooks are internally used by the `Sheet.Content` component so you shouldn't need to use them unless you are implementing a custom scroller. However they are general purpose hooks so you can use them in other parts of your app as well if you want 😊
+
+</Aside>
+
+```tsx
+import {
+  Sheet,
+  useScrollPosition,
+  useVirtualKeyboard,
+} from 'react-modal-sheet';
+
+function CustomScrollerExample() {
+  const [isOpen, setOpen] = useState(false);
+
+  const { scrollRef, scrollPosition } = useScrollPosition({
+    isEnabled: isOpen,
+  });
+
+  const { keyboardHeight } = useVirtualKeyboard({
+    isEnabled: isOpen,
+  });
+
+  /**
+   * If you use `var(--keyboard-inset-height)` CSS variable you can just call
+   * `useVirtualKeyboard()` without destructuring anything from it:
+   *
+   * useVirtualKeyboard({ isEnabled: isOpen });
+   */
+
+  return (
+    // Disable default keyboard avoidance
+    <Sheet avoidKeyboard={false} isOpen={isOpen} onClose={() => setOpen(false)}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Disable default scrolling
+          disableScroll
+          // Dragging is still managed by `Sheet.Content` so we control it here
+          disableDrag={scrollPosition !== 'top'}
+        >
+          <div
+            style={{
+              // Use CSS variable managed by `useVirtualKeyboard`
+              paddingBottom: 'var(--keyboard-inset-height)',
+              // Alternatively apply keyboard padding via pixel value (maybe you want to add some extra padding to it)
+              // paddingBottom: keyboardHeight,
+              // Some layout styles for custom content
+              height: '100%',
+              display: 'grid',
+              gridTemplateRows: 'auto 1fr auto',
+            }}
+          >
+            <div>Some content here...</div>
+
+            <div
+              // Pass ref to the custom scroller so we can track its scroll position
+              ref={scrollRef}
+              // Make it scrollable
+              style={{ overflowY: 'auto' }}
+            >
+              <div style={{ height: '400vh' }}>Long content here...</div>
+            </div>
+
+            <div>More content here...</div>
+          </div>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```

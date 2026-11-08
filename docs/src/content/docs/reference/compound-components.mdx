@@ -1,0 +1,108 @@
+---
+title: Compound components
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## `Sheet`
+
+Sheet is the root element that wraps the whole sheet. It renders a fixed positioned wrapper element that covers the whole screen to contain the actual sheet that is animated in (don't worry the root element is not interactive when the sheet is closed). All sheet compound components should be rendered within `Sheet`.
+
+<Aside type="note" title="Rendered element">
+
+`motion.div`.
+
+</Aside>
+
+## `Sheet.Container`
+
+Sheet container is positioned above the sheet backdrop and by default adds a small shadow and rounded corners to the sheet. `Sheet.Content` and `Sheet.Header` should be rendered inside `Sheet.Container`.
+
+<Aside type="note" title="Rendered element">
+
+`motion.div`.
+
+</Aside>
+
+## `Sheet.Header`
+
+Sheet header acts as a drag target and has a dragging direction indicator. Rendering any children inside `Sheet.Header` replaces the default header.
+
+<Aside type="note" title="Rendered element">
+
+`motion.div`.
+
+</Aside>
+
+### Header props
+
+| Name          | Required | Default | Description                        |
+| ------------- | -------- | ------- | ---------------------------------- |
+| `disableDrag` | no       | false   | Disable drag for the sheet header. |
+
+## `Sheet.DragIndicator`
+
+Sheet drag indicator renders two small animated lines that indicate the dragging direction. This component is automatically included in `Sheet.Header` but can be used standalone for custom header designs. The indicator lines animate with the sheet's drag state to provide visual feedback.
+
+<Aside type="note" title="Rendered element">
+
+Two `motion.span` elements.
+
+</Aside>
+
+### Usage example
+
+```tsx
+function CustomHeaderExample() {
+  return (
+    <Sheet>
+      <Sheet.Container>
+        <Sheet.Header>
+          <div style={{ padding: '16px', textAlign: 'center' }}>
+            <h2>Custom Header</h2>
+            <Sheet.DragIndicator />
+          </div>
+        </Sheet.Header>
+        <Sheet.Content>
+          <p>Sheet content goes here...</p>
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+## `Sheet.Content`
+
+Sheet content acts as a drag target and handles scrollable content internally. It automatically manages scroll behavior and keyboard avoidance.
+
+<Aside type="note" title="Rendered element">
+
+`motion.div` (with internal scroller).
+
+</Aside>
+
+### Content props
+
+| Name            | Required | Default | Description                                                                                                                                                                                 |
+| --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disableDrag`   | no       | false   | Disable drag for the sheet content. Can be a boolean or a function that receives `{ scrollPosition, currentSnap }` and returns a boolean for dynamic control.                               |
+| `disableScroll` | no       | false   | Disable scrolling. Can be a boolean or a function that receives `{ scrollPosition, currentSnap }` and returns a boolean. Useful for making content only scrollable at specific snap points. |
+| `scrollRef`     | no       |         | Optional ref to the internal scroll container for accessing scroll methods.                                                                                                                 |
+
+## `Sheet.Backdrop`
+
+Sheet backdrop is a translucent overlay that helps to separate the sheet from it's background. By default the backdrop doesn't have any interaction attached to it but if you, for example, want to close the sheet when the backdrop is clicked you can provide tap handler to it which will change the rendered element from `div` to `button`.
+
+<Aside type="caution">
+
+As the element is a motion component you need to use [`onTap`](https://motion.dev/docs/react-gestures#tap) instead of `onClick` if you want to add a click handler to it.
+
+</Aside>
+
+<Aside type="note" title="Rendered element">
+
+`motion.div` or `motion.button`.
+
+</Aside>

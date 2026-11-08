@@ -1,0 +1,25 @@
+---
+import { examples } from '../../examples/registry';
+import PlaygroundLayout from '../../layouts/playground.astro';
+const slugs = examples.map(({ slug }) => slug);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<PlaygroundLayout>
+  <span
+    hidden
+    data-legacy-playground
+    data-slugs={slugs.join(',')}
+    data-base={base}
+  ></span>
+  <script>
+    // Preserve bookmarks to the previous hash-based playground.
+    const redirect = document.querySelector<HTMLElement>(
+      '[data-legacy-playground]'
+    );
+    const slug = window.location.hash.replace(/^#\//, '').replace(/\/$/, '');
+    if (redirect?.dataset.slugs?.split(',').includes(slug)) {
+      window.location.replace(`${redirect.dataset.base}/playground/${slug}/`);
+    }
+  </script>
+</PlaygroundLayout>

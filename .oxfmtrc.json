@@ -4,5 +4,6 @@
   "singleQuote": true,
   "trailingComma": "es5",
   "semi": true,
+  "astro": true,
   "sortImports": {}
 }

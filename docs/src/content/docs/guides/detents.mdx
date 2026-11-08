@@ -1,0 +1,35 @@
+---
+title: Detents
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+By default the sheet will take the full height of the page minus top padding and safe area inset. The `detent` prop controls the sheet's height behavior:
+
+- `"default"` - Sheet takes full height minus safe areas (default behavior)
+- `"content"` - Sheet height is based on its content
+- `"full"` - Sheet takes the entire viewport height with no safe area insets
+
+```tsx
+function DetentExample() {
+  return (
+    <Sheet detent="content">
+      <Sheet.Container>
+        <Sheet.Content>
+          <div style={{ height: 200 }}>Some content</div>
+        </Sheet.Content>
+      </Sheet.Container>
+    </Sheet>
+  );
+}
+```
+
+When using `detent="content"` and the sheet height changes dynamically, the sheet will grow until it hits the maximum default height, after which it becomes scrollable.
+
+It is possible to use snap points with `detent="content"` **but** the snap points are restricted by the content height. For example if one of the snap points is 800px and the sheet height is only 700px then snapping to the 800px snap point would only snap to 700px since otherwise the sheet would become detached from the bottom.
+
+<Aside type="note">
+
+If you are wondering where the term `detent` comes from it's from Apple's [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/components/presentation/sheets#ios-ipados).
+
+</Aside>

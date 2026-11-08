@@ -1,0 +1,40 @@
+---
+import { Playground } from '../components/playground';
+import PlaygroundTheme from '../components/playground-theme.astro';
+
+import '../styles/layers.css';
+import type { ExampleSlug } from '../examples/registry';
+
+interface Props {
+  slug?: ExampleSlug;
+  title?: string;
+}
+const { slug, title = 'Playground' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-playground data-example-slug={slug}>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <PlaygroundTheme />
+    <meta name="robots" content="noindex" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`}
+    />
+    <title>{title} — React Modal Sheet</title>
+  </head>
+  <body>
+    <div id="root">
+      <Playground slug={slug} client:only="react" />
+    </div>
+    <noscript>Enable JavaScript to try the interactive examples.</noscript>
+    <slot />
+  </body>
+</html>

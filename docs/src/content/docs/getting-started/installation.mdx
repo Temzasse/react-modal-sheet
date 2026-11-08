@@ -1,0 +1,53 @@
+---
+title: Installation
+---
+
+import { Code, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Steps>
+  <ol>
+    <li>
+      <p>Install React Modal Sheet in your React project:</p>
+      <Tabs syncKey="package-manager">
+        <TabItem label="npm">
+          <Code code="npm install react-modal-sheet" lang="sh" />
+        </TabItem>
+        <TabItem label="pnpm">
+          <Code code="pnpm add react-modal-sheet" lang="sh" />
+        </TabItem>
+        <TabItem label="Yarn">
+          <Code code="yarn add react-modal-sheet" lang="sh" />
+        </TabItem>
+        <TabItem label="Bun">
+          <Code code="bun add react-modal-sheet" lang="sh" />
+        </TabItem>
+      </Tabs>
+    </li>
+    <li>
+      <p>
+        Install the <code>motion</code> peer dependency, which powers the
+        sheet's gestures and animations:
+      </p>
+      <Tabs syncKey="package-manager">
+        <TabItem label="npm">
+          <Code code="npm install motion" lang="sh" />
+        </TabItem>
+        <TabItem label="pnpm">
+          <Code code="pnpm add motion" lang="sh" />
+        </TabItem>
+        <TabItem label="Yarn">
+          <Code code="yarn add motion" lang="sh" />
+        </TabItem>
+        <TabItem label="Bun">
+          <Code code="bun add motion" lang="sh" />
+        </TabItem>
+      </Tabs>
+      <p>
+        If your project already uses <a href="https://motion.dev/">Motion</a>{' '}
+        version 11 or later, you can use your existing installation.
+      </p>
+    </li>
+  </ol>
+</Steps>
+
+Continue to [Usage](/react-modal-sheet/getting-started/usage/) to create your first sheet.

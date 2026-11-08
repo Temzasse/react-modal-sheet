@@ -4,8 +4,12 @@ node_modules
 .cache
 dist
 .parcel-cache
-.yalc
-yalc.lock
 .vite
 .idea
 .vitest/
+
+# Astro generated types and cache
+docs/.astro/
+
+# Panda generated styles and types
+docs/styled-system/

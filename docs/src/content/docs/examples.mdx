@@ -1,0 +1,92 @@
+---
+title: Interactive examples
+description: Try all 16 React Modal Sheet examples on desktop and mobile.
+tableOfContents: false
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Each example has a live desktop preview, a phone-width layout, and a fullscreen launch link. On mobile and touch devices, examples always launch as full-viewport pages so sheets can use the whole screen. Use your browser’s Back button to return to the docs.
+
+<CardGrid>
+  <LinkCard
+    title="Snap points"
+    href="./snap-points/"
+    description="Drag between snap points and use buttons to snap to a specific height."
+  />
+  <LinkCard
+    title="Content height"
+    href="./content-height/"
+    description="Size the sheet to its contents with the content detent."
+  />
+  <LinkCard
+    title="Custom styles"
+    href="./custom-styles/"
+    description="Explore a completely custom sheet appearance."
+  />
+  <LinkCard
+    title="Scrollable content"
+    href="./scrollable/"
+    description="Scroll long content and drag the sheet from its header."
+  />
+  <LinkCard
+    title="Custom scroller"
+    href="./custom-scroller/"
+    description="Combine a custom scrollable region with fixed content and keyboard avoidance."
+  />
+  <LinkCard
+    title="Keyboard avoidance"
+    href="./avoid-keyboard/"
+    description="Focus the inputs on a phone to see how the sheet responds to the virtual keyboard."
+  />
+  <LinkCard
+    title="Scrolling with snap points"
+    href="./scrollable-snap-points/"
+    description="Explore the interaction between scrolling and snapping."
+  />
+  <LinkCard
+    title="Disable drag"
+    href="./disable-drag/"
+    description="Control which parts of the sheet allow dragging."
+  />
+  <LinkCard
+    title="Apple Music"
+    href="./apple-music/"
+    description="Open the music player and drag it to experience the iOS modal effect."
+  />
+  <LinkCard
+    title="Apple Maps"
+    href="./apple-maps/"
+    description="Drag the search panel over the map and explore its changing layout."
+  />
+  <LinkCard
+    title="Slack message"
+    href="./slack-message/"
+    description="Compose a message in an app-like sheet with accessibility and keyboard handling."
+  />
+  <LinkCard
+    title="Accessible sheet"
+    href="./a11y/"
+    description="Try focus management, keyboard dismissal, and a reusable React Aria sheet."
+  />
+  <LinkCard
+    title="Reduced motion"
+    href="./reduced-motion/"
+    description="Explore a sheet with reduced-motion behavior."
+  />
+  <LinkCard
+    title="Full screen"
+    href="./full-screen/"
+    description="Open a sheet that uses the entire available viewport."
+  />
+  <LinkCard
+    title="Shadow DOM"
+    href="./shadow-dom/"
+    description="Mount a sheet inside a shadow root."
+  />
+  <LinkCard
+    title="Stacked sheets"
+    href="./stacked-sheets/"
+    description="Open sheets on top of each other with a modal effect on the underlying sheet."
+  />
+</CardGrid>

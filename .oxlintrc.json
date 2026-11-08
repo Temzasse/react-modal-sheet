@@ -17,6 +17,8 @@
     "react/set-state-in-effect": "off"
   },
   "ignorePatterns": [
+    "docs/.astro/**",
+    "docs/styled-system/**",
     "**/dist/**",
     "**/.next/**",
     "**/dev-dist/**",

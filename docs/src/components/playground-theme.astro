@@ -1,0 +1,40 @@
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const embedded = window.self !== window.top;
+
+    function updateTheme() {
+      const preference = localStorage.getItem('starlight-theme');
+      const theme = embedded
+        ? window.parent.document.documentElement.dataset.theme
+        : preference === 'light' || preference === 'dark'
+          ? preference
+          : systemTheme.matches
+            ? 'dark'
+            : 'light';
+      root.dataset.theme = theme;
+      root.style.colorScheme = theme;
+      const meta = document.querySelector('meta[name="theme-color"]');
+      meta?.setAttribute(
+        'content',
+        getComputedStyle(root).getPropertyValue('--sl-color-bg').trim()
+      );
+    }
+
+    updateTheme();
+    document.addEventListener('DOMContentLoaded', updateTheme, { once: true });
+    window.addEventListener('pageshow', updateTheme);
+    window.addEventListener('storage', updateTheme);
+    systemTheme.addEventListener('change', updateTheme);
+    if (embedded) {
+      new MutationObserver(updateTheme).observe(
+        window.parent.document.documentElement,
+        {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        }
+      );
+    }
+  })();
+</script>

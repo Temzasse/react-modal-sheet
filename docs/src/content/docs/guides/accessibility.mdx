@@ -1,0 +1,96 @@
+---
+title: Accessibility
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+By default, react-modal-sheet doesn't include any built-in accessibility properties in order to not make any assumptions and to support a wide range of use cases. Additionally, not including 3rd party libraries for features like focus trapping or screen reader support makes it possible to utilize any accessibility libraries that your project may already use, eg. [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html). This also helps to reduce JS bloat by not including similar libraries multiple times in your app bundle.
+
+The example below utilizes React Aria to achieve an accessible modal-like bottom sheet that can be closed via a button rendered inside a custom sheet header.
+
+<Aside type="note">
+
+The example was built by following the React Aria's [useDialog](https://react-spectrum.adobe.com/react-aria/useDialog.html) documentation.
+
+</Aside>
+
+```tsx
+import { useRef } from 'react';
+import {
+  useOverlay,
+  useModal,
+  OverlayProvider,
+  FocusScope,
+  useButton,
+  useDialog,
+} from 'react-aria';
+import { Sheet } from 'react-modal-sheet';
+import { useOverlayTriggerState } from 'react-stately';
+
+function A11yExample() {
+  const sheetState = useOverlayTriggerState({});
+  const openButtonRef = useRef(null);
+  const openButton = useButton({ onPress: sheetState.open }, openButtonRef);
+
+  return (
+    <div>
+      <button {...openButton.buttonProps} ref={openButtonRef}>
+        Open sheet
+      </button>
+
+      <Sheet isOpen={sheetState.isOpen} onClose={sheetState.close}>
+        <OverlayProvider>
+          <FocusScope contain autoFocus restoreFocus>
+            <SheetComp sheetState={sheetState} />
+          </FocusScope>
+        </OverlayProvider>
+      </Sheet>
+    </div>
+  );
+}
+
+function SheetComp({ sheetState }) {
+  const containerRef = useRef(null);
+  const dialog = useDialog({}, containerRef);
+  const overlay = useOverlay(
+    { onClose: sheetState.close, isOpen: true, isDismissable: true },
+    containerRef
+  );
+
+  const closeButtonRef = useRef(null);
+  const closeButton = useButton(
+    { onPress: sheetState.close, 'aria-label': 'Close sheet' },
+    closeButtonRef
+  );
+
+  useModal();
+
+  // In real world usage this would be a separate React component
+  const customHeader = (
+    <div>
+      <span {...dialog.titleProps}>Some title for sheet</span>
+      <button {...closeButton.buttonProps}>🅧</button>
+    </div>
+  );
+
+  return (
+    <>
+      <Sheet.Container
+        {...overlay.overlayProps}
+        {...dialog.dialogProps}
+        ref={containerRef}
+      >
+        <Sheet.Header>{customHeader}</Sheet.Header>
+        <Sheet.Content>{/*...*/}</Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </>
+  );
+}
+```
+
+If you want to see a more real-world-like implementation you can take a look at the [Slack example](https://github.com/Temzasse/react-modal-sheet/blob/main/docs/src/examples/components/slack-message/index.tsx) and try out the related [demo](/react-modal-sheet/playground/slack-message/) (optimized for mobile).
+
+## 🔩 Building a reusable sheet
+
+In your projects it might make sense to build a reusable bottom sheet that has all the accessibility features included and can then be easily used in various places in the project. Take a look at the [A11ySheet](https://github.com/Temzasse/react-modal-sheet/blob/main/docs/src/examples/components/a11y/a11y-sheet.tsx) example to get some insight on how to build such a component. By incorporating all the accessibility features inside your own reusable component you don't need to repeat them every time you want to use a bottom sheet in your app.

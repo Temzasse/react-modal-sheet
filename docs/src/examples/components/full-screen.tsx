@@ -1,0 +1,29 @@
+import { Sheet } from 'react-modal-sheet';
+
+import { styled } from '../../../styled-system/jsx';
+import { BoxList } from './box-list';
+import { ExampleLayout } from './example-layout';
+
+export function FullScreen() {
+  return (
+    <ExampleLayout
+      title="FullScreen"
+      description="Sheet that fills the entire screen."
+    >
+      {({ isOpen, close }) => (
+        <Sheet detent="full" isOpen={isOpen} onClose={close}>
+          <SheetContainer>
+            <Sheet.Header />
+            <Sheet.Content>
+              <BoxList count={50} />
+            </Sheet.Content>
+          </SheetContainer>
+        </Sheet>
+      )}
+    </ExampleLayout>
+  );
+}
+
+const SheetContainer = styled(Sheet.Container, {
+  base: { borderRadius: '0 !important' },
+});

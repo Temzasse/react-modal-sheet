@@ -1,0 +1,78 @@
+---
+title: Virtual keyboard avoidance
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+React Modal Sheet includes built-in virtual keyboard avoidance that works automatically on mobile devices.
+When the `avoidKeyboard` prop is enabled (which is the default), the sheet will automatically add bottom padding to avoid the virtual keyboard covering input elements.
+
+```tsx
+function KeyboardExample() {
+  return (
+    <Sheet avoidKeyboard>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content>
+          <input placeholder="Your input here" />
+          <textarea placeholder="Your message here" />
+          {/* More form elements */}
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+Virtual keyboard avoidance consists of several key features:
+
+- Uses the `env(keyboard-inset-height)` from [Virtual Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API) and fallbacks to [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) and custom `keyboard-inset-height` CSS environment variable.
+- Works automatically on mobile devices with virtual keyboard support.
+- Applies dynamic padding to keep content visible when the keyboard opens.
+- Scrolls the focused input into view if it's covered by the keyboard.
+- Disables drag gestures while the keyboard is open to prevent glitches.
+- When using snap points, the sheet will be automatically moved up to the last snap point to ensure that all content is reachable (even when the content is scrollable) within the sheet when the keyboard is open.
+
+<Aside type="note">
+
+Avoiding the virtual keyboard is a complex problem and the built-in avoidance may not work perfectly in all cases or on all devices. The library does its best to handle the most common scenarios but there may be edge cases where it doesn't work as expected.
+
+Mobile browsers, eg. Android Chrome, may try to automatically move the focused input into view when the keyboard opens which might interfere with the built-in keyboard avoidance behavior causing the sheet content to jump around.
+
+If you need to disable the built-in keyboard avoidance, set `avoidKeyboard={false}`.
+
+</Aside>
+
+### Managing virtual keyboard manually
+
+If the built-in keyboard avoidance doesn't work for your use case, you can disable it with `avoidKeyboard={false}` and manage the keyboard state manually with the help of the `useVirtualKeyboard` hook.
+
+```tsx
+import { Sheet, useVirtualKeyboard } from 'react-modal-sheet';
+
+function ManualKeyboardExample() {
+  const [isOpen, setOpen] = useState(false);
+
+  // This hook manages the `--keyboard-inset-height` CSS variable for you
+  useVirtualKeyboard({ isEnabled: isOpen });
+
+  return (
+    // Disable default keyboard avoidance
+    <Sheet avoidKeyboard={false} isOpen={isOpen} onClose={() => setOpen(false)}>
+      <Sheet.Container>
+        <Sheet.Header />
+        <Sheet.Content
+          // Apply keyboard height as padding bottom to keep content above the keyboard
+          style={{ paddingBottom: 'var(--keyboard-inset-height)' }}
+        >
+          {/* Your content here */}
+        </Sheet.Content>
+      </Sheet.Container>
+      <Sheet.Backdrop />
+    </Sheet>
+  );
+}
+```
+
+For a more detailed example of using `useVirtualKeyboard` see the [Creating custom scrollers](/react-modal-sheet/guides/scrolling/#creating-custom-scrollers) guide.
