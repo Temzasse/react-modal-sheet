@@ -22,15 +22,6 @@
 
 Visit the [documentation website](https://temzasse.github.io/react-modal-sheet/) for installation, usage, API reference, guides, and interactive examples.
 
-- [Get started](https://temzasse.github.io/react-modal-sheet/getting-started/installation/)
-- [Explore the examples](https://temzasse.github.io/react-modal-sheet/examples/)
-- [Contribute](https://temzasse.github.io/react-modal-sheet/contributing/)
-
-## Local documentation
-
-```sh
-npm ci --prefix docs
-npm run dev
-```
-
-Open http://localhost:4321/react-modal-sheet/. See [the docs guide](docs/README.md) for build and GitHub Pages setup.
+- [🎬 Get started](https://temzasse.github.io/react-modal-sheet/getting-started/installation/)
+- [📱 Explore the examples](https://temzasse.github.io/react-modal-sheet/examples/)
+- [🤝 Contribute](https://temzasse.github.io/react-modal-sheet/contributing/)
