@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>React Modal Sheet — Gold and mint window</title>
+  <defs>
+    <linearGradient id="frame" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e3d33c"/>
+      <stop offset=".5" stop-color="#cd9458"/>
+      <stop offset="1" stop-color="#a82a87"/>
+    </linearGradient>
+    <linearGradient id="sheet" x1="0" y1="14" x2="0" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3cd284"/>
+      <stop offset=".5" stop-color="#58948a"/>
+      <stop offset="1" stop-color="#872b95"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#frame)" d="M4 0h24v2h2v2h2v24h-2v2h-2v2H4v-2H2v-2H0V4h2V2h2Z"/>
+  <path fill="#211339" d="M4 4h24v24H4Z"/>
+  <path fill="#e3d33c" d="M6 6h2v2H6Zm4 0h2v2h-2Z"/>
+  <path fill="url(#sheet)" d="M8 14h16v2h2v2h2v10H4V18h2v-2h2Z"/>
+  <path fill="#211339" d="M12 18h8v2h-8Z"/>
+</svg>

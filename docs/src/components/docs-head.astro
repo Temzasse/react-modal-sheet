@@ -1,8 +1,11 @@
 ---
 import StarlightHead from '@astrojs/starlight/components/Head.astro';
 import { Font } from 'astro:assets';
+
+import Favicons from './favicons.astro';
 ---
 
 <StarlightHead />
+<Favicons />
 <Font cssVariable="--font-body" preload />
 <Font cssVariable="--font-heading" preload />
