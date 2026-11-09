@@ -147,7 +147,7 @@ const Wrapper = styled('div', {
     flexDirection: 'column',
     height: '100%',
     minHeight: 'min(660px, calc(100dvh - 70px))',
-    padding: '0 28px max(20px, env(safe-area-inset-bottom))',
+    padding: '0 {spacing.$7} max({spacing.$5}, env(safe-area-inset-bottom))',
     color: '#fff',
     colorScheme: 'dark',
   },
@@ -158,7 +158,7 @@ const ArtworkArea = styled('div', {
     placeItems: 'center',
     flex: '1',
     minHeight: '120px',
-    padding: '20px 12px 30px',
+    padding: '{spacing.$5} {spacing.$3} 30px',
   },
 });
 const Artwork = styled('img', {
@@ -193,7 +193,7 @@ const SongInfoRow = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
+    gap: '$1',
   },
 });
 const SongInfo = styled('div', {
@@ -237,7 +237,7 @@ const SmallControl = styled('button', {
     },
     '&:focus-visible': {
       outline: '2px solid #fff',
-      outlineOffset: '2px',
+      outlineOffset: '$0.5',
     },
   },
 });
@@ -253,7 +253,7 @@ const SeekSlider = styled('input', {
     appearance: 'none',
     width: '100%',
     height: '5px',
-    margin: '0',
+    margin: '$0',
     borderRadius: '999px',
     cursor: 'pointer',
     '&::-webkit-slider-thumb': {
@@ -315,9 +315,9 @@ const VolumeControl = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '$3',
     color: 'rgb(255 255 255 / 55%)',
-    paddingTop: '4px',
+    paddingTop: '$1',
   },
 });
 const VolumeSlider = styled('input', {
@@ -326,7 +326,7 @@ const VolumeSlider = styled('input', {
     flex: '1',
     minWidth: '0',
     height: '4px',
-    margin: '12px 0',
+    margin: '{spacing.$3} 0',
     borderRadius: '999px',
     background: 'rgb(255 255 255 / 25%)',
     cursor: 'pointer',
@@ -355,7 +355,7 @@ const UtilityControls = styled('div', {
   base: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '0 20px',
+    padding: '0 {spacing.$5}',
   },
 });
 const UtilityIcon = styled('span', {

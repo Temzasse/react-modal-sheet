@@ -63,22 +63,21 @@ const BoxList = styled('div', {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: '16px',
+    padding: '$4',
     paddingTop: '0px',
-    gap: '16px',
+    gap: '$4',
   },
 });
 
 const Box = styled('div', {
   base: {
     width: '100%',
-    backgroundColor: 'var(--example-card-bg)',
-    borderRadius: '12px',
+    backgroundColor: '$surface.card',
+    borderRadius: '$lg',
     minHeight: '200px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: '700',
-    fontSize: '16px',
+    textStyle: '$example.strong',
   },
 });

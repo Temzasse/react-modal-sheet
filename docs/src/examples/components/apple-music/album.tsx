@@ -218,7 +218,7 @@ const Content = styled('main', {
     maxWidth: '680px',
     margin: '0 auto',
     padding:
-      'max(16px, env(safe-area-inset-top)) 20px calc(170px + env(safe-area-inset-bottom))',
+      'max({spacing.$4}, env(safe-area-inset-top)) {spacing.$5} calc(170px + env(safe-area-inset-bottom))',
   },
 });
 
@@ -252,8 +252,8 @@ const ToolbarActions = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    padding: '3px 8px',
+    gap: '$2',
+    padding: '3px {spacing.$2}',
     borderRadius: '999px',
     background:
       'linear-gradient(150deg, rgb(255 255 255 / 15%), rgb(255 255 255 / 8%))',
@@ -302,7 +302,7 @@ const Artwork = styled('img', {
 });
 const AlbumName = styled('h1', {
   base: {
-    margin: '0',
+    margin: '$0',
     fontSize: 'clamp(24px, 4.8vw, 30px)',
     lineHeight: '1.15',
     fontWeight: '750',
@@ -320,7 +320,7 @@ const Artist = styled('p', {
 });
 const AlbumInfo = styled('p', {
   base: {
-    margin: '8px 0 0',
+    margin: '{spacing.$2} 0 0',
     fontSize: '13px',
     fontWeight: '500',
     color: 'rgb(255 255 255 / 58%)',
@@ -331,9 +331,9 @@ const Controls = styled('div', {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '16px',
+    gap: '$4',
     maxWidth: '390px',
-    margin: '22px auto 24px',
+    margin: '22px auto {spacing.$6}',
   },
 });
 const RoundButton = styled('button', {
@@ -361,9 +361,9 @@ const PlayButton = styled('button', {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '12px',
+    gap: '$3',
     flex: '1',
-    padding: '14px 20px',
+    padding: '14px {spacing.$5}',
     minHeight: '48px',
     borderRadius: '999px',
     color: '#fff',
@@ -387,7 +387,7 @@ const AlbumNote = styled('p', {
     fontSize: '13px',
     lineHeight: '1.6',
     color: 'rgb(255 255 255 / 70%)',
-    padding: '12px 16px',
+    padding: '{spacing.$3} {spacing.$4}',
     background: 'rgb(255 255 255 / 6%)',
     borderRadius: '12px',
   },
@@ -395,15 +395,15 @@ const AlbumNote = styled('p', {
 const SongList = styled('ol', {
   base: {
     listStyle: 'none',
-    margin: '0',
-    padding: '0',
+    margin: '$0',
+    padding: '$0',
     borderTop: '1px solid rgb(255 255 255 / 15%)',
   },
 });
 const SongListItem = styled('li', {
   base: {
     listStyle: 'none',
-    margin: '0',
+    margin: '$0',
   },
 });
 const SongButton = styled('button', {
@@ -427,7 +427,7 @@ const SongNumber = styled('span', {
     placeItems: 'center',
     flexShrink: '0',
     width: '28px',
-    marginRight: '6px',
+    marginRight: '$1.5',
     fontSize: '16px',
     color: 'rgb(255 255 255 / 55%)',
   },
@@ -450,7 +450,7 @@ const SongDots = styled('span', {
     alignSelf: 'stretch',
     display: 'flex',
     alignItems: 'center',
-    padding: '0 5px 0 12px',
+    padding: '0 5px 0 {spacing.$3}',
     color: 'rgb(255 255 255 / 55%)',
     fontSize: '13px',
     letterSpacing: '2px',
@@ -462,29 +462,29 @@ const ReleaseInfo = styled('p', {
     color: 'rgb(255 255 255 / 45%)',
     fontSize: '12px',
     lineHeight: '1.8',
-    marginTop: '24px',
+    marginTop: '$6',
   },
 });
 const FloatingDock = styled('div', {
   base: {
     position: 'fixed',
     zIndex: '1',
-    bottom: 'max(12px, env(safe-area-inset-bottom))',
+    bottom: 'max({spacing.$3}, env(safe-area-inset-bottom))',
     left: '50%',
     transform: 'translateX(-50%)',
     width: 'calc(100% - 24px)',
     maxWidth: '640px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
+    gap: '$2',
   },
 });
 const MiniPlayer = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
-    padding: '7px 10px 7px 8px',
+    gap: '$1',
+    padding: '7px {spacing.$2.5} 7px {spacing.$2}',
     borderRadius: '999px',
     background:
       'linear-gradient(160deg, rgb(75 75 77 / 58%), rgb(40 40 42 / 44%))',
@@ -499,7 +499,7 @@ const MiniOpen = styled('button', {
     display: 'flex',
     alignItems: 'center',
     flex: '1',
-    gap: '10px',
+    gap: '$2.5',
     minWidth: '0',
     textAlign: 'left',
     color: '#fff',

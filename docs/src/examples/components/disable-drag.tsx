@@ -56,7 +56,7 @@ function useScrolling() {
 
 const Content = styled('div', {
   base: {
-    padding: '16px',
+    padding: '$4',
   },
 });
 
@@ -64,7 +64,7 @@ const BoxList = styled('div', {
   base: {
     width: '100%',
     display: 'flex',
-    padding: '24px 0px',
+    padding: '{spacing.$6} 0px',
     overflowX: 'auto',
   },
 });
@@ -72,15 +72,14 @@ const BoxList = styled('div', {
 const Box = styled('div', {
   base: {
     flexShrink: '0',
-    backgroundColor: 'var(--example-card-bg)',
-    borderRadius: '12px',
+    backgroundColor: '$surface.card',
+    borderRadius: '$lg',
     width: '200px',
     height: '200px',
-    marginRight: '16px',
+    marginRight: '$4',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: '700',
-    fontSize: '24px',
+    textStyle: '$example.display',
   },
 });

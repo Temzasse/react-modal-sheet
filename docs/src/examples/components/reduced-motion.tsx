@@ -34,21 +34,20 @@ const BoxList = styled('div', {
   base: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '16px',
+    padding: '$4',
     paddingTop: '0px',
   },
 });
 
 const Box = styled('div', {
   base: {
-    backgroundColor: 'var(--example-card-bg)',
-    borderRadius: '12px',
+    backgroundColor: '$surface.card',
+    borderRadius: '$lg',
     minHeight: '200px',
-    marginBottom: '16px',
+    marginBottom: '$4',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: '700',
-    fontSize: '24px',
+    textStyle: '$example.display',
   },
 });

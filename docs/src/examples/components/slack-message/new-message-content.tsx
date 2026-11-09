@@ -58,16 +58,16 @@ const people = [
 const SearchArea = styled('div', {
   base: {
     position: 'sticky',
-    top: '0',
+    top: '$0',
     zIndex: '1',
     background: 'var(--slack-bg)',
-    padding: '0 16px 16px',
+    padding: '0 {spacing.$4} {spacing.$4}',
     '&::after': {
       content: "''",
       position: 'absolute',
-      bottom: '0',
-      left: '0',
-      right: '0',
+      bottom: '$0',
+      left: '$0',
+      right: '$0',
       height: '1px',
       background: 'var(--slack-border)',
       transform: 'scaleY(var(--slack-hairline-scale))',
@@ -80,7 +80,7 @@ const Search = styled('label', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '$2.5',
     padding: '13px 14px',
     borderRadius: '12px',
     background: 'var(--slack-search-bg)',
@@ -118,7 +118,7 @@ const RecipientLabel = styled('span', {
 });
 const SectionLabel = styled('h3', {
   base: {
-    margin: '20px 20px 12px',
+    margin: '{spacing.$5} {spacing.$5} {spacing.$3}',
     fontSize: '13px',
     fontWeight: '700',
     color: 'var(--slack-muted)',
@@ -127,15 +127,15 @@ const SectionLabel = styled('h3', {
 const PeopleList = styled('ul', {
   base: {
     listStyle: 'none',
-    padding: '0 18px max(24px, env(safe-area-inset-bottom))',
-    margin: '0',
+    padding: '0 18px max({spacing.$6}, env(safe-area-inset-bottom))',
+    margin: '$0',
   },
 });
 const Person = styled('li', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '$3',
     padding: '11px 0',
   },
 });
@@ -173,7 +173,7 @@ const PersonName = styled('span', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: '$2',
     fontSize: '15px',
     fontWeight: '700',
     color: 'var(--slack-text)',

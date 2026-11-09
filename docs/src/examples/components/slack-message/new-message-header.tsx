@@ -34,7 +34,7 @@ const Wrapper = styled('div', {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '28px 20px 15px',
+    padding: '{spacing.$7} {spacing.$5} 15px',
     color: 'var(--slack-text)',
   },
 });
@@ -53,7 +53,7 @@ const Handle = styled('span', {
 });
 const Title = styled('h2', {
   base: {
-    margin: '0',
+    margin: '$0',
     fontSize: '24px',
     lineHeight: '1.2',
     fontWeight: '750',

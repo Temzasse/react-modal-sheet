@@ -57,7 +57,7 @@ const SheetContentWrapper = styled('div', {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    padding: '16px',
+    padding: '$4',
   },
 });
 
@@ -66,6 +66,6 @@ const Controls = styled('div', {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '16px',
+    gap: '$4',
   },
 });

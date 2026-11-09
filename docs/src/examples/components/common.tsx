@@ -30,14 +30,13 @@ export function Button({
 const ButtonBase = styled('button', {
   base: {
     cursor: 'pointer',
-    padding: '12px 16px',
-    backgroundColor: 'var(--sl-color-text-accent)',
-    color: 'var(--sl-color-bg)',
+    padding: '{spacing.$3} {spacing.$4}',
+    backgroundColor: '$accent.text',
+    color: '$bg.canvas',
     border: 'none',
-    fontWeight: '500',
-    borderRadius: '999px',
+    textStyle: '$example.control',
+    borderRadius: '$full',
     textAlign: 'center',
-    lineHeight: '1',
     transition: 'opacity 0.1s ease-out',
     '&:active': {
       opacity: '0.8',
@@ -47,23 +46,21 @@ const ButtonBase = styled('button', {
     variant: {
       default: {},
       launch: {
-        padding: '13px 20px',
-        backgroundColor: 'var(--sl-color-text-accent)',
-        borderRadius: '8px',
-        fontWeight: '600',
-        fontSize: '14px',
-        lineHeight: '1.25',
+        padding: '{spacing.$3} {spacing.$5}',
+        backgroundColor: '$accent.text',
+        borderRadius: '$md',
+        textStyle: '$example.launch',
         '&:hover': {
           opacity: '0.9',
         },
         '&:focus-visible': {
-          outline: '3px solid var(--sl-color-accent)',
+          outline: '$focus',
           outlineOffset: '3px',
         },
       },
       secondary: {
-        backgroundColor: 'var(--example-card-bg)',
-        color: 'var(--example-text)',
+        backgroundColor: '$surface.card',
+        color: '$surface.text',
       },
     },
   },
@@ -74,13 +71,13 @@ const ButtonBase = styled('button', {
 
 export const Screen = styled('div', {
   base: {
-    backgroundColor: 'var(--sl-color-bg)',
+    backgroundColor: '$bg.canvas',
     width: '100%',
     minHeight: '100%',
     paddingTop: 'env(safe-area-inset-top)',
     'html[data-example-layout="custom"] &': {
-      backgroundColor: 'var(--example-app-bg)',
-      color: 'var(--example-text)',
+      backgroundColor: '$surface.app',
+      color: '$surface.text',
     },
   },
 });

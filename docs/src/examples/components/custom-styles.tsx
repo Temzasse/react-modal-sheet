@@ -45,20 +45,19 @@ export function CustomStyles() {
 
 const SheetContainer = styled(Sheet.Container, {
   base: {
-    paddingInline: '16px',
-    paddingTop: '16px',
-    paddingBottom: 'max(env(safe-area-inset-bottom), 16px)',
+    paddingInline: '$4',
+    paddingTop: '$4',
+    paddingBottom: 'max(env(safe-area-inset-bottom), {spacing.$4})',
   },
 });
 
 const SheetWrapper = styled('div', {
   base: {
     overflow: 'hidden',
-    borderRadius: '16px',
-    boxShadow:
-      '0 1px 3px rgba(0, 0, 0, 0.1),\n    0 1px 2px rgba(0, 0, 0, 0.2),\n    0 12px 20px rgba(0, 0, 0, 0.3)',
-    backgroundColor: 'var(--example-sheet-bg)',
-    color: 'var(--example-text)',
+    borderRadius: '$xl',
+    boxShadow: '$sheet',
+    backgroundColor: '$surface.sheet',
+    color: '$surface.text',
   },
 });
 
@@ -75,15 +74,15 @@ const HeaderImage = styled('div', {
     backgroundPosition: 'center',
     width: '100%',
     height: '150px',
-    marginBottom: '16px',
-    backgroundColor: 'var(--example-card-bg)',
+    marginBottom: '$4',
+    backgroundColor: '$surface.card',
   },
 });
 
 const DragIndicatorWrapper = styled('div', {
   base: {
     position: 'absolute',
-    top: '8px',
+    top: '$2',
     left: '50%',
     transform: 'translateX(-50%)',
   },
@@ -91,38 +90,37 @@ const DragIndicatorWrapper = styled('div', {
 
 const SheetContent = styled(Sheet.Content, {
   base: {
-    padding: '0px 16px 16px 16px',
+    padding: '0px {spacing.$4} {spacing.$4} {spacing.$4}',
   },
 });
 
 const Title = styled('h2', {
   base: {
-    margin: '0',
-    fontSize: '20px',
+    margin: '$0',
+    textStyle: '$example.section',
   },
 });
 
 const Paragraph = styled('p', {
   base: {
-    fontSize: '16px',
-    lineHeight: '1.4',
-    marginTop: '8px',
+    textStyle: '$example.paragraph',
+    marginTop: '$2',
   },
 });
 
 const Input = styled('input', {
   base: {
-    color: 'var(--example-text)',
-    backgroundColor: 'var(--example-field-bg)',
-    padding: '12px',
-    fontSize: '16px',
-    border: '2px solid var(--example-border)',
-    borderRadius: '8px',
+    color: '$surface.text',
+    backgroundColor: '$surface.field',
+    padding: '$3',
+    textStyle: '$example.body',
+    border: '$fieldStrong',
+    borderRadius: '$md',
     outline: 'none',
     width: '100%',
-    marginBottom: '8px',
+    marginBottom: '$2',
     '&:focus': {
-      borderColor: 'var(--example-indicator)',
+      borderColor: '$surface.indicator',
     },
   },
 });
@@ -131,7 +129,7 @@ const Buttons = styled('div', {
   base: {
     display: 'flex',
     justifyContent: 'flex-end',
-    gap: '8px',
-    marginTop: '8px',
+    gap: '$2',
+    marginTop: '$2',
   },
 });

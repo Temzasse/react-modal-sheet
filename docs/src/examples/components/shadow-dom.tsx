@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Sheet } from 'react-modal-sheet';
 
+import { token } from '../../../styled-system/tokens';
 import { ExampleLayout } from './example-layout';
 
 export function ShadowDOM() {
@@ -18,13 +19,13 @@ export function ShadowDOM() {
             <Sheet isOpen={isOpen} onClose={close} mountPoint={shadowRoot}>
               <style>{`
                 .react-modal-sheet-drag-indicator {
-                  background-color: var(--example-indicator) !important;
+                  background-color: ${token.var('colors.$surface.indicator')} !important;
                 }
               `}</style>
               <Sheet.Container
                 style={{
-                  backgroundColor: 'var(--example-sheet-bg)',
-                  color: 'var(--example-text)',
+                  backgroundColor: token.var('colors.$surface.sheet'),
+                  color: token.var('colors.$surface.text'),
                 }}
               >
                 <Sheet.Header />
@@ -42,7 +43,7 @@ export function ShadowDOM() {
                       <div
                         key={i}
                         style={{
-                          backgroundColor: 'var(--example-card-bg)',
+                          backgroundColor: token.var('colors.$surface.card'),
                           borderRadius: '12px',
                           minHeight: '200px',
                           marginBottom: '16px',

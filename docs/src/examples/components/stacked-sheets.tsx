@@ -72,10 +72,10 @@ function NestedSheet({ level }: { level: number }) {
 
 const SheetContentWrapper = styled('div', {
   base: {
-    padding: '16px',
+    padding: '$4',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '16px',
+    gap: '$4',
   },
 });

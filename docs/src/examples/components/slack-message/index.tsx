@@ -254,9 +254,9 @@ const dividerStyles = {
   '&::after': {
     content: "''",
     position: 'absolute',
-    bottom: '0',
-    left: '0',
-    right: '0',
+    bottom: '$0',
+    left: '$0',
+    right: '$0',
     height: '1px',
     background: 'var(--slack-border)',
     transform: 'scaleY(var(--slack-hairline-scale))',
@@ -284,14 +284,14 @@ const HeaderContent = styled('div', {
     width: '100%',
     maxWidth: '680px',
     margin: '0 auto',
-    padding: 'max(20px, env(safe-area-inset-top)) 18px 24px',
+    padding: 'max({spacing.$5}, env(safe-area-inset-top)) 18px {spacing.$6}',
   },
 });
 const BackLink = styled('a', {
   base: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '2px',
+    gap: '$0.5',
     fontSize: '12px',
     color: 'rgb(255 255 255 / 65%)',
     marginBottom: '18px',
@@ -300,7 +300,7 @@ const BackLink = styled('a', {
     },
     '&:focus-visible': {
       outline: '2px solid #fff',
-      outlineOffset: '4px',
+      outlineOffset: '$1',
     },
   },
 });
@@ -308,7 +308,7 @@ const WorkspaceRow = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '$3',
   },
 });
 const WorkspaceLogo = styled('div', {
@@ -326,7 +326,7 @@ const WorkspaceLogo = styled('div', {
 });
 const WorkspaceTitle = styled('h1', {
   base: {
-    margin: '0',
+    margin: '$0',
     minWidth: '0',
     flex: '1',
     fontWeight: '750',
@@ -340,7 +340,7 @@ const ProfilePill = styled('div', {
     display: 'flex',
     alignItems: 'center',
     gap: '15px',
-    padding: '7px 8px 7px 13px',
+    padding: '7px {spacing.$2} 7px 13px',
     borderRadius: '999px',
     background: 'rgb(255 255 255 / 9%)',
     border: '1px solid rgb(255 255 255 / 13%)',
@@ -388,7 +388,7 @@ const Shortcuts = styled('div', {
     overflowX: 'auto',
     scrollbarWidth: 'none',
     gap: '9px',
-    padding: '16px 16px 18px',
+    padding: '{spacing.$4} {spacing.$4} 18px',
     '&::-webkit-scrollbar': {
       display: 'none',
     },
@@ -399,14 +399,14 @@ const Shortcut = styled('div', {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '6px',
-    padding: '13px 12px',
+    gap: '$1.5',
+    padding: '13px {spacing.$3}',
     border: '1px solid var(--slack-border)',
     borderRadius: '15px',
     color: 'var(--slack-muted)',
     '& span': {
       fontSize: '14px',
-      marginTop: '2px',
+      marginTop: '$0.5',
     },
     '& small': {
       fontSize: '12px',
@@ -419,13 +419,13 @@ const SectionRow = styled('div', {
     ...dividerStyles,
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
-    padding: '20px 18px',
+    gap: '$3',
+    padding: '{spacing.$5} 18px',
   },
 });
 const SectionTitle = styled('h2', {
   base: {
-    margin: '0',
+    margin: '$0',
     fontSize: '16px',
     fontWeight: '700',
     letterSpacing: '-.01em',
@@ -441,22 +441,22 @@ const RowEnd = styled('span', {
 const ChannelSection = styled('section', {
   base: {
     ...dividerStyles,
-    paddingBottom: '12px',
+    paddingBottom: '$3',
   },
 });
 const SectionHeading = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
-    padding: '20px 18px 12px',
+    gap: '$3',
+    padding: '{spacing.$5} 18px {spacing.$3}',
   },
 });
 const ChannelList = styled('ul', {
   base: {
     listStyle: 'none',
-    padding: '0',
-    margin: '0',
+    padding: '$0',
+    margin: '$0',
   },
 });
 const ChannelRow = styled('li', {
@@ -464,7 +464,7 @@ const ChannelRow = styled('li', {
     display: 'flex',
     alignItems: 'center',
     gap: '13px',
-    padding: '12px 19px',
+    padding: '{spacing.$3} 19px',
     minHeight: '46px',
     color: 'var(--slack-muted)',
     fontSize: '17px',
@@ -485,7 +485,7 @@ const UnreadCount = styled('span', {
     marginLeft: 'auto',
     minWidth: '22px',
     height: '20px',
-    padding: '0 6px',
+    padding: '0 {spacing.$1.5}',
     borderRadius: '999px',
     background: 'var(--slack-accent-soft)',
     color: 'var(--slack-accent)',
@@ -511,7 +511,7 @@ const ComposeButton = styled('button', {
     cursor: 'pointer',
     '&:focus-visible': {
       outline: '2px solid var(--slack-accent)',
-      outlineOffset: '4px',
+      outlineOffset: '$1',
     },
   },
 });
@@ -519,7 +519,7 @@ const BottomNavigation = styled('nav', {
   base: {
     position: 'fixed',
     zIndex: '1',
-    bottom: 'max(12px, env(safe-area-inset-bottom))',
+    bottom: 'max({spacing.$3}, env(safe-area-inset-bottom))',
     left: '50%',
     transform: 'translateX(-50%)',
     width: 'calc(100% - 28px)',
@@ -532,7 +532,7 @@ const BottomNavigation = styled('nav', {
     '&::before': {
       content: "''",
       position: 'absolute',
-      inset: '0',
+      inset: '$0',
       zIndex: '-1',
       borderRadius: 'inherit',
       background: 'var(--slack-tab-bg)',
@@ -549,7 +549,7 @@ const NavItem = styled('span', {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '4px',
+    gap: '$1',
     minHeight: '55px',
     padding: '5px 0',
     borderRadius: '999px',

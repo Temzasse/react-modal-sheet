@@ -12,20 +12,20 @@ const styles = {
   root: cx(
     'not-content',
     css({
-      marginBlock: '2rem 3rem',
+      marginBlock: '{spacing.$8} {spacing.$12}',
     })
   ),
   hero: css({
     display: 'block',
     width: '100%',
     height: 'auto',
-    borderRadius: '12px',
+    borderRadius: '$lg',
   }),
   gallery: css({
     display: 'grid',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-    gap: '1rem',
-    marginTop: '1.5rem',
+    gap: '$4',
+    marginTop: '$6',
     '@media (min-width: 50rem)': {
       gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
     },
@@ -33,24 +33,23 @@ const styles = {
   example: css({
     display: 'flex',
     flexDirection: 'column',
-    gap: '.75rem',
-    color: 'var(--sl-color-text-accent)',
+    gap: '$3',
+    color: '$accent.text',
     textDecoration: 'none',
-    fontSize: '.875rem',
-    fontWeight: '600',
+    textStyle: '$docs.link',
     '&:hover': {
       textDecoration: 'underline',
     },
     '&:focus-visible': {
-      outlineOffset: '6px',
+      outlineOffset: '$1.5',
     },
   }),
   recording: css({
     display: 'block',
     width: '100%',
     height: 'auto',
-    border: '1px solid var(--sl-color-gray-5)',
-    borderRadius: '10px',
+    border: '$default',
+    borderRadius: '$lg',
   }),
 };
 ---

@@ -94,7 +94,7 @@ const Content = styled('div', {
   base: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '16px',
+    padding: '$4',
     paddingTop: '0px',
   },
 });
@@ -103,21 +103,21 @@ const Form = styled('form', {
   base: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
+    gap: '$3',
   },
 });
 
 const Input = styled('input', {
   base: {
-    color: 'var(--example-text)',
-    backgroundColor: 'var(--example-field-bg)',
-    padding: '12px',
-    fontSize: '16px',
-    border: '2px solid var(--example-border)',
-    borderRadius: '8px',
+    color: '$surface.text',
+    backgroundColor: '$surface.field',
+    padding: '$3',
+    textStyle: '$example.body',
+    border: '$fieldStrong',
+    borderRadius: '$md',
     outline: 'none',
     '&:focus': {
-      borderColor: 'var(--example-indicator)',
+      borderColor: '$surface.indicator',
     },
   },
 });

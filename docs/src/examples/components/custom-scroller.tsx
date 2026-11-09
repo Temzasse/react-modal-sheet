@@ -63,26 +63,26 @@ const Content = styled('div', {
 
 const ContentHeader = styled('div', {
   base: {
-    padding: '16px',
-    background: 'var(--example-sheet-bg)',
+    padding: '$4',
+    background: '$surface.sheet',
     textAlign: 'center',
-    fontWeight: 'bold',
+    textStyle: '$example.strong',
   },
 });
 
 const Input = styled('input', {
   base: {
-    color: 'var(--example-text)',
-    backgroundColor: 'var(--example-field-bg)',
-    padding: '8px',
-    fontSize: '16px',
+    color: '$surface.text',
+    backgroundColor: '$surface.field',
+    padding: '$2',
+    textStyle: '$example.body',
     width: '100%',
-    borderRadius: '8px',
-    border: '1px solid var(--example-border)',
-    background: 'var(--example-field-bg)',
+    borderRadius: '$md',
+    border: '$field',
+    background: '$surface.field',
     '&:focus': {
       outline: 'none',
-      borderColor: 'var(--example-indicator)',
+      borderColor: '$surface.indicator',
     },
   },
 });
@@ -97,21 +97,21 @@ const Scroller = styled('div', {
 
 const ScrollPosition = styled('div', {
   base: {
-    padding: '8px',
-    fontSize: '14px',
-    color: 'var(--example-muted)',
+    padding: '$2',
+    textStyle: '$example.label',
+    color: '$surface.muted',
     textAlign: 'center',
     position: 'sticky',
-    top: '0',
+    top: '$0',
     backdropFilter: 'blur(10px)',
   },
 });
 
 const ContentFooter = styled('button', {
   base: {
-    padding: '16px',
-    background: 'var(--sl-color-text-accent)',
-    color: 'var(--example-field-bg)',
+    padding: '$4',
+    background: '$accent.text',
+    color: '$surface.field',
     textAlign: 'center',
   },
 });

@@ -112,7 +112,7 @@ const InlineStage = styled('div', {
     display: 'grid',
     placeItems: 'center',
     minHeight: '100dvh',
-    padding: '24px',
+    padding: '$6',
   },
 });
 
@@ -120,63 +120,55 @@ const Wrapper = styled('main', {
   base: {
     position: 'relative',
     width: '100%',
-    maxWidth: '800px',
+    maxWidth: '$example',
     margin: '0 auto',
-    padding: 'max(96px, calc(env(safe-area-inset-top) + 80px)) 24px 64px',
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    color: 'var(--sl-color-white)',
+    padding:
+      'max({spacing.$24}, calc(env(safe-area-inset-top) + {spacing.$20})) {spacing.$6} {spacing.$16}',
+    fontFamily: '$system',
+    color: '$text.heading',
   },
 });
 
 const Eyebrow = styled('p', {
   base: {
-    margin: '0 0 12px',
-    color: 'var(--sl-color-text-accent)',
-    fontSize: '12px',
-    fontWeight: '600',
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
+    margin: '0 0 {spacing.$3}',
+    color: '$accent.text',
+    textStyle: '$example.eyebrow',
   },
 });
 
 const PageTitle = styled('h1', {
   base: {
-    margin: '0 0 16px',
-    fontSize: 'clamp(28px, 5vw, 40px)',
-    fontWeight: '650',
-    letterSpacing: '-0.035em',
-    lineHeight: '1.15',
+    margin: '0 0 {spacing.$4}',
+    textStyle: '$example.title',
   },
 });
 
 const Description = styled('p', {
   base: {
     maxWidth: '56ch',
-    margin: '0 0 24px',
-    color: 'var(--sl-color-gray-2)',
-    fontSize: '17px',
-    lineHeight: '1.6',
+    margin: '0 0 {spacing.$6}',
+    color: '$text.body',
+    textStyle: '$example.description',
     textWrap: 'pretty',
   },
 });
 
 const SkeletonCanvas = styled('div', {
   base: {
-    '--skeleton': 'var(--sl-color-gray-5)',
-    '--skeleton-soft': 'var(--sl-color-gray-6)',
     display: 'grid',
-    gap: '24px',
-    marginTop: '40px',
-    paddingTop: '32px',
-    borderTop: '1px solid var(--sl-color-gray-5)',
+    gap: '$6',
+    marginTop: '$10',
+    paddingTop: '$8',
+    borderTop: '$default',
     '& [data-skeleton~="bar"]': {
       width: '78%',
       height: '9px',
-      borderRadius: '4px',
-      background: 'var(--skeleton)',
+      borderRadius: '$xs',
+      background: '$border.default',
     },
     '& [data-skeleton~="bar"] + [data-skeleton~="bar"]': {
-      marginTop: '10px',
+      marginTop: '$2.5',
     },
     '& [data-skeleton~="bar"][data-skeleton~="title"]': {
       width: '42%',
@@ -184,14 +176,14 @@ const SkeletonCanvas = styled('div', {
     },
     '& [data-skeleton~="bar"][data-skeleton~="short"]': {
       width: '48%',
-      background: 'var(--skeleton-soft)',
+      background: '$bg.surface',
     },
     '& [data-skeleton~="avatar"]': {
       width: '38px',
       height: '38px',
       flexShrink: '0',
-      borderRadius: '50%',
-      background: 'var(--skeleton)',
+      borderRadius: '$circle',
+      background: '$border.default',
     },
     '& [data-skeleton~="lines"]': {
       flex: '1',
@@ -199,74 +191,74 @@ const SkeletonCanvas = styled('div', {
     '& [data-skeleton~="pill"]': {
       width: '64px',
       height: '26px',
-      borderRadius: '6px',
-      background: 'var(--skeleton-soft)',
+      borderRadius: '$sm',
+      background: '$bg.surface',
     },
     '& [data-skeleton~="skeleton-heading"], & [data-skeleton~="row"]': {
       display: 'flex',
       alignItems: 'center',
-      gap: '16px',
+      gap: '$4',
     },
     '& [data-skeleton~="feature"], & [data-skeleton~="card"], & [data-skeleton~="activity"]':
       {
-        padding: '24px',
-        border: '1px solid var(--sl-color-gray-5)',
-        borderRadius: '12px',
+        padding: '$6',
+        border: '$default',
+        borderRadius: '$lg',
       },
     '& [data-skeleton~="feature"] > [data-skeleton~="bar"]:not([data-skeleton~="title"])':
       {
         maxWidth: '260px',
       },
     '& [data-skeleton~="feature"] > [data-skeleton~="title"]': {
-      marginBottom: '20px',
+      marginBottom: '$5',
     },
     '& [data-skeleton~="chart"]': {
       display: 'flex',
       alignItems: 'flex-end',
-      gap: '12px',
+      gap: '$3',
       height: '160px',
-      paddingTop: '24px',
+      paddingTop: '$6',
     },
     '& [data-skeleton~="chart"] span': {
       flex: '1',
-      borderRadius: '5px 5px 0 0',
-      background: 'var(--skeleton-soft)',
+      borderRadius: '{radii.$xs} {radii.$xs} 0 0',
+      background: '$bg.surface',
     },
     '& [data-skeleton~="chart"] span:nth-child(3n)': {
-      background: 'var(--skeleton)',
+      background: '$border.default',
     },
     '& [data-skeleton~="cards"]': {
       display: 'grid',
       gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-      gap: '16px',
+      gap: '$4',
     },
     '& [data-skeleton~="icon"]': {
       width: '30px',
       height: '30px',
-      marginBottom: '24px',
-      borderRadius: '8px',
-      background: 'var(--skeleton-soft)',
+      marginBottom: '$6',
+      borderRadius: '$md',
+      background: '$bg.surface',
     },
     '& [data-skeleton~="row"]': {
-      paddingBlock: '24px',
-      borderBottom: '1px solid var(--sl-color-gray-6)',
+      paddingBlock: '$6',
+      borderBottom: '$subtle',
     },
     '& [data-skeleton~="row"]:last-child': {
-      paddingBottom: '0',
+      paddingBottom: '$0',
       borderBottom: '0',
     },
     '& [data-skeleton~="activity"] > [data-skeleton~="title"]': {
-      marginBottom: '12px',
+      marginBottom: '$3',
     },
     '@media (max-width: 480px)': {
       '& [data-skeleton~="cards"]': {
-        gap: '10px',
+        gap: '$2.5',
       },
       '& [data-skeleton~="card"]': {
-        padding: '16px',
+        padding: '$4',
       },
       '& [data-skeleton~="chart"]': {
-        gap: '8px',
+        gap: '$2',
       },
       '& [data-skeleton~="pill"]': {
         width: '44px',
@@ -278,10 +270,10 @@ const SkeletonCanvas = styled('div', {
 const ButtonWrapper = styled(motion.div, {
   base: {
     position: 'fixed',
-    bottom: 'max(24px, env(safe-area-inset-bottom))',
-    right: '24px',
+    bottom: 'max({spacing.$6}, env(safe-area-inset-bottom))',
+    right: '$6',
     '& button': {
-      boxShadow: '0 4px 20px rgb(0 0 0 / 15%)',
+      boxShadow: '$floating',
     },
   },
 });

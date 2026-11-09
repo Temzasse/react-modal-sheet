@@ -9,6 +9,7 @@ import { FiSearch } from 'react-icons/fi';
 import { Sheet } from 'react-modal-sheet';
 
 import { styled } from '../../../../styled-system/jsx';
+import { token } from '../../../../styled-system/tokens';
 import { useSafeAreaInsets } from '../../hooks/use-safe-area-insets';
 import { useSnapPointTransform } from '../../hooks/use-sheet-snap-transform';
 import mapBackground from './map-bg.jpeg?url';
@@ -145,11 +146,11 @@ function SheetContainer({
   ]);
 
   const borderColor = useMotionTemplate`
-    color-mix(in srgb, var(--example-indicator) ${useTransform(yProgress, [0.7, 1], [40, 0])}%, transparent)
+    color-mix(in srgb, ${token.var('colors.$surface.indicator')} ${useTransform(yProgress, [0.7, 1], [40, 0])}%, transparent)
   `;
 
   const backgroundColor = useMotionTemplate`
-    color-mix(in srgb, var(--example-sheet-bg) ${useTransform(yProgress, [0.7, 1], [60, 100])}%, transparent)
+    color-mix(in srgb, ${token.var('colors.$surface.sheet')} ${useTransform(yProgress, [0.7, 1], [60, 100])}%, transparent)
   `;
 
   const clipPath = useMotionTemplate`
@@ -339,7 +340,7 @@ const Container = styled('div', {
 const FakeMap = styled('div', {
   base: {
     position: 'fixed',
-    inset: '0',
+    inset: '$0',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   },
@@ -355,16 +356,16 @@ const SheetHeaderBase = styled(Sheet.Header, {
   base: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '16px',
+    padding: '$4',
     '&::before': {
       content: "''",
       position: 'absolute',
-      top: '4px',
+      top: '$1',
       left: '50%',
       transform: 'translateX(-50%)',
       width: '50px',
       height: '4px',
-      backgroundColor: 'var(--example-indicator)',
+      backgroundColor: '$surface.indicator',
       borderRadius: '2px',
     },
   },
@@ -374,7 +375,7 @@ const SearchContainer = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '$3',
   },
 });
 
@@ -382,10 +383,10 @@ const SearchWrapper = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: 'var(--example-app-bg)',
+    backgroundColor: '$surface.app',
     borderRadius: '999px',
-    padding: '8px 12px',
-    gap: '8px',
+    padding: '{spacing.$2} {spacing.$3}',
+    gap: '$2',
     flex: '1',
   },
 });
@@ -394,7 +395,7 @@ const SearchIconWrapper = styled('div', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    color: 'var(--example-text)',
+    color: '$surface.text',
   },
 });
 
@@ -405,11 +406,11 @@ const SearchInput = styled('input', {
     border: 'none',
     fontSize: '16px',
     outline: 'none',
-    color: 'var(--example-text)',
-    caretColor: 'var(--example-text)',
-    padding: '0',
+    color: '$surface.text',
+    caretColor: '$surface.text',
+    padding: '$0',
     '&::placeholder': {
-      color: 'var(--example-muted)',
+      color: '$surface.muted',
     },
   },
 });
@@ -437,7 +438,7 @@ const SheetContainerBase = styled(Sheet.Container, {
 
 const Results = styled(motion.div, {
   base: {
-    padding: '0px 16px 16px 16px',
+    padding: '0px {spacing.$4} {spacing.$4} {spacing.$4}',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -445,21 +446,21 @@ const Results = styled(motion.div, {
 
 const SectionTitle = styled('h3', {
   base: {
-    color: 'var(--example-muted)',
+    color: '$surface.muted',
     fontSize: '14px',
     fontWeight: '500',
-    margin: '0 0 16px 0',
+    margin: '0 0 {spacing.$4} 0',
   },
 });
 
 const Suggestions = styled('ul', {
   base: {
     listStyle: 'none',
-    padding: '0',
-    margin: '0',
+    padding: '$0',
+    margin: '$0',
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
+    gap: '$3',
   },
 });
 
@@ -467,8 +468,8 @@ const Suggestion = styled('li', {
   base: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
-    padding: '8px 0',
+    gap: '$3',
+    padding: '{spacing.$2} 0',
     position: 'relative',
     '&:not(:last-child)::after': {
       content: "''",
@@ -500,13 +501,13 @@ const ResultInfo = styled('div', {
     flex: '1',
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: '$1',
   },
 });
 
 const ResultName = styled('span', {
   base: {
-    color: 'var(--example-text)',
+    color: '$surface.text',
     fontSize: '16px',
     fontWeight: '500',
   },
@@ -514,7 +515,7 @@ const ResultName = styled('span', {
 
 const ResultAddress = styled('span', {
   base: {
-    color: 'var(--example-muted)',
+    color: '$surface.muted',
     fontSize: '14px',
   },
 });

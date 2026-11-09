@@ -96,13 +96,13 @@ function SheetFooter({ sheetRef }: { sheetRef: SheetRef }) {
 
 const SheetHeader = styled(Sheet.Header, {
   base: {
-    padding: '16px',
-    backgroundColor: 'var(--example-sheet-bg)',
+    padding: '$4',
+    backgroundColor: '$surface.sheet',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '12px',
+    gap: '$3',
   },
 });
 
@@ -111,14 +111,13 @@ const CurrentSnapText = styled('div', {
     textAlign: 'center',
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
+    gap: '$2',
     '& > span:first-child': {
-      fontWeight: '600',
-      fontSize: '16px',
+      textStyle: '$example.emphasis',
     },
     '& > span:last-child': {
-      fontSize: '14px',
-      color: 'var(--example-muted)',
+      textStyle: '$example.label',
+      color: '$surface.muted',
     },
   },
 });
@@ -126,18 +125,18 @@ const CurrentSnapText = styled('div', {
 const Footer = styled(motion.div, {
   base: {
     position: 'absolute',
-    left: '0',
-    right: '0',
-    bottom: '0',
+    left: '$0',
+    right: '$0',
+    bottom: '$0',
     zIndex: '3',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'var(--example-sheet-bg)',
-    borderTop: '1px solid var(--example-border)',
+    backgroundColor: '$surface.sheet',
+    borderTop: '$field',
     pointerEvents: 'auto',
     '@media (min-width: 720px)': {
-      maxWidth: '720px',
+      maxWidth: '$sheet',
       left: 'calc(50% - 360px) !important',
     },
   },
@@ -148,6 +147,6 @@ const Controls = styled('div', {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '12px',
+    gap: '$3',
   },
 });
